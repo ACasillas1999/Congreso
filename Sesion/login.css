@@ -1,0 +1,338 @@
+/* =========================
+   Variables y reset
+========================= */
+:root{
+  --bg1:#121212;
+  --bg2:#202040;
+  --card:#1e1e2f;
+  --field:#2d2d44;
+  --field-focus:#35355a;
+  --brand:#e67e22;       /* naranja */
+  --brand-2:#1e90ff;     /* azul */
+  --text:#ffffff;
+  --shadow-top: rgba(199,111,57,.6);
+  --shadow-bottom: rgba(30,144,255,.4);
+  --radius:16px;
+  --gap:18px;
+}
+
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+html,body{ overflow-x:hidden; } /* evita scroll horizontal fantasma */
+
+body{
+  margin:0;
+  font-family:'Segoe UI', system-ui, -apple-system, Roboto, Arial, sans-serif;
+  color:var(--text);
+  min-height:100dvh; /* móvil moderno */
+  min-height:100svh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background: radial-gradient(circle at center, #1e2a78 0%, #000c2c 70%);
+  position:relative;
+  overflow:hidden;
+}
+
+/* =========================
+   Decorativos (borde neón + bruma)
+========================= */
+body::before{
+  content:'';
+  position:fixed;
+  inset:10px;
+  border:5px solid var(--brand);
+  border-radius:20px;
+  pointer-events:none;
+  z-index:3;
+  box-shadow:
+    0 0 15px rgba(230,126,34,.6),
+    0 0 30px rgba(230,126,34,.4),
+    0 0 50px rgba(230,126,34,.2);
+  animation:neonPulse 2s ease-in-out infinite;
+}
+
+body::after{
+  content:'';
+  position:absolute;
+  top:-50%; left:-50%;
+  width:200%; height:200%;
+  background: radial-gradient(circle, rgba(255,255,255,.05) 0%, transparent 70%);
+  animation:spin 30s linear infinite;
+  filter:blur(10px);
+  z-index:0;
+}
+
+/* =========================
+   Safe areas
+========================= */
+.page-wrap{
+  width:100%;
+  padding:
+    max(14px, env(safe-area-inset-top))
+    max(16px, env(safe-area-inset-right))
+    max(16px, env(safe-area-inset-bottom))
+    max(16px, env(safe-area-inset-left));
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* =========================
+   Título neón superior
+========================= */
+.neon-container{
+  position:absolute;
+  inset-block-start: min(24px, 4vh);
+  inset-inline:0;
+  text-align:center;
+  z-index:4;
+  padding-inline:clamp(8px, 3vw, 12px);
+  top: clamp(10px, 2.8vh, 24px); /* en móvil respira */
+}
+
+.neon-title{
+  font-family:'Monoton', cursive;
+  font-size:clamp(26px, 7vw, 100px);
+  margin:0 auto;
+  line-height:1;
+  color:#c76f39;
+  text-transform:uppercase;
+  animation:flicker 2s infinite alternate;
+  text-shadow:
+    0 0 5px #c76f39, 0 0 10px #c76f39, 0 0 20px #c76f39,
+    0 0 40px #c76f39, 0 0 60px #c76f39, 0 0 80px #c76f39;
+}
+
+/* =========================
+   Tarjeta de Login
+========================= */
+.login-container{
+  width:min(94vw, 440px);
+  margin: clamp(8px, 4vh, 18px) auto; /* centrado + aire vertical */
+  padding: clamp(16px, 5vw, 28px);
+  background:var(--card);
+  border-radius:var(--radius);
+  border-inline:2px solid rgba(255,255,255,.08);
+  box-shadow:
+    0 -60px 60px -20px var(--shadow-top),
+    0  60px 60px -20px var(--shadow-bottom);
+  position:relative;
+  z-index:2;
+  text-align:center;
+  animation:slideIn .8s ease-out;
+  backdrop-filter: blur(2px);
+}
+
+/* Marca */
+.brand-block{
+  display:grid;
+  gap:10px;
+  justify-items:center;
+  margin-block-end:10px;
+}
+.titulo2{
+  font-size:clamp(18px, 4.5vw, 28px);
+  font-weight:700;
+  color:var(--brand);
+  margin:0;
+  text-shadow:0 0 8px rgba(255,165,0,.5), 1px 1px 2px #000;
+}
+.icono-registro{
+  width: clamp(120px, 40vw, 260px);
+  max-width:min(70vw, 260px);
+  height:auto;
+  display:block;
+  filter: drop-shadow(0 6px 18px rgba(0,0,0,.45));
+  user-select:none;
+  -webkit-user-drag:none;
+}
+
+/* =========================
+   Formulario
+========================= */
+.login-form{
+  display:grid;
+  gap: clamp(12px, 3.8vw, 18px);
+  margin-top:8px;
+}
+.login-form input[type="text"],
+.login-form input[type="password"]{
+  width:100%;
+  padding:12px 14px;
+  border:none;
+  border-radius:10px;
+  background:var(--field);
+  color:var(--text);
+  font-size:clamp(15px, 3.8vw, 16px);
+  box-shadow: inset 0 0 6px rgba(0,0,0,.35);
+  transition: background .25s, transform .05s;
+}
+.login-form input::placeholder{ color:rgba(255,255,255,.65); }
+.login-form input:focus{
+  outline:2px solid rgba(230,126,34,.35);
+  background:var(--field-focus);
+}
+
+.btn-submit{
+  width:100%;
+  padding:12px 14px;
+  border:none;
+  border-radius:10px;
+  background:var(--brand);
+  color:#fff;
+  font-weight:700;
+  font-size:clamp(16px, 4vw, 17px);
+  cursor:pointer;
+  transition: transform .12s ease, filter .2s ease, background-color .25s ease;
+}
+.btn-submit:hover{ background:#d35400; transform: translateY(-1px) scale(1.01); }
+.btn-submit:active{ transform: translateY(0) scale(.99); }
+
+/* =========================
+   Utilidades / Accesibilidad
+========================= */
+.fade-in{ opacity:0; animation:fadeIn .9s forwards; }
+.sr-only{
+  position:absolute!important; width:1px; height:1px;
+  padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+}
+
+/* =========================
+   Media queries
+========================= */
+@media (max-width: 768px){
+  body::before{ inset:8px; border-width:4px; border-radius:16px; }
+  .login-container{
+    box-shadow:
+      0 -40px 40px -20px var(--shadow-top),
+      0  40px 40px -20px var(--shadow-bottom);
+  }
+}
+
+@media (max-width: 480px){
+  body::before{ inset:8px; border-width:3px; border-radius:14px; }
+  .login-container{ padding: clamp(16px, 5vw, 22px); }
+}
+
+@media (max-width: 360px){
+  .neon-title{ font-size: clamp(22px, 8vw, 28px); }
+  .titulo2{ font-size: clamp(16px, 5vw, 20px); }
+  .login-container{ padding: clamp(14px, 4vw, 20px); }
+}
+
+/* Cuando el teclado reduce mucho la altura */
+@media (max-height: 640px){
+  .neon-container{ position:fixed; } /* evita saltos */
+  .login-container{ margin-block:8px; }
+}
+
+/* Respeta “reducir movimiento” */
+@media (prefers-reduced-motion: reduce){
+  *{
+    animation-duration:.001ms !important;
+    animation-iteration-count:1 !important;
+    transition:none !important;
+  }
+}
+
+/* =========================
+   Animaciones
+========================= */
+@keyframes slideIn{
+  from{ transform: translateY(-24px); opacity:0; }
+  to{ transform:none; opacity:1; }
+}
+@keyframes fadeIn{ to{ opacity:1; } }
+@keyframes spin{ to{ transform: rotate(360deg) scale(1); } }
+@keyframes neonPulse{
+  0%,100%{
+    box-shadow:
+      0 0 15px rgba(230,126,34,.6),
+      0 0 30px rgba(230,126,34,.4),
+      0 0 50px rgba(230,126,34,.2);
+    opacity:1;
+  }
+  50%{
+    box-shadow:
+      0 0 5px rgba(230,126,34,.3),
+      0 0 15px rgba(230,126,34,.2),
+      0 0 30px rgba(230,126,34,.1);
+    opacity:.8;
+  }
+}
+@keyframes flicker{
+  0%,19%,21%,23%,25%,54%,56%,100%{
+    opacity:1;
+    text-shadow:
+      0 0 5px #1e2a78, 0 0 10px #1e2a78, 0 0 20px #1e2a78,
+      0 0 40px #1e2a78, 0 0 60px #1e2a78, 0 0 80px #1e2a78;
+  }
+  20%,24%,55%{ opacity:.3; text-shadow:none; }
+}
+
+
+/* ========= GLOW MÁS SUAVE PARA EL TÍTULO ========= */
+/* (PÉGALO AL FINAL DEL CSS) */
+
+/* Preset SUAVE por defecto */
+.neon-title{
+  color:#c76f39;
+  /* menos capas y alfas más bajos */
+  text-shadow:
+    0 0 2px rgba(199,111,57,.55),
+    0 0 6px rgba(199,111,57,.35),
+    0 0 12px rgba(199,111,57,.25);
+  /* flicker más lento y discreto */
+  animation: flickerSoft 6s ease-in-out infinite alternate;
+}
+
+/* Suaviza también el borde neón del marco */
+body::before{
+  box-shadow:
+    0 0 8px  rgba(230,126,34,.45),
+    0 0 18px rgba(230,126,34,.25),
+    0 0 28px rgba(230,126,34,.12);
+}
+
+/* Flicker más sutil */
+@keyframes flickerSoft{
+  0%,100%{ opacity:.97; }
+  50%{ opacity:.88; }
+}
+
+/* ========= PRESETS OPCIONALES (por clase) ========= */
+/* Usa uno agregando la clase al <h1 class="neon-title glow-medium"> o glow-off */
+
+/* Medium (un poco más presente que “suave”) */
+.neon-title.glow-medium{
+  text-shadow:
+    0 0 3px rgba(199,111,57,.6),
+    0 0 10px rgba(199,111,57,.45),
+    0 0 20px rgba(199,111,57,.30);
+  animation: flickerSoft 5s ease-in-out infinite alternate;
+}
+
+/* Off (sin glow ni flicker) */
+.neon-title.glow-off{
+  text-shadow:none;
+  animation:none;
+}
+
+/* ========= LIMITE EN PANTALLAS GRANDES ========= */
+/* En desktop ancho reduce aún más el glow para que no “invada” */
+@media (min-width: 1280px){
+  .neon-title{
+    text-shadow:
+      0 0 2px rgba(199,111,57,.45),
+      0 0 6px rgba(199,111,57,.28),
+      0 0 10px rgba(199,111,57,.18);
+  }
+  body::before{
+    box-shadow:
+      0 0 6px  rgba(230,126,34,.35),
+      0 0 14px rgba(230,126,34,.20),
+      0 0 22px rgba(230,126,34,.10);
+  }
+}
+

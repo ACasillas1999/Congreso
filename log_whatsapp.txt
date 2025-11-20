@@ -1,0 +1,1 @@
+{"messaging_product":"whatsapp","contacts":[{"input":"523312651084","wa_id":"5213312651084"}],"messages":[{"id":"wamid.HBgNNTIxMzMxMjY1MTA4NBUCABEYEjI2RDAyQUZBQTFGNDg3NUY3RQA=","message_status":"accepted"}]}

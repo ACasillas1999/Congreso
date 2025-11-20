@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="es" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>No se encontró el participante | Horario</title>
+  <style>
+    :root{
+      --brand-1:#005996; /* azul GA */
+      --brand-2:#ED6C24; /* naranja GA */
+      --bg:#0f172a;      /* slate-900 */
+      --card:#0b1222;
+      --text:#e5e7eb;    /* slate-200 */
+      --muted:#94a3b8;   /* slate-400 */
+      --ok:#10b981;
+      --warn:#f59e0b;
+      --err:#ef4444;
+      --btn:#1f2937;
+      --btn-text:#e5e7eb;
+      --shadow: 0 10px 25px rgba(0,0,0,.35);
+      --radius: 18px;
+    }
+    @media (prefers-color-scheme: light){
+      :root{
+        --bg:#f3f4f6;
+        --card:#ffffff;
+        --text:#0f172a;
+        --muted:#64748b;
+        --btn:#111827;
+        --btn-text:#ffffff;
+        --shadow: 0 8px 20px rgba(0,0,0,.12);
+      }
+    }
+
+    html,body{height:100%}
+    body{
+      margin:0;
+      display:grid;
+      place-items:center;
+      background:
+        radial-gradient(1200px 600px at 10% -10%, rgba(0,89,150,.12), transparent 60%),
+        radial-gradient(1200px 700px at 110% 110%, rgba(237,108,36,.12), transparent 60%),
+        linear-gradient(135deg, rgba(0,89,150,.06), rgba(237,108,36,.06));
+      background-color:var(--bg);
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+      color:var(--text);
+    }
+
+    .card{
+      width:min(720px, 92vw);
+      background:var(--card);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.06);
+      position:relative;
+    }
+
+    .bar{
+      height:6px;
+      background:linear-gradient(90deg, var(--brand-1), var(--brand-2));
+    }
+
+    .inner{ padding:28px 26px 24px; }
+
+    .icon{
+      width:56px;height:56px; border-radius:14px;
+      display:grid;place-items:center;
+      background:linear-gradient(135deg, rgba(0,89,150,.18), rgba(237,108,36,.18));
+      border:1px solid rgba(255,255,255,.08);
+      margin-bottom:14px;
+    }
+    .icon svg{ width:30px;height:30px; }
+
+    h1{
+      margin:6px 0 8px;
+      font-size:clamp(20px, 2.3vw, 28px);
+      font-weight:700;
+      letter-spacing:.2px;
+    }
+    p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.55;
+      font-size:clamp(14px,1.6vw,16px);
+    }
+    .hint{
+      margin-top:12px;
+      font-size:13px;
+      color:var(--muted);
+    }
+
+    .row{
+      display:flex; gap:12px; flex-wrap:wrap;
+      margin-top:22px;
+    }
+    .btn{
+      appearance:none; border:0; cursor:pointer;
+      background:var(--btn); color:var(--btn-text);
+      padding:12px 16px; border-radius:12px;
+      font-weight:600; letter-spacing:.2px;
+      transition:transform .08s ease, filter .18s ease, box-shadow .18s ease;
+      box-shadow:0 6px 16px rgba(0,0,0,.18);
+      display:inline-flex; align-items:center; gap:10px; text-decoration:none;
+    }
+    .btn:hover{ filter:brightness(1.06); transform:translateY(-1px); }
+    .btn:active{ transform:translateY(0); }
+
+    .btn.primary{
+      background:linear-gradient(135deg, var(--brand-1), var(--brand-2));
+      color:#fff;
+      box-shadow:0 10px 20px rgba(0,89,150,.25), 0 10px 20px rgba(237,108,36,.22);
+    }
+    .btn.ghost{
+      background:transparent;
+      color:var(--text);
+      border:1px solid rgba(255,255,255,.18);
+    }
+
+    .badge{
+      display:inline-flex; align-items:center; gap:8px;
+      margin-top:12px;
+      font-size:12px; padding:8px 10px; border-radius:999px;
+      border:1px dashed rgba(255,255,255,.18);
+      color:var(--muted);
+    }
+    .badge strong{ color:var(--text); letter-spacing:.2px; }
+
+    .footer{
+      padding:14px 26px 22px; display:flex; justify-content:space-between; align-items:center; gap:10px;
+      border-top:1px solid rgba(255,255,255,.06);
+      color:var(--muted); font-size:12px;
+    }
+    .logo{
+      font-weight:700; letter-spacing:.4px;
+      background:linear-gradient(90deg, var(--brand-1), var(--brand-2));
+      -webkit-background-clip:text;background-clip:text;color:transparent;
+    }
+    .sp{flex:1}
+  </style>
+</head>
+<body>
+  <main class="card" role="main" aria-labelledby="t">
+    <div class="bar" aria-hidden="true"></div>
+    <div class="inner">
+      <div class="icon" aria-hidden="true">
+        <!-- Warning/Calendar icon -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path stroke-width="1.5" d="M16 2v3M8 2v3M3 9h18M5 7h14a2 2 0 0 1 2 2v9a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V9a2 2 0 0 1 2-2z"/>
+          <path stroke-width="1.5" d="M12 12v4M12 18h.01"/>
+        </svg>
+      </div>
+
+      <h1 id="t">No se encontró el participante o no tiene horario</h1>
+      <p id="msg">Verifica que el <strong>ID</strong> sea correcto o que ya se haya generado el horario.</p>
+
+      <div id="badge" class="badge" style="display:none">
+        <span>Solicitado para ID:</span> <strong id="pid"></strong>
+      </div>
+
+      <div class="row">
+        <a id="btnGen" class="btn primary" href="#" style="display:none">
+          <!-- spark icon -->
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"><path stroke-width="1.6" d="m12 2 1.8 4.2L18 8l-4.2 1.8L12 14l-1.8-4.2L6 8l4.2-1.8L12 2zM6 14l.9 2.1L9 17l-2.1.9L6 20l-.9-2.1L3 17l2.1-.9L6 14zM18 14l.9 2.1L21 17l-2.1.9L18 20l-.9-2.1L15 17l2.1-.9L18 14z"/></svg>
+          Generar horario
+        </a>
+        <button class="btn" onclick="location.reload()">
+          <!-- refresh icon -->
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"><path stroke-width="1.6" d="M21 12a9 9 0 1 1-2.64-6.36"/><polyline points="21 3 21 9 15 9" stroke-width="1.6"/></svg>
+          Reintentar
+        </button>
+        <button class="btn ghost" onclick="history.back()">
+          <!-- back icon -->
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"><polyline points="15 18 9 12 15 6" stroke-width="1.6"/></svg>
+          Regresar
+        </button>
+        <a class="btn ghost" href="/Congreso/">
+          <!-- home icon -->
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor"><path d="M3 11.5 12 4l9 7.5" stroke-width="1.6"/><path d="M5 10.5V20h14v-9.5" stroke-width="1.6"/></svg>
+          Inicio
+        </a>
+      </div>
+
+      <p class="hint">Si el problema persiste, verifica que el participante tenga clases asignadas en <em>agenda</em> o vuelve a generar el archivo del horario.</p>
+    </div>
+
+    <div class="footer">
+      <span class="logo">Grupo Ascencio · Congresos</span>
+      <span class="sp"></span>
+      <span id="ts"></span>
+    </div>
+  </main>
+
+  <script>
+    // Lee ?id= de la URL y personaliza la página
+    (function(){
+      const q = new URLSearchParams(location.search);
+      const id = q.get('id');
+      if(id){
+        document.getElementById('badge').style.display = 'inline-flex';
+        document.getElementById('pid').textContent = id;
+
+        // Mostrar botón "Generar horario" si conocemos la ruta del generador
+        // Ajusta esta ruta si tu script vive en otra carpeta:
+        const gen = document.getElementById('btnGen');
+        gen.href = '/Congreso/Generar_Horario.php?id=' + encodeURIComponent(id) + '&format=png';
+        gen.style.display = 'inline-flex';
+      }
+      // Timestamp bonito
+      const ts = new Date();
+      document.getElementById('ts').textContent = ts.toLocaleString();
+    })();
+  </script>
+</body>
+</html>

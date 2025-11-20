@@ -1,0 +1,243 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    
+}
+
+h2 {
+    color: rgb(5, 0, 139); /* Azul */
+    text-align: center;
+    font-size: 36px;
+}
+
+form {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="time"],
+input[type="number"],
+textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-sizing: border-box;
+}
+
+input[type="submit"] {
+    background-color: red;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+input[type="submit"]:hover {
+    background-color: darkblue;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.container {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  height: 5vh; /* Esto centra verticalmente el botón */
+    margin-right: 650px;
+}
+
+/* Estilos para el botón */
+.button {
+  background-color: firebrick;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+/* Estilo cuando el botón está seleccionado */
+.button:hover {
+  background-color: blue;
+}
+
+.header {
+  background: linear-gradient(45deg, orange, blue);
+  color: #fff;
+  padding: 20px 0;
+  text-align: center;
+    width: 100%;
+}
+
+.logo {
+  font-size: 28px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.navbar ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-item {
+  display: inline-block;
+  margin: 0 15px;
+}
+
+.nav-link {
+  color: #fff;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+.nav-link:hover {
+  color: #ffcc00;
+}
+
+
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 8px;
+  font-size: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Estilo al pasar el cursor sobre el combobox */
+select:hover {
+  border-color: #999;
+}
+
+/* Estilo cuando el combobox está enfocado */
+select:focus {
+  outline: none;
+  border-color: #4a90e2;
+  box-shadow: 0 0 5px rgba(74, 144, 226, 0.5);
+}
+
+/**Animacion**/
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 1s forwards;
+}
+
+@keyframes fadeIn {
+  to {
+      opacity: 1;
+  }
+}
+
+.fade-out {
+  opacity: 1;
+  animation: fadeOut 0.5s forwards;
+}
+
+@keyframes fadeOut {
+  to {
+      opacity: 0;
+  }
+}
+
+
+.mi-tabla {
+    margin: 0 auto;
+    width: 60%;
+    border-collapse: separate; /* Permite esquinas redondeadas */
+    border-spacing: 0; /* Espaciado entre celdas para evitar espacios no deseados */
+    border-radius: 8px; /* Esquinas redondeadas para la tabla */
+    overflow: hidden; /* Asegura que las esquinas redondeadas se apliquen a toda la tabla */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para un efecto de elevación */
+}
+
+.mi-tabla th, .mi-tabla td {
+    border: 1px solid #dddddd; /* Borde gris claro */
+    padding: 5px 10px; /* Espaciado interno */
+    font-size: 14px; /* Tamaño de fuente */
+    text-align: left; /* Alineación del texto */
+}
+
+.mi-tabla th {
+    background-color: rgb(52, 21, 231); /* Azul oscuro */
+    color: #ffffff; /* Texto blanco */
+    text-transform: uppercase; /* Texto en mayúsculas para los encabezados */
+    letter-spacing: 0.05em; /* Espaciado entre letras para un mejor legibilidad */
+}
+
+.mi-tabla tr:nth-child(even) {
+    background-color: #f9f9f9; /* Fondo gris claro para filas pares */
+}
+
+.mi-tabla tr:hover {
+    background-color: #dddddd; /* Fondo gris claro al pasar el cursor */
+}
+
+.mi-tabla tr:first-child th:first-child {
+    border-top-left-radius: 8px; /* Esquina redondeada superior izquierda */
+}
+
+.mi-tabla tr:first-child th:last-child {
+    border-top-right-radius: 8px; /* Esquina redondeada superior derecha */
+}
+
+.mi-tabla tr:last-child td:first-child {
+    border-bottom-left-radius: 8px; /* Esquina redondeada inferior izquierda */
+}
+
+.mi-tabla tr:last-child td:last-child {
+    border-bottom-right-radius: 8px; /* Esquina redondeada inferior derecha */
+}
+
+
+canvas {
+    width: 100%;
+    height: 300px; /* Ajusta la altura según tu preferencia */
+    max-width: 75%; /* Ancho máximo del canvas */
+    margin: 0 auto; /* Centra el canvas en su contenedor */
+    display: block;
+}
+
+.Grafica {
+    width: 90%; /* Ajusta el ancho del contenedor */
+    max-width: 1000px; /* Ancho máximo del contenedor */
+    margin: 20px auto; /* Margen superior e inferior para separar elementos */
+    background-color: #fff;
+    border-radius: 8px; /* Redondeo de bordes */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra para efecto de elevación */
+    padding: 20px; /* Espacio interno */
+}
+
+.titulo {
+    color: rgb(0, 0, 0); 
+    font-size: 24px; /* Tamaño de fuente grande */
+    font-weight: bold; /* Texto en negrita */
+    text-align: center;
+    margin-bottom: 20px; /* Espacio entre el título y el contenido */
+}

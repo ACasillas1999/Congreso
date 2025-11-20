@@ -1,0 +1,558 @@
+/* =========================================================
+   VARIABLES DE TEMA
+   ========================================================= */
+:root{
+  --bg-app: #0d1c3b;
+  --bg-app-2: #1e2a78;
+  --bg-card: rgba(18, 18, 34, .96);
+  --txt: #e0e0e0;
+  --txt-dim: #b9c4d6;
+  --accent: #2b8df4;
+  --accent-2: #d17224;
+  --ok: #27ae60;
+  --warn: #f39c12;
+  --err: #e74c3c;
+  --shadow-1: 0 8px 24px rgba(0,0,0,.35);
+  --shadow-2: 0 14px 38px rgba(0,0,0,.45);
+  --radius-xl: 18px;
+  --radius-lg: 14px;
+  --radius-md: 10px;
+  --radius-sm: 8px;
+}
+
+/* =========================================================
+   BASE MOBILE-FIRST
+   ========================================================= */
+*{ box-sizing: border-box; }
+html,body{ height:100%; }
+body{
+  margin:0;
+  color:var(--txt);
+  background: radial-gradient(circle at center, var(--bg-app), var(--bg-app-2));
+  -webkit-tap-highlight-color: transparent;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif;
+}
+
+/* Evita zoom por inputs en iOS */
+@media (max-width: 991px){
+  input, select, textarea, button{ font-size: 16px; }
+}
+
+a{ color:inherit; text-decoration:none; }
+button{ font: inherit; cursor: pointer; }
+
+/* Animaciones */
+.fade-in { animation: fadeIn .6s ease-in-out; }
+@keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; }
+}
+
+/* =========================================================
+   CONTENEDOR PRINCIPAL
+   ========================================================= */
+.container{
+  width: 95%;
+  margin: 12px auto;
+  padding: 16px;
+  border-radius: 15px;
+  background: rgba(30, 30, 47, 0.95);
+  box-shadow:
+    0 -40px 40px -20px rgba(199, 111, 57, 0.3),
+    0 40px 40px -20px rgba(30, 144, 255, 0.2),
+    var(--shadow-1);
+  transition: background-color .3s, color .3s;
+  animation: fadeInUp .8s ease;
+}
+
+/* Espacio superior para que el botón Volver fijo no tape el contenido */
+@media (max-width: 991px){
+  body{ padding-top: calc(68px + env(safe-area-inset-top, 0px)); }
+}
+
+/* Escritorio con sidebar visible */
+@media (min-width: 992px){
+  .container{ margin-left: 260px; padding: 22px; }
+}
+
+/* =========================================================
+   TIPOGRAFÍA Y FORMULARIOS
+   ========================================================= */
+.titulo{
+  font-size: 26px;
+  margin: 6px 0 10px;
+  color: var(--accent-2);
+}
+@media (min-width: 992px){ .titulo{ font-size: 28px; } }
+
+#busqueda{
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #bbb;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 480px;
+  background: #f9f9f9;
+  margin-bottom: 16px;
+  color:#333;
+}
+
+.button{
+  background: var(--accent);
+  color:#fff;
+  padding: 12px 18px;
+  border: 0;
+  font-size: 16px;
+  border-radius: 10px;
+  transition: background .25s ease;
+  min-height: 44px;
+}
+.button:hover{ background:#1f6edb; }
+
+form#agregarParticipanteForm{
+  background:#fff;
+  border:1px solid #ddd;
+  border-radius:12px;
+  padding:20px;
+  max-width:520px;
+  box-shadow:0 2px 8px rgba(0,0,0,.05);
+  margin-top:24px;
+}
+form#agregarParticipanteForm input[type="text"]{
+  width:100%; padding:12px; font-size:16px; border:1px solid #ccc; border-radius:10px; margin-bottom:12px;
+}
+form#agregarParticipanteForm .button{ width: 100%; }
+
+/* =========================================================
+   LISTADO Y TARJETAS
+   ========================================================= */
+#resultado{ margin-top:14px; color:var(--txt); }
+.registro-participante{
+  background:#fff; color:#222; padding:12px 14px; border-radius:10px; margin-bottom:10px;
+  border:1px solid #e0e0e0; box-shadow:0 1px 3px rgba(0,0,0,.05);
+}
+
+/* =========================================================
+   TABLAS RESPONSIVAS
+   ========================================================= */
+.table-responsive{
+  width:100%;
+  overflow-x:auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable both-edges;
+  background: rgba(255,255,255,.02);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-1);
+  position: relative;
+  padding-bottom: 6px;
+  
+}
+.table-responsive > *{ scroll-snap-align: start; }
+
+/* Indicadores laterales */
+.table-responsive::before,
+.table-responsive::after{
+  content:''; position: sticky; top:0; bottom:0; width:14px; z-index:2; pointer-events:none;
+}
+.table-responsive::before{ left:0;  box-shadow: inset 10px 0 8px -10px rgba(0,0,0,.45); }
+.table-responsive::after { right:0; box-shadow: inset -10px 0 8px -10px rgba(0,0,0,.45); }
+
+/* Tabla base */
+#resultado table{
+  border-collapse: separate; border-spacing:0;
+  min-width:600px; /* cómodo para móviles pequeños */
+  width:100%; color:var(--txt);
+  font-size:12.5px; line-height:1.35;
+}
+
+/* Encabezado pegajoso */
+#resultado thead th{
+  position: sticky; top:0; z-index:3; text-align:left; font-weight:600; color:#eaf2ff;
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+  backdrop-filter: blur(2px);
+  border-bottom:1px solid rgba(255,255,255,.12);
+  padding:9px 10px; white-space:nowrap;
+}
+
+/* Primera columna pegajosa */
+#resultado th:first-child,
+#resultado td:first-child{
+  position: sticky; left:0; z-index:2;
+  background: rgba(18,18,34,.95); backdrop-filter: blur(2px);
+  border-right:1px solid rgba(255,255,255,.06);
+}
+
+/* Celdas + estados */
+#resultado td{
+  padding:9px 10px; border-bottom:1px solid rgba(255,255,255,.08); color:var(--txt-dim);
+}
+#resultado tbody tr:nth-child(2n){ background: rgba(255,255,255,.015); }
+#resultado tbody tr:hover{ background: rgba(255,255,255,.03); }
+
+/* Columnas largas (ajusta índices a tus columnas reales) */
+#resultado td:nth-child(2),
+#resultado td:nth-child(5){
+  white-space: normal; word-break: break-word; max-width: 240px;
+}
+
+/* Scrollbar sutil (WebKit) */
+.table-responsive::-webkit-scrollbar{ height:12px; }
+.table-responsive::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.28); border-radius:20px; }
+
+/* Ajustes de tipografía/padding por breakpoint */
+@media (max-width: 480px){
+  #resultado table{ font-size:12px; min-width:560px; }
+  #resultado th, #resultado td{ padding:8px 9px; }
+}
+@media (min-width: 992px){
+  #resultado table{ font-size:13.5px; min-width:760px; }
+  #resultado th, #resultado td{ padding:11px 12px; }
+}
+
+/* =========================================================
+   QR: VISIBILIDAD Y CENTRADO EN MÓVIL
+   ========================================================= */
+/* Por defecto (desktop/tablet grande): se muestra el form manual */
+#qrWrap{ display:none; }
+#scanForm{ display:block; }
+
+@media (max-width: 991px){
+  /* Muestra QR y oculta form manual */
+  #qrWrap{ display:flex; }
+  #scanForm{ display:none; }
+
+  /* Centrado total con margen para no chocar con Volver fijo */
+  #qrWrap{
+    flex-direction:column;
+    align-items:center;          /* X */
+    justify-content:center;      /* Y */
+    min-height: calc(100dvh - 72px);
+    padding: 12px;
+    text-align:center;
+    gap: 10px;
+  }
+
+  /* Toolbar: apilada/centrada */
+  #qrWrap > div:nth-of-type(1){
+    width:100%;
+    display:flex; flex-wrap:wrap; gap:10px;
+    align-items:center; justify-content:center;
+    margin-bottom:8px;
+  }
+  #qrWrap > div:nth-of-type(1) > *{ min-height: 44px; }
+  #qrWrap #cameraSelect{ flex: 1 1 220px; max-width: 320px; }
+  #qrWrap #btnStartQR,
+  #qrWrap #btnStopQR,
+  #qrWrap #btnTorch{ flex: 1 1 140px; }
+
+  /* Contenedor de vídeo (2º div) — respeta tu max-width inline */
+  #qrWrap > div:nth-of-type(2){
+    width: min(92vw, 520px);
+    margin-left:auto !important; margin-right:auto !important;
+  }
+
+  /* Asegura que el video ocupe el ancho disponible */
+  #qrVideo{ width: 100% !important; height: auto !important; display:block; }
+
+  #qrMsg{ margin-top:6px; font-size:14px; }
+}
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+/* Desktop/Tablet grande: sidebar fijo visible */
+.sidebar{
+  position: fixed;
+  top: 0; left: 0;
+  height: 100dvh;
+  width: 250px;
+  background: var(--bg-card);
+  backdrop-filter: blur(6px);
+  border-right: 1px solid rgba(255,255,255,.08);
+  box-shadow: var(--shadow-2);
+  z-index: 1200;
+  padding: calc(env(safe-area-inset-top, 0px) + 14px) 14px 18px calc(env(safe-area-inset-left, 0px) + 14px);
+  display: flex; flex-direction: column;
+}
+
+.sidebar ul{
+  list-style:none; margin:0; padding:6px 0;
+  display:flex; flex-direction:column; gap:8px; min-height:100%;
+}
+.sidebar li{ margin:0; }
+.sidebar a{
+  display:flex; align-items:center; gap:10px;
+  padding:12px 12px;
+  border-radius:12px;
+  color:var(--txt);
+  border:1px solid rgba(255,255,255,.08);
+  background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+}
+.sidebar a:hover{
+  border-color: rgba(255,255,255,.16);
+  background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+}
+
+/* Botón Volver dentro del sidebar (desktop) */
+.sidebar .corner-left-bottom{ margin-top:auto; position: sticky; bottom:8px; }
+.sidebar .corner-left-bottom a{
+  position:relative;
+  padding:14px 14px 14px 44px;
+  border-radius:16px;
+  border-bottom-left-radius:26px;
+  color:#0b2542;
+  background:#e7f2ff;
+  border:1px solid #9fd3ff;
+  font-weight:600; letter-spacing:.2px;
+  box-shadow:0 8px 20px rgba(0,0,0,.20);
+}
+.sidebar .corner-left-bottom a::before{
+  content:'←'; position:absolute; left:14px; top:50%; transform:translateY(-50%);
+  font-weight:700; opacity:.9;
+}
+.sidebar .corner-left-bottom a:active{ transform: translateY(1px); }
+
+/* =========================================================
+   VOLVER (SOLO MÓVIL) — BOTÓN FIJO ARRIBA IZQUIERDA
+   ========================================================= */
+@media (max-width: 991px){
+  /* El sidebar no ocupa layout en móvil, dejamos sólo el botón Volver */
+  .sidebar{
+    position: static; background: transparent; border:0; box-shadow:none;
+    width:auto; height:auto; padding:0; z-index:auto;
+  }
+  .sidebar ul{ list-style:none; margin:0; padding:0; }
+  .sidebar ul > li{ display:none; }
+  .sidebar ul > li.corner-left-bottom{ display:block; }
+
+  /* Botón fijo arriba izquierda */
+  .sidebar .corner-left-bottom a{
+    position: fixed;
+    top: calc(12px + env(safe-area-inset-top, 0px));
+    left: calc(12px + env(safe-area-inset-left, 0px));
+    right: auto; bottom: auto;
+
+    display: inline-flex; align-items: center; gap: 8px;
+    min-height: 44px; line-height: 1;
+    padding: 10px 14px 10px 40px; /* espacio para flecha */
+    border-radius: 14px;
+    border: 1px solid #9fd3ff;
+    background: #e7f2ff;
+    color: #0b2542;
+    font-weight: 700; letter-spacing: .2px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.25);
+    z-index: 1500;
+    touch-action: manipulation;
+  }
+  .sidebar .corner-left-bottom a::before{
+    content: '←'; position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+    font-weight: 900; opacity: .9;
+  }
+}
+
+/* =========================================================
+   TOASTS (coincide con tu HTML)
+   ========================================================= */
+.ga-toast{
+  position: fixed; right: 18px; bottom: 18px;
+  padding: 12px 14px; border-radius: 10px;
+  color: #0b2e13; background: #e8f7ee; border: 1px solid #8ed1a6;
+  font-size: 14px; box-shadow: 0 8px 24px rgba(0,0,0,.15);
+  z-index: 9999; max-width: 380px;
+}
+.ga-toast.error{ color:#6b1111; background:#fdecea; border-color:#f5a4a4; }
+.ga-toast.fadeout{ opacity:0; transition: opacity .4s ease; }
+
+
+/* ====== FIX 1: Centrar SIEMPRE el QR en móvil ====== */
+@media (max-width: 991px){
+  /* El wrapper será una mini "página" centrada */
+  #qrWrap{
+    display: grid !important;
+    grid-auto-rows: min-content;
+    justify-items: center;     /* X */
+    align-content: start;      /* Y */
+    gap: 10px;
+    min-height: calc(100dvh - 96px); /* Deja espacio al botón fijo */
+    padding: 14px 12px;
+    text-align: center;
+  }
+
+  /* Toolbar centrada y con ancho máximo cómodo */
+  #qrWrap > div:nth-of-type(1){
+    width: min(92vw, 520px);
+    margin: 0 auto !important;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Contenedor del video: centrado verdadero */
+  #qrWrap > div:nth-of-type(2){
+    width: min(92vw, 520px) !important;
+    margin-inline: auto !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  /* El video ocupa todo el bloque disponible */
+  #qrVideo{
+    display: block;
+    width: 100% !important;
+    height: auto !important;
+  }
+}
+
+/* ====== FIX 2: Botón Volver en móvil a juego con el tema ====== */
+@media (max-width: 991px){
+  /* Más espacio arriba para que el fijo no tape títulos */
+  body{
+    padding-top: calc(96px + env(safe-area-inset-top, 0px)) !important;
+  }
+
+  /* Re-estilo del botón fijo */
+  .sidebar .corner-left-bottom a{
+    position: fixed;
+    top: calc(14px + env(safe-area-inset-top, 0px));
+    left: calc(14px + env(safe-area-inset-left, 0px));
+    z-index: 1500;
+
+    /* Estética oscura/vidriada acorde al fondo */
+    background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+    color: var(--txt);
+    border: 1px solid rgba(255,255,255,.14);
+    box-shadow: 0 10px 28px rgba(0,0,0,.35);
+    backdrop-filter: blur(6px);
+
+    padding: 12px 16px 12px 42px;
+    min-height: 44px;
+    border-radius: 14px;
+    font-weight: 600;
+    letter-spacing: .2px;
+  }
+  .sidebar .corner-left-bottom a::before{
+    content:'←';
+    position:absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-weight: 900;
+    opacity:.9;
+    color: var(--accent); /* leve acento azul */
+  }
+
+  /* Evita que ocupe el flujo del layout */
+  .sidebar{
+    position: static;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    width: auto;
+    height: auto;
+    padding: 0;
+    z-index: auto;
+  }
+  .sidebar ul{ padding: 0; margin: 0; }
+  .sidebar ul > li{ display: none; }
+  .sidebar ul > li.corner-left-bottom{ display: block; }
+}
+
+/* ====== (Opcional) realce suave del título para mayor legibilidad ====== */
+.titulo{
+  text-shadow: 0 1px 0 rgba(0,0,0,.35);
+}
+
+/* =================== TOP BAR (reemplaza sidebar) =================== */
+:root{
+  --topbar-h-m: 60px;  /* altura móvil */
+  --topbar-h-d: 64px;  /* altura desktop */
+}
+
+/* Oculta el sidebar existente en todas las vistas */
+.sidebar{ display:none !important; }
+
+/* Deja espacio en el layout para la barra (móvil/desktop) */
+body.has-topbar{
+  padding-top: calc(var(--topbar-h-m) + env(safe-area-inset-top, 0px));
+}
+@media (min-width: 992px){
+  body.has-topbar{
+    padding-top: calc(var(--topbar-h-d) + env(safe-area-inset-top, 0px));
+  }
+  /* Anula el margen que ponías cuando había sidebar fijo */
+  .container{ margin-left: auto !important; }
+}
+
+/* Barra superior fija */
+.topbar{
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: var(--topbar-h-m);
+  padding: calc(env(safe-area-inset-top, 0px) + 8px) 12px 8px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 8px;
+  z-index: 1600;
+
+  /* Estilo vidriado a juego con tu tema */
+  background: linear-gradient(180deg, rgba(15,20,45,.75), rgba(15,20,45,.55));
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  box-shadow: 0 12px 28px rgba(0,0,0,.28);
+}
+@media (min-width: 992px){
+  .topbar{ height: var(--topbar-h-d); }
+}
+
+/* Botón Volver */
+.topbar__back{
+  appearance: none;
+  border: 1px solid rgba(255,255,255,.14);
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+  color: var(--txt);
+  border-radius: 12px;
+  padding: 10px 14px;
+  min-height: 40px;
+  line-height: 1;
+  font-weight: 700;
+  box-shadow: 0 8px 20px rgba(0,0,0,.25);
+  cursor: pointer;
+  transition: transform .08s ease, border-color .2s ease;
+}
+.topbar__back:active{ transform: translateY(1px); }
+.topbar__back::first-letter{ color: var(--accent); font-weight: 900; }
+
+/* Título centrado */
+.topbar__title{
+  text-align: center;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--warn);
+  letter-spacing: .2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@media (min-width: 992px){
+  .topbar__title{ font-size: 18px; }
+}
+
+/* Contenedor de acciones (derecha) — opcional */
+.topbar__actions{
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Si tu QR usa el viewport completo en móvil, deja un poco más de altura útil */
+@media (max-width: 991px){
+  #qrWrap{ min-height: calc(100dvh - (var(--topbar-h-m) + 16px)); }
+}
+
