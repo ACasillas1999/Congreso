@@ -7,6 +7,7 @@ error_reporting(E_ALL);
 require_once 'phpqrcode/qrlib.php';
 
 require_once __DIR__ . "/Conexiones/Conexion.php";
+require_once __DIR__ . "/config.php";
 
 // Verificar si se enviaron los datos del formulario
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -135,7 +136,7 @@ if (!empty($actividades)) {
     }
 }
 
-            include __DIR__ . "/config.php";
+
 
 $token = openssl_encrypt($last_id, METODO_CIFRADO, CLAVE_SECRETA, 0, VECTOR);
 $token = urlencode($token);
@@ -166,16 +167,17 @@ $url_gafete = "https://congresos.grupoascencio.com.mx/congreso/DescargarGafete.p
             //$fontPath = '/home/gpoascen/congresos.grupoascencio.com.mx/Congreso/Machote/Font/nexa-book.ttf';
             //$outputDirectory = '/home1/gpoascen/congresos.grupoascencio.com.mx/Congreso/Machote/Generados/';
 
-  
-            $templatePath = 'https://congresos.grupoascencio.com.mx/Congreso//Machote/Gafetes_visitantes.jpg';
-            $fontPath = __DIR__ .'/Machote/Font/nexa-book.ttf';
-            $outputDirectory = '/home/gpoascen/congresos.grupoascencio.com.mx/Congreso/Machote/Generados/';
+
+
+            $templatePath = TEMPLATE_GAFETE;
+            $fontPath = FONT_NEXA;
+            $outputDirectory = GAFETES_OUTPUT;
 
 
             if (!is_dir($outputDirectory)) {
                 mkdir($outputDirectory, 0777, true); // Crear el directorio si no existe
             }
-            $outputPath = $outputDirectory . 'Gafete_personalizado_' . urlencode($last_id) . '.jpg';
+            $outputPath = $outputDirectory . '/Gafete_personalizado_' . urlencode($last_id) . '.jpg';
 
             // Crear el gafete
             $image = imagecreatefromjpeg($templatePath);

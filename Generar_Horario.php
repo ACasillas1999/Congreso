@@ -9,6 +9,7 @@ session_name("CON");
 session_start();
 
 require_once __DIR__ . "/Conexiones/Conexion.php";
+require_once __DIR__ . "/config.php";
 $conn->set_charset('utf8mb4');
 $conn->query("SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci");
 
@@ -18,11 +19,11 @@ $FORMAT = isset($_GET['format']) ? strtolower($_GET['format']) : 'png'; // png|p
 //modo para que no brinque la imagen
 $SILENT = isset($_GET['silent']) ? (int)$_GET['silent'] : 0;
 
-// Machotes (vertical y, si tienes, horizontal). Si no hay horizontal, se rotará el vertical.
-$TEMPLATE_PORTRAIT = "/home/gpoascen/congresos.grupoascencio.com.mx/Congreso/Machote/Machote_Horario.png";
-$TEMPLATE_LAND     = "/home/gpoascen/congresos.grupoascencio.com.mx/Congreso/Congreso/Machote/Machote_Horario_L.png"; // opcional
+// Machotes
+$TEMPLATE_PORTRAIT = TEMPLATE_HORARIO_PORTRAIT;
+$TEMPLATE_LAND     = TEMPLATE_HORARIO_LANDSCAPE;
 
-$FONT = __DIR__ . "/assets/Roboto_Condensed-Black.ttf";
+$FONT = FONT_ROBOTO;
 
 // Tamaños (más grandes)
 $CFG = [
@@ -30,13 +31,9 @@ $CFG = [
   'col'   => ['header'=>18, 'cell'=>18, 'row_h_min'=>36, 'pad_y'=>18, 'line_space'=>6],
 ];
 
-// ======== NUEVO: rutas de salida ========
-// Carpeta física donde se guardarán los PNG generados
-$OUTPUT_DIR = "/home/gpoascen/congresos.grupoascencio.com.mx/Congreso/Machote/Horarios_Generados";
-// Ruta/URL pública para servir los archivos (ajústala a tu hosting)
-$PUBLIC_BASE = "/home/gpoascen/congresos.grupoascencio.com.mx/Congreso/Machote/Horarios_Generados";
-// Si prefieres URL absoluta, usa esto:
-// $PUBLIC_BASE = "https://tu-dominio.com/Congreso/Machote/Horarios_Generados";
+// Rutas de salida
+$OUTPUT_DIR = HORARIOS_OUTPUT;
+$PUBLIC_BASE = HORARIOS_OUTPUT;
 
 // ---------------------------------
 if ($ID_PARTICIPANTE <= 0) { http_response_code(400); exit("Falta ?id="); }

@@ -422,6 +422,7 @@
         
         public $level = QR_ECLEVEL_L;
         public $hint = QR_MODE_8;
+        public $cmyk = false;
         
         //----------------------------------------------------------------------
         public static function factory($level = QR_ECLEVEL_L, $size = 3, $margin = 4, $back_color = 0xFFFFFF, $fore_color = 0x000000, $cmyk = false)
@@ -510,7 +511,7 @@
                 
                 $maxSize = (int)(QR_PNG_MAXIMUM_SIZE / (count($tab)+2*$this->margin));
                 
-                QRimage::png($tab, $outfile, min(max(1, $this->size), $maxSize), $this->margin,$saveandprint, $this->back_color, $this->fore_color);
+                QRimage::png($tab, $this->back_color, $this->fore_color, $outfile, min(max(1, $this->size), $maxSize), $this->margin, $saveandprint);
             
             } catch (Exception $e) {
             
@@ -534,7 +535,7 @@
                 
                 $maxSize = (int)(QR_PNG_MAXIMUM_SIZE / (count($tab)+2*$this->margin));
                 
-                QRvect::eps($tab, $outfile, min(max(1, $this->size), $maxSize), $this->margin,$saveandprint, $this->back_color, $this->fore_color, $this->cmyk);
+                QRvect::eps($tab, $this->back_color, $this->fore_color, $outfile, min(max(1, $this->size), $maxSize), $this->margin, $saveandprint, $this->cmyk);
             
             } catch (Exception $e) {
             
@@ -558,7 +559,7 @@
                 
                 $maxSize = (int)(QR_PNG_MAXIMUM_SIZE / (count($tab)+2*$this->margin));
 
-                QRvect::svg($tab, $outfile, min(max(1, $this->size), $maxSize), $this->margin,$saveandprint, $this->back_color, $this->fore_color);
+                QRvect::svg($tab, $this->back_color, $this->fore_color, $outfile, min(max(1, $this->size), $maxSize), $this->margin, $saveandprint);
             
             } catch (Exception $e) {
             
