@@ -39,7 +39,7 @@ if (IS_LOCAL) {
     
 } else {
     // PRODUCCIÓN
-    define('BASE_PATH', '/home/gpoascen/congresos.grupoascencio.com.mx/Congreso');
+    define('BASE_PATH', '/var/www/html/Congreso');
     define('MACHOTE_PATH', BASE_PATH . '/Machote');
     define('GAFETES_OUTPUT', BASE_PATH . '/Machote/Generados');
     define('HORARIOS_OUTPUT', BASE_PATH . '/Machote/Horarios_Generados');
