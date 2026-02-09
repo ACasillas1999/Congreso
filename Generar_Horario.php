@@ -166,19 +166,16 @@ if ($FORMAT === 'png') {
         imagedestroy($bg);
 
         // Colores
-        $white   = imagecolorallocate($im,255,255,255);
-        $lineCol = $white;
-        $stroke  = imagecolorallocatealpha($im,0,0,0,80);
+        $black   = imagecolorallocate($im,0,0,0);
+        $lineCol = $black;
+        $textCol = $black;
 
         // Helpers
         $sx = fn($v)=> (int)round($v * $SCALE);
         $fs = fn($pt)=> max(10, (int)round($pt * $SCALE));
 
-        $strokeText = function($size,$x,$y,$text) use($im,$FONT,$white,$stroke){
-            foreach([[-1,0],[1,0],[0,-1],[0,1],[-1,-1],[1,-1],[-1,1],[1,1]] as [$dx,$dy]){
-                imagettftext($im,$size,0,$x+$dx,$y+$dy,$stroke,$FONT,$text);
-            }
-            imagettftext($im,$size,0,$x,$y,$white,$FONT,$text);
+        $drawText = function($size,$x,$y,$text) use($im,$FONT,$textCol){
+            imagettftext($im,$size,0,$x,$y,$textCol,$FONT,$text);
         };
 
         // Márgenes según orientación
@@ -189,9 +186,9 @@ if ($FORMAT === 'png') {
         }
 
         // Títulos (más grandes)
-        $strokeText($fs($CFG['title']['nombre']), $M['l'], $M['t'], $nombre);
-        $strokeText($fs($CFG['title']['evento']), $M['l'], $M['t'] + $sx(34), $evento);
-        $strokeText($fs($CFG['title']['ubic']),   $M['l'], $M['t'] + $sx(60), $ubicacion);
+        $drawText($fs($CFG['title']['nombre']), $M['l'], $M['t'], $nombre);
+        $drawText($fs($CFG['title']['evento']), $M['l'], $M['t'] + $sx(34), $evento);
+        $drawText($fs($CFG['title']['ubic']),   $M['l'], $M['t'] + $sx(60), $ubicacion);
 
         // Área de tabla
         $y0 = $M['t'] + $sx(92);
@@ -242,7 +239,7 @@ if ($FORMAT === 'png') {
         $x = $x0;
         foreach ($days as $idx=>$d) {
             // Encabezado de día
-            $strokeText($fHeader, $x, $y0, date('Y-m-d', strtotime($d)));
+            $drawText($fHeader, $x, $y0, date('Y-m-d', strtotime($d)));
 
             // Línea bajo encabezado
             imageline($im, $x, $y0 + $sx(10), $x + $colW, $y0 + $sx(10), $lineCol);
@@ -258,13 +255,13 @@ if ($FORMAT === 'png') {
 $horaTxt = $range['ini'] ? $range['ini'] . ($range['fin'] ? " – ".$range['fin'] : "") : (string)$r['Horario'];
 $primera = $horaTxt . " • " . $r['Salon'];
 
-                $strokeText($fCell, $x + $sx(6), $top, $primera);
+                $drawText($fCell, $x + $sx(6), $top, $primera);
 
                 // Actividad (envuelta)
                 $lines = wrap_text($r['Actividad'], $fCell, $FONT, $colW - $sx(12));
                 $ly = $top + $sx(20);
                 foreach ($lines as $ln) {
-                    $strokeText($fCell, $x + $sx(6), $ly, $ln);
+                    $drawText($fCell, $x + $sx(6), $ly, $ln);
                     $ly += ($fCell + $lSpace);
                 }
                 $hAct = max($rowHmin, ($ly - ($top + $sx(20))) - $lSpace);
