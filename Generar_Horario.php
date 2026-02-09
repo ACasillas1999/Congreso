@@ -180,9 +180,9 @@ if ($FORMAT === 'png') {
 
         // Márgenes según orientación
         if ($ORIENT==='portrait') {
-            $M = ['l'=> $sx(60), 't'=> $sx(120), 'r'=> $sx(60), 'b'=> $sx(40)];
+            $M = ['l'=> $sx(60), 't'=> $sx(300), 'r'=> $sx(60), 'b'=> $sx(40)];
         } else {
-            $M = ['l'=> $sx(80), 't'=> $sx(80),  'r'=> $sx(80), 'b'=> $sx(60)];
+            $M = ['l'=> $sx(80), 't'=> $sx(220),  'r'=> $sx(80), 'b'=> $sx(60)];
         }
 
         // Títulos (más grandes)
