@@ -94,7 +94,8 @@ if (!$image) { http_response_code(500); exit('No se pudo abrir el machote de gaf
 
 if (!is_file($fontPath)) { imagedestroy($image); http_response_code(500); exit('No se encontró la fuente nexa-book.ttf'); }
 
-$colorTexto = imagecolorallocate($image, 255, 255, 255);
+//$colorTexto = imagecolorallocate($image, 255, 255, 255);
+$colorTexto = imagecolorallocate($image, 0, 0, 0);
 
 // Centrado del nombre en el área izquierda
 $areaWidth = 1000;
