@@ -203,7 +203,8 @@ $url_gafete = "https://congresos.grupoascencio.com.mx/congreso/DescargarGafete.p
             }
 
             $x = $areaX + ($areaWidth - $textWidth) / 2;
-            $y = 1050; // Posición Y fija
+           // $y = 1050; // Posición Y fija
+            $y = 1500; // Posición Y fija
             
             // Escribir el nombre centrado en la mitad izquierda del gafete
             imagettftext($image, $fontSize, 0, $x, $y, $colorNegro, $fontPath, $Nombre);
