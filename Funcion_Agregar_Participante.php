@@ -195,11 +195,9 @@ $url_gafete = "https://congresos.grupoascencio.com.mx/congreso/DescargarGafete.p
             $textWidth = abs($textBox[4] - $textBox[0]);
 
             // Calcular la posición X para centrar el texto en la mitad izquierda
-           /* if ($textWidth > $areaWidth) {
+            if ($textWidth > $areaWidth) {
                 // Si el texto es más ancho que el área, ajustarlo al área
-               // $fontSize = ($areaWidth / $textWidth) * $fontSize; 
-                $fontSize = (int) round(($areaWidth / $textWidth) * $fontSize);
-
+                $fontSize = ($areaWidth / $textWidth) * $fontSize; 
                 $textBox = imagettfbbox($fontSize, 0, $fontPath, $Nombre);
                 $textWidth = abs($textBox[4] - $textBox[0]);
             }
@@ -207,22 +205,9 @@ $url_gafete = "https://congresos.grupoascencio.com.mx/congreso/DescargarGafete.p
             $x = $areaX + ($areaWidth - $textWidth) / 2;
            // $y = 1050; // Posición Y fija
             $y = 1500; // Posición Y fija
-            imagettftext($image, $fontSize, 0, $x, $y, $colorNegro, $fontPath, $Nombre);*/
-
-            if ($textWidth > $areaWidth) {
-    $fontSize = (int) round(($areaWidth / $textWidth) * $fontSize);
-    $textBox = imagettfbbox($fontSize, 0, $fontPath, $Nombre);
-    $textWidth = abs($textBox[4] - $textBox[0]);
-}
-
-$x = (int) round($areaX + ($areaWidth - $textWidth) / 2);
-$y = 1500;
-
-imagettftext($image, $fontSize, 0, $x, $y, $colorNegro, $fontPath, $Nombre);
-
             
             // Escribir el nombre centrado en la mitad izquierda del gafete
-            
+            imagettftext($image, $fontSize, 0, $x, $y, $colorNegro, $fontPath, $Nombre);
 
             // Escribir el mes y año (esto se puede ajustar según tu necesidad)
             $fecha = ''; // Cambia este valor según tus necesidades
@@ -260,7 +245,7 @@ $nombre = $Nombre;
 // DATOS DE META (REEMPLAZA ESTOS)
 $access_token = 'EAAGacaATjwEBOZBgqhohcVk1ZBGEAbiTl7i86qESvSPjdllaomwzIG7LmOOvyTFpzyIlXX6dtTYTVTLLuw6SjaLoh2rec07I8qu1nGNYSVZAmQTGNa3QCQjujTqfd7QuLLwFNQllnX2z1V7JvToDhEi5KVqUWXHSqgSETvGyU7S2SN2fpXW0NpQaRI48pwZAgGS7A1BQMjLl5ZBjy';
 $phone_number_id = '335894526282507';
-$template_name = 'registro_vallartaday_2026'; // Tu plantilla exacta
+$template_name = 'registro_conexion_2025'; // Tu plantilla exacta
 
 // Mensaje con botón personalizado (token como parámetro del botón)
 $data = [
