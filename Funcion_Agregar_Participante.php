@@ -183,7 +183,7 @@ $url_gafete = "https://congresos.grupoascencio.com.mx/congreso/DescargarGafete.p
             $image = imagecreatefromjpeg($templatePath);
             $colorNegro = imagecolorallocate($image, 0, 0, 0);
           //   $colorNegro = imagecolorallocate($image, 255, 255, 255);
-            $colorBlanco = imagecolorallocate($image, 255, 255, 255);
+            $colorBlanco = imagecolorallocate($image, 0, 0, 0);
 
             // Definir el área de la mitad izquierda del gafete
             $areaWidth = 1000; // Ancho del área en la mitad izquierda
