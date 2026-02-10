@@ -245,7 +245,7 @@ $nombre = $Nombre;
 // DATOS DE META (REEMPLAZA ESTOS)
 $access_token = 'EAAGacaATjwEBOZBgqhohcVk1ZBGEAbiTl7i86qESvSPjdllaomwzIG7LmOOvyTFpzyIlXX6dtTYTVTLLuw6SjaLoh2rec07I8qu1nGNYSVZAmQTGNa3QCQjujTqfd7QuLLwFNQllnX2z1V7JvToDhEi5KVqUWXHSqgSETvGyU7S2SN2fpXW0NpQaRI48pwZAgGS7A1BQMjLl5ZBjy';
 $phone_number_id = '335894526282507';
-$template_name = 'registro_conexion_2025'; // Tu plantilla exacta
+$template_name = 'vallartaday_2026'; // Tu plantilla exacta
 
 // Mensaje con botón personalizado (token como parámetro del botón)
 $data = [
