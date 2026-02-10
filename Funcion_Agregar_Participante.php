@@ -197,7 +197,9 @@ $url_gafete = "https://congresos.grupoascencio.com.mx/congreso/DescargarGafete.p
             // Calcular la posición X para centrar el texto en la mitad izquierda
             if ($textWidth > $areaWidth) {
                 // Si el texto es más ancho que el área, ajustarlo al área
-                $fontSize = ($areaWidth / $textWidth) * $fontSize; 
+               // $fontSize = ($areaWidth / $textWidth) * $fontSize; 
+                $fontSize = (int) round(($areaWidth / $textWidth) * $fontSize);
+
                 $textBox = imagettfbbox($fontSize, 0, $fontPath, $Nombre);
                 $textWidth = abs($textBox[4] - $textBox[0]);
             }
