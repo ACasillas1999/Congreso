@@ -195,7 +195,7 @@ $url_gafete = "https://congresos.grupoascencio.com.mx/congreso/DescargarGafete.p
             $textWidth = abs($textBox[4] - $textBox[0]);
 
             // Calcular la posición X para centrar el texto en la mitad izquierda
-            if ($textWidth > $areaWidth) {
+           /* if ($textWidth > $areaWidth) {
                 // Si el texto es más ancho que el área, ajustarlo al área
                // $fontSize = ($areaWidth / $textWidth) * $fontSize; 
                 $fontSize = (int) round(($areaWidth / $textWidth) * $fontSize);
@@ -207,9 +207,22 @@ $url_gafete = "https://congresos.grupoascencio.com.mx/congreso/DescargarGafete.p
             $x = $areaX + ($areaWidth - $textWidth) / 2;
            // $y = 1050; // Posición Y fija
             $y = 1500; // Posición Y fija
+            imagettftext($image, $fontSize, 0, $x, $y, $colorNegro, $fontPath, $Nombre);*/
+
+            if ($textWidth > $areaWidth) {
+    $fontSize = (int) round(($areaWidth / $textWidth) * $fontSize);
+    $textBox = imagettfbbox($fontSize, 0, $fontPath, $Nombre);
+    $textWidth = abs($textBox[4] - $textBox[0]);
+}
+
+$x = (int) round($areaX + ($areaWidth - $textWidth) / 2);
+$y = 1500;
+
+imagettftext($image, $fontSize, 0, $x, $y, $colorNegro, $fontPath, $Nombre);
+
             
             // Escribir el nombre centrado en la mitad izquierda del gafete
-            imagettftext($image, $fontSize, 0, $x, $y, $colorNegro, $fontPath, $Nombre);
+            
 
             // Escribir el mes y año (esto se puede ajustar según tu necesidad)
             $fecha = ''; // Cambia este valor según tus necesidades
