@@ -1,8 +1,8 @@
 /* ======== FONDO GENERAL ======== */
 body {
   font-family: 'Segoe UI', sans-serif;
-  background: radial-gradient(circle at center, #0d1c3b, #1e2a78);
-  color: #e0e0e0;
+  background: linear-gradient(180deg, #95ecff 0%, #57d6ff 18%, #1ca9dc 46%, #0b6d9f 72%, #054a6b 100%);
+  color: #e9f7ff;
   margin: 0;
   padding: 0;
 }
@@ -12,25 +12,25 @@ form {
   max-width: 650px;
   margin: 60px auto;
   padding: 30px;
-  background-color: rgba(30, 30, 47, 0.96);
+  background-color: rgba(8, 27, 50, 0.94);
   border-radius: 15px;
   box-shadow:
-    0 -40px 40px -20px rgba(199, 111, 57, 0.25),
-    0 40px 40px -20px rgba(30, 144, 255, 0.25);
+    0 -40px 40px -20px rgba(124, 236, 255, 0.28),
+    0 40px 40px -20px rgba(28, 169, 220, 0.24);
   backdrop-filter: blur(6px);
   animation: fadeIn 1s ease-out;
 }
 
-/* ======== TÍTULOS ======== */
+/* ======== TITULOS ======== */
 h2, .logo {
   text-align: center;
   font-size: 36px;
   font-weight: bold;
   text-transform: uppercase;
-  color: #c76f39;
+  color: #7cecff;
   text-shadow:
-    0 0 6px #c76f39,
-    0 0 12px #c76f39;
+    0 0 6px #7cecff,
+    0 0 12px #7cecff;
 }
 
 /* ======== ETIQUETAS ======== */
@@ -65,12 +65,12 @@ input[type="number"]:focus,
 input[type="tel"]:focus,
 select:focus {
   outline: none;
-  box-shadow: 0 0 8px #c76f39;
+  box-shadow: 0 0 8px #38d9ff;
 }
 
-/* ======== BOTÓN SUBMIT ======== */
+/* ======== BOTON SUBMIT ======== */
 input[type="submit"] {
-  background-color: #c76f39;
+  background-color: #0ea5c6;
   color: #fff;
   padding: 12px 25px;
   border: none;
@@ -79,21 +79,21 @@ input[type="submit"] {
   font-weight: bold;
   cursor: pointer;
   box-shadow:
-    0 0 10px #c76f39,
-    0 0 20px #c76f39;
+    0 0 10px #38d9ff,
+    0 0 20px #38d9ff;
   transition: background-color 0.3s ease, transform 0.2s;
 }
 
 input[type="submit"]:hover {
-  background-color: #a85522;
+  background-color: #0b6d9f;
   transform: scale(1.05);
 }
 
 input[type="submit"]:focus {
   outline: none;
   box-shadow:
-    0 0 12px #c76f39,
-    0 0 24px #c76f39;
+    0 0 12px #38d9ff,
+    0 0 24px #38d9ff;
 }
 
 /* ======== TEXTAREA ======== */
@@ -103,14 +103,14 @@ textarea {
 
 /* ======== HEADER SUPERIOR ======== */
 .header {
-  background: linear-gradient(145deg, #1e2a78, #3f51b5);
+  background: linear-gradient(145deg, #0b6d9f, #1ca9dc);
   padding: 20px 0;
   text-align: center;
   width: 100%;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
-/* ======== NAVEGACIÓN ======== */
+/* ======== NAVEGACION ======== */
 .navbar ul {
   list-style: none;
   padding: 0;
@@ -130,12 +130,12 @@ textarea {
 }
 
 .nav-link:hover {
-  color: #ffcc00;
+  color: #b9f4ff;
 }
 
-/* ======== BOTÓN FLUIDO (OPCIONAL) ======== */
+/* ======== BOTON FLUIDO (OPCIONAL) ======== */
 .button {
-  background-color: firebrick;
+  background-color: #0ea5c6;
   color: white;
   padding: 10px 20px;
   border: none;
@@ -145,7 +145,7 @@ textarea {
 }
 
 .button:hover {
-  background-color: blue;
+  background-color: #0b6d9f;
 }
 
 /* ======== ANIMACIONES ======== */
@@ -171,7 +171,7 @@ textarea {
   }
 }
 
-/* ======== CONTENEDOR DE BOTÓN (SI SE USA) ======== */
+/* ======== CONTENEDOR DE BOTON (SI SE USA) ======== */
 .container {
   display: flex;
   justify-content: flex-end;

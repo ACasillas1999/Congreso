@@ -35,7 +35,7 @@ $conn->close();
 <head>
     <meta charset="UTF-8"> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles3.css?v=1">
+    <link rel="stylesheet" href="styles3.css?v=2">
     <link rel="icon" href="/Congreso/educacion.png" type="image/x-icon">
 
     <title>Nuevo Participante</title>
@@ -46,10 +46,10 @@ $conn->close();
     display:flex; align-items:center; gap:10px;
     border:1px solid #e5e7eb; border-left:6px solid #94a3b8;
     padding:10px 12px; border-radius:10px; margin:8px 0;
-    background:#005aa6; transition:.2s ease; cursor:pointer;
+    background:#0b6d9f; transition:.2s ease; cursor:pointer;
   }
   .slot:hover{ box-shadow:0 4px 14px rgba(0,0,0,.06); }
-  .slot.is-selected{ border-color:#0ea5e9; border-left-color:#0ea5e9; }
+  .slot.is-selected{ border-color:#57d6ff; border-left-color:#57d6ff; }
   .slot.is-disabled{
     opacity:.45; filter:grayscale(1); background:#f8fafc; cursor:not-allowed;
   }
@@ -78,7 +78,7 @@ $conn->close();
 .corner-left-bottom .btn-volver {
   display: inline-block;
   padding: 10px 20px;
-  background: linear-gradient(90deg, #ff7f00, #ff9500);
+  background: linear-gradient(90deg, #0b6d9f, #1ca9dc);
   color: #fff;
   font-weight: bold;
   border-radius: 8px;
@@ -88,7 +88,7 @@ $conn->close();
 }
 
 .corner-left-bottom .btn-volver:hover {
-  background: linear-gradient(90deg, #ff9500, #ffb347);
+  background: linear-gradient(90deg, #1ca9dc, #57d6ff);
   transform: translateY(-2px);
   box-shadow: 0 6px 14px rgba(0,0,0,0.4);
 }
@@ -97,8 +97,33 @@ $conn->close();
   transform: translateY(0);
   box-shadow: 0 2px 6px rgba(0,0,0,0.3);
 }
-
-</style>
+#btnContinuar, #btnVolver, #btnGuardar{
+  color:#fff;
+  border:none;
+  border-radius:8px;
+  padding:10px 20px;
+  font-size:16px;
+  cursor:pointer;
+  transition: background-color .25s ease, transform .15s ease, opacity .2s ease;
+}
+#btnContinuar{
+  padding:12px 24px;
+  background: linear-gradient(90deg, #0b6d9f, #1ca9dc);
+}
+#btnVolver{
+  background-color:#0b6d9f;
+}
+#btnGuardar{
+  background-color:#0ea5c6;
+}
+#btnContinuar:hover, #btnVolver:hover, #btnGuardar:hover{
+  background-color:#054a6b;
+  transform: translateY(-1px);
+}
+#btnGuardar:disabled{
+  cursor:not-allowed;
+  opacity:.7;
+}</style>
 
 </head>
 
@@ -204,7 +229,7 @@ document.getElementById("Telefono").addEventListener("input", function() {
 
             <!-- <input type="submit" value="Agregar Participante">-->
 
-            <button type="button" id="btnContinuar" style="background-color: #f59f2fff; color: white; border: none; padding: 12px 24px; font-size: 16px; cursor: pointer; border-radius: 4px; transition: background-color 0.3s;">
+            <button type="button" id="btnContinuar">
                 Continuar → Seleccionar actividades
             </button>
         </div>
@@ -215,11 +240,10 @@ document.getElementById("Telefono").addEventListener("input", function() {
             <h3>Selecciona actividades (se bloquearán los solapes)</h3>
             <div id="agendaContainer" style="margin:12px 0;"></div>
             <div style="display:flex; gap:12px; justify-content:center; margin-top:20px;">
-                <button type="button" id="btnVolver" style="background-color: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; transition: background-color 0.3s;">
+                <button type="button" id="btnVolver">
                     ← Volver
                 </button>
-                <button type="submit" id="btnGuardar" disabled
-  style="background-color:#2ecc71;color:white;border:none;padding:10px 20px;border-radius:4px;cursor:not-allowed;opacity:.7;">
+                <button type="submit" id="btnGuardar" disabled style="cursor:not-allowed;opacity:.7;">
   Guardar participante
 </button>
             </div>

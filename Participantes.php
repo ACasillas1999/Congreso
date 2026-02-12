@@ -41,7 +41,7 @@ $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Participantes</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
+    <link rel="stylesheet" type="text/css" href="styles.css?v=2">
 
 <style>
 
