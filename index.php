@@ -25,6 +25,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION
     <title>Eventos</title>
     <!-- Enlace al archivo de estilos -->
     <link rel="stylesheet" type="text/css" href="styles.css">
+    <?php include "header_css.php"; ?>
     <!-- Ícono de la página -->
 
     <style>
@@ -93,6 +94,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION
             <li><a href="NuevoRegistroInicio.php">Agregar Evento</a></li>
             <li><a href="Ubicacion.php">Ubicaciones</a></li>
             <li><a href="puntos_proveedor/agregar_proveedor_evento.php">Agregar Proveedores</a></li>
+            <li><a href="personalizar.php" style="color: #ff9800;">✨ Personalizar</a></li>
 
             <li class="reg-button">
                 <form action="/Congreso/Registrar/" method="post">

@@ -26,6 +26,7 @@ $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Clase</title>
   <link rel="stylesheet" type="text/css" href="styles_clase.css">
+  <?php include "header_css.php"; ?>
   <link rel="icon" href="/Congreso/educacion.png" type="image/x-icon">
   <script src="https://unpkg.com/@zxing/browser@latest"></script>
 
@@ -42,6 +43,7 @@ $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
   <div id = "sidebar" class="sidebar">
     <ul>
+      <li><a href="personalizar.php" style="color: #ff9800;">✨ Personalizar</a></li>
       <!-- <li><a href="Agregar_Participante.php">Agregar participante</a></li>-->
       <li class="corner-left-bottom">
         <a href="javascript:window.history.back();">Volver</a>
@@ -53,9 +55,9 @@ $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
     <!--<h2 class="titulo">Participantes</h2>-->
 
     <!-- Campo de búsqueda -->
-    <input style='Display:none;' type="text" id="busqueda" placeholder="Buscar por nombre, sucursal, vendedor, etc." disabled>
-
-    <p></p>
+    <div class="search-container" style="margin-bottom: 25px;">
+      <input type="text" id="busqueda" placeholder="🔍 Buscar por nombre, teléfono o proveedor..." class="input-search">
+    </div>
 
 
     <h2 class="titulo">Escaneo / Control</h2>
@@ -97,10 +99,31 @@ $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
     </div>
 
     <!-- Formulario para agregar participante -->
-
-
-
   </div>
+
+  <!-- Modal de Registro Rápido -->
+  <div id="modalRegistro" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="cerrarModalRegistro()">&times;</span>
+      <h3 style="color:#fff; margin-bottom:20px;">Registro Rápido</h3>
+      <form id="formRegistroRapido">
+        <div class="form-group">
+          <label for="regNombre">Nombre Completo:</label>
+          <input type="text" id="regNombre" required placeholder="Ej. Juan Pérez">
+        </div>
+        <div class="form-group">
+          <label for="regTelefono">Teléfono:</label>
+          <input type="tel" id="regTelefono" required placeholder="10 dígitos" pattern="[0-9]{10}">
+        </div>
+        <div class="form-group">
+          <label for="regProveedor">Razón Social / Proveedor:</label>
+          <input type="text" id="regProveedor" required placeholder="Nombre de la empresa">
+        </div>
+        <button type="submit" class="button" style="width:100%; margin-top:15px;">Registrar e Inscribir</button>
+      </form>
+    </div>
+  </div>
+
 <script src="https://unpkg.com/@zxing/browser@latest"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function() {
@@ -124,7 +147,78 @@ document.addEventListener("DOMContentLoaded", function() {
     };
     xhr.send("busqueda=" + encodeURIComponent(busqueda) + "&id=" + encodeURIComponent(idClase));
   }
+  
+  if (busquedaInput) {
+    busquedaInput.addEventListener("keyup", function(e) {
+      if (e.key === "Enter" || this.value.length > 2 || this.value.length === 0) {
+        realizarBusqueda();
+      }
+    });
+  }
   realizarBusqueda();
+
+  /* =========================
+     ACCIONES DE BÚSQUEDA
+  ========================== */
+  window.btnMarcarAsistencia = function(idPart) {
+    marcarAsistencia(idPart, realizarBusqueda);
+  };
+
+  window.btnInscribirYAsistir = function(idPart) {
+    if (!confirm("¿Deseas inscribir a este participante en esta clase y marcar asistencia?")) return;
+    
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "Inscribir_Participante_Ajax.php", true);
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState == 4) {
+        let ok = (xhr.status >= 200 && xhr.status < 300), msg = xhr.responseText;
+        try { const data = JSON.parse(xhr.responseText); ok = !!data.ok; msg = data.msg || msg; } catch(_) {}
+        toast(msg, ok, 1500);
+        if(ok) realizarBusqueda();
+      }
+    };
+    xhr.send("id_participante=" + encodeURIComponent(idPart) + "&id_clase=" + encodeURIComponent(idClase));
+  };
+
+  /* =========================
+     MODAL REGISTRO RÁPIDO
+  ========================== */
+  const modal = document.getElementById("modalRegistro");
+  window.abrirModalRegistro = function() {
+    modal.style.display = "block";
+    document.getElementById("regNombre").focus();
+  };
+  window.cerrarModalRegistro = function() {
+    modal.style.display = "none";
+  };
+  window.onclick = function(event) {
+    if (event.target == modal) cerrarModalRegistro();
+  };
+
+  document.getElementById("formRegistroRapido").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const nombre = document.getElementById("regNombre").value;
+    const tel = document.getElementById("regTelefono").value;
+    const prov = document.getElementById("regProveedor").value;
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", "Registro_Rapido_Ajax.php", true);
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState == 4) {
+        let ok = (xhr.status >= 200 && xhr.status < 300), msg = xhr.responseText;
+        try { const data = JSON.parse(xhr.responseText); ok = !!data.ok; msg = data.msg || msg; } catch(_) {}
+        toast(msg, ok, 2000);
+        if (ok) {
+          cerrarModalRegistro();
+          document.getElementById("formRegistroRapido").reset();
+          realizarBusqueda();
+        }
+      }
+    };
+    xhr.send(`nombre=${encodeURIComponent(nombre)}&telefono=${encodeURIComponent(tel)}&proveedor=${encodeURIComponent(prov)}&id_clase=${encodeURIComponent(idClase)}`);
+  });
 
   /* =========================
      EXTRAER ID DESDE TEXTO/QR
@@ -486,6 +580,90 @@ window.matchMedia('(min-width: 992px)').addEventListener('change', e=>{
     opacity: 0;
     transition: opacity .4s ease;
   }
+
+  /* Estilos Buscador */
+  .input-search {
+    width: 100%;
+    padding: 12px 20px;
+    border-radius: 25px;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.2);
+  }
+  .input-search:focus {
+    outline: none;
+    border-color: #ff9800;
+    background: rgba(255,255,255,0.1);
+    box-shadow: 0 0 10px rgba(255,152,0,0.3);
+  }
+
+  /* Estilos Modal */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 10000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.8);
+    backdrop-filter: blur(5px);
+  }
+  .modal-content {
+    background: linear-gradient(145deg, #1a2542, #0f1838);
+    margin: 10% auto;
+    padding: 30px;
+    border: 1px solid rgba(255,152,0,0.3);
+    border-radius: 15px;
+    width: 90%;
+    max-width: 450px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+    position: relative;
+    animation: modalIn 0.3s ease-out;
+  }
+  @keyframes modalIn {
+    from { transform: translateY(-30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  .close:hover { color: #fff; }
+  
+  .form-group {
+    margin-bottom: 15px;
+  }
+  .form-group label {
+    display: block;
+    color: #ddd;
+    margin-bottom: 5px;
+    font-size: 14px;
+  }
+  .form-group input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #444;
+    background: #0f1838;
+    color: #fff;
+  }
+  .button-sec {
+    background: #57d6ff;
+    color: #000;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s;
+  }
+  .button-sec:hover { background: #1ca9dc; transform: scale(1.05); }
 </style>
 
 

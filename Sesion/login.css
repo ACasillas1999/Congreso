@@ -35,7 +35,7 @@ body{
 }
 
 /* =========================
-   Decorativos (borde ne®Æn + bruma)
+   Decorativos (borde ne√≥n + bruma)
 ========================= */
 body::before{
   content:'';
@@ -79,7 +79,7 @@ body::after{
 }
 
 /* =========================
-   T®™tulo ne®Æn superior
+   T√≠tulo ne√≥n superior
 ========================= */
 .neon-container{
   position:absolute;
@@ -88,7 +88,7 @@ body::after{
   text-align:center;
   z-index:4;
   padding-inline:clamp(8px, 3vw, 12px);
-  top: clamp(10px, 2.8vh, 24px); /* en m®Ævil respira */
+  top: clamp(10px, 2.8vh, 24px); /* en m√≥vil respira */
 }
 
 .neon-title{
@@ -111,7 +111,13 @@ body::after{
   width:min(94vw, 440px);
   margin: clamp(8px, 4vh, 18px) auto; /* centrado + aire vertical */
   padding: clamp(16px, 5vw, 28px);
-  background:var(--card);
+  background: rgba(30, 42, 120, 0.7); /* Azulado m√°s s√≥lido pero a√∫n trasl√∫cido */
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 
+    0 8px 32px 0 rgba(0, 0, 0, 0.5),
+    0 0 15px rgba(30, 144, 255, 0.15);
   border-radius:var(--radius);
   border-inline:2px solid rgba(255,255,255,.08);
   box-shadow:
@@ -143,9 +149,18 @@ body::after{
   max-width:min(70vw, 260px);
   height:auto;
   display:block;
-  filter: drop-shadow(0 6px 18px rgba(0,0,0,.45));
+  /* Brillo y contraste para que resalte */
+  filter: 
+    brightness(1.1) 
+    contrast(1.05)
+    drop-shadow(0 0 12px rgba(255, 255, 255, 0.15)) /* "Glow" claro para separar del fondo */
+    drop-shadow(0 8px 16px rgba(0, 0, 0, 0.5));     /* Sombra oscura para profundidad */
   user-select:none;
   -webkit-user-drag:none;
+  transition: transform 0.3s ease;
+}
+.icono-registro:hover{
+  transform: scale(1.02);
 }
 
 /* =========================
@@ -162,7 +177,7 @@ body::after{
   padding:12px 14px;
   border:none;
   border-radius:10px;
-  background:var(--field);
+  background: rgba(0, 0, 0, 0.35);
   color:var(--text);
   font-size:clamp(15px, 3.8vw, 16px);
   box-shadow: inset 0 0 6px rgba(0,0,0,.35);
@@ -227,7 +242,7 @@ body::after{
   .login-container{ margin-block:8px; }
 }
 
-/* Respeta °∞reducir movimiento°± */
+/* Respeta ‚Äúreducir movimiento‚Äù */
 @media (prefers-reduced-motion: reduce){
   *{
     animation-duration:.001ms !important;
@@ -272,22 +287,22 @@ body::after{
 }
 
 
-/* ========= GLOW MÅ0Ü9S SUAVE PARA EL TÅ0à1TULO ========= */
-/* (PÅ0á7GALO AL FINAL DEL CSS) */
+/* ========= GLOW M√ÅS SUAVE PARA EL T√çTULO ========= */
+/* (P√âGALO AL FINAL DEL CSS) */
 
 /* Preset SUAVE por defecto */
 .neon-title{
   color:#c76f39;
-  /* menos capas y alfas m®¢s bajos */
+  /* menos capas y alfas m√°s bajos */
   text-shadow:
     0 0 2px rgba(199,111,57,.55),
     0 0 6px rgba(199,111,57,.35),
     0 0 12px rgba(199,111,57,.25);
-  /* flicker m®¢s lento y discreto */
+  /* flicker m√°s lento y discreto */
   animation: flickerSoft 6s ease-in-out infinite alternate;
 }
 
-/* Suaviza tambi®¶n el borde ne®Æn del marco */
+/* Suaviza tambi√©n el borde ne√≥n del marco */
 body::before{
   box-shadow:
     0 0 8px  rgba(230,126,34,.45),
@@ -295,7 +310,7 @@ body::before{
     0 0 28px rgba(230,126,34,.12);
 }
 
-/* Flicker m®¢s sutil */
+/* Flicker m√°s sutil */
 @keyframes flickerSoft{
   0%,100%{ opacity:.97; }
   50%{ opacity:.88; }
@@ -304,7 +319,7 @@ body::before{
 /* ========= PRESETS OPCIONALES (por clase) ========= */
 /* Usa uno agregando la clase al <h1 class="neon-title glow-medium"> o glow-off */
 
-/* Medium (un poco m®¢s presente que °∞suave°±) */
+/* Medium (un poco m√°s presente que ‚Äúsuave‚Äù) */
 .neon-title.glow-medium{
   text-shadow:
     0 0 3px rgba(199,111,57,.6),
@@ -320,7 +335,7 @@ body::before{
 }
 
 /* ========= LIMITE EN PANTALLAS GRANDES ========= */
-/* En desktop ancho reduce a®≤n m®¢s el glow para que no °∞invada°± */
+/* En desktop ancho reduce a√∫n m√°s el glow para que no ‚Äúinvada‚Äù */
 @media (min-width: 1280px){
   .neon-title{
     text-shadow:

@@ -30,6 +30,7 @@ $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home Evento</title>
     <link rel="stylesheet" type="text/css" href="styles.css">
+    <?php include "header_css.php"; ?>
     <link rel="icon" href="/Congreso/educacion.png" type="image/x-icon">
 
 
@@ -373,6 +374,7 @@ $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
                     Participantes
                 </a></li>
             <li><a href="puntos_proveedor/agregar_proveedor_evento.php">Agregar Proveedores</a></li>
+            <li><a href="personalizar.php" style="color: #ff9800;">✨ Personalizar</a></li>
 
             <li><a href="/Congreso/Estadisticas.php?id=<?php echo htmlspecialchars($id); ?>">
                     Estadistica

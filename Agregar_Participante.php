@@ -26,8 +26,8 @@ $result = $conn->query($sql);
 $sql = "SELECT ID, name_evento FROM evento WHERE estado = 'EN CURSO'";
 $result = $conn->query($sql);*/
 
-// Cerrar conexión
-$conn->close();
+// Cerrar conexión más tarde
+// $conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -36,6 +36,7 @@ $conn->close();
     <meta charset="UTF-8"> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles3.css?v=2">
+    <?php include "header_css.php"; ?>
     <link rel="icon" href="/Congreso/educacion.png" type="image/x-icon">
 
     <title>Nuevo Participante</title>
@@ -395,5 +396,5 @@ document.getElementById("Telefono").addEventListener("input", function() {
 </script>
 
 </body>
-
+<?php if(isset($conn)) $conn->close(); ?>
 </html>
