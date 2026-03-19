@@ -12,7 +12,8 @@ $css_vars = [
     '--bg-gradient-start' => '#95ecff',
     '--bg-gradient-end' => '#054a6b',
     '--container-bg' => 'rgba(8, 27, 50, 0.7)',
-    '--titulo-neon' => '#7cecff'
+    '--titulo-neon' => '#7cecff',
+    '--login-animation' => 'liquid-ether'
 ];
 
 // Intentar cargar desde la base de datos

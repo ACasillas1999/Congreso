@@ -1330,17 +1330,718 @@ function getLiquidEtherPerfProfile() {
   };
 }
 
-const liquidContainer = document.getElementById('liquid-ether-bg');
-const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const perf = getLiquidEtherPerfProfile();
+function readThemeColor(name, fallback) {
+  const value = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+  return value || fallback;
+}
 
-if (liquidContainer && !prefersReducedMotion) {
-  window.__destroyLiquidEtherLogin = mountLiquidEther(liquidContainer, {
+function readLoginAnimationMode() {
+  const allowedModes = new Set([
+    'liquid-ether',
+    'aurora-flow',
+    'particle-network',
+    'neon-grid',
+    'leather-upholstery',
+    'glass-bubbles',
+    'radar-rings',
+    'diagonal-shimmer',
+    'mosaic-pulse',
+    'none'
+  ]);
+  const value = readThemeColor('--login-animation', 'liquid-ether')
+    .replace(/["']/g, '')
+    .trim()
+    .toLowerCase();
+
+  return allowedModes.has(value) ? value : 'liquid-ether';
+}
+
+function getLoginThemePalette() {
+  return [
+    readThemeColor('--bg-gradient-start', '#00c2ff'),
+    readThemeColor('--azul-medio', '#38d9ff'),
+    readThemeColor('--titulo-neon', '#7cecff'),
+    readThemeColor('--naranja', '#b9f4ff'),
+    readThemeColor('--bg-gradient-end', '#ffe5b8')
+  ];
+}
+
+const colorProbeContext = document.createElement('canvas').getContext('2d');
+
+function colorWithAlpha(color, alpha) {
+  if (!colorProbeContext) {
+    return color;
+  }
+
+  colorProbeContext.fillStyle = '#000000';
+  colorProbeContext.fillStyle = color;
+  const normalized = colorProbeContext.fillStyle;
+
+  if (normalized.startsWith('#')) {
+    let hex = normalized.slice(1);
+    if (hex.length === 3) {
+      hex = hex.split('').map(char => char + char).join('');
+    }
+    const intValue = Number.parseInt(hex, 16);
+    const r = (intValue >> 16) & 255;
+    const g = (intValue >> 8) & 255;
+    const b = intValue & 255;
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+
+  const parts = normalized.match(/[\d.]+/g);
+  if (parts && parts.length >= 3) {
+    const [r, g, b] = parts;
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
+
+  return color;
+}
+
+function prepareBackgroundContainer(container, className) {
+  container.replaceChildren();
+  container.className = className;
+  container.style.position = 'fixed';
+  container.style.inset = '0';
+  container.style.width = '100vw';
+  container.style.height = '100vh';
+  container.style.pointerEvents = 'none';
+  container.style.overflow = 'hidden';
+}
+
+function mountCanvasEffect(container, className, renderer, onResize = null) {
+  prepareBackgroundContainer(container, className);
+
+  const canvas = document.createElement('canvas');
+  canvas.style.width = '100%';
+  canvas.style.height = '100%';
+  canvas.style.display = 'block';
+  container.appendChild(canvas);
+
+  const ctx = canvas.getContext('2d');
+  if (!ctx) {
+    return () => {
+      container.replaceChildren();
+    };
+  }
+
+  let width = 0;
+  let height = 0;
+  let dpr = 1;
+  let frameId = 0;
+  let running = true;
+
+  const resize = () => {
+    dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    width = Math.max(1, container.clientWidth || window.innerWidth);
+    height = Math.max(1, container.clientHeight || window.innerHeight);
+    canvas.width = Math.floor(width * dpr);
+    canvas.height = Math.floor(height * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    if (typeof onResize === 'function') {
+      onResize({ width, height, dpr, ctx });
+    }
+  };
+
+  const loop = now => {
+    if (!running) {
+      return;
+    }
+
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    renderer({ ctx, width, height, now });
+    frameId = window.requestAnimationFrame(loop);
+  };
+
+  resize();
+  window.addEventListener('resize', resize);
+  frameId = window.requestAnimationFrame(loop);
+
+  return () => {
+    running = false;
+    window.cancelAnimationFrame(frameId);
+    window.removeEventListener('resize', resize);
+    container.replaceChildren();
+  };
+}
+
+function mountAuroraFlow(container, palette) {
+  return mountCanvasEffect(
+    container,
+    'login-background aurora-flow-theme',
+    ({ ctx, width, height, now }) => {
+      const time = now * 0.00018;
+
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = colorWithAlpha(palette[4], 0.08);
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.globalCompositeOperation = 'screen';
+      ctx.filter = 'blur(36px)';
+
+      for (let index = 0; index < 4; index += 1) {
+        const baseY = height * (0.2 + index * 0.16);
+        const amplitude = height * (0.08 + index * 0.015);
+        const wave = 0.004 + index * 0.0012;
+        const gradient = ctx.createLinearGradient(0, baseY, width, baseY + amplitude);
+        gradient.addColorStop(0, colorWithAlpha(palette[index % palette.length], 0));
+        gradient.addColorStop(0.25, colorWithAlpha(palette[(index + 1) % palette.length], 0.22));
+        gradient.addColorStop(0.7, colorWithAlpha(palette[(index + 2) % palette.length], 0.18));
+        gradient.addColorStop(1, colorWithAlpha(palette[(index + 3) % palette.length], 0));
+
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.moveTo(0, height);
+        for (let x = 0; x <= width + 40; x += 24) {
+          const y =
+            baseY +
+            Math.sin(x * wave + time * (2.6 + index * 0.35)) * amplitude +
+            Math.cos(x * wave * 0.4 + time * 1.6 + index) * amplitude * 0.35;
+          ctx.lineTo(x, y);
+        }
+        ctx.lineTo(width, height);
+        ctx.closePath();
+        ctx.fill();
+      }
+
+      for (let orb = 0; orb < 5; orb += 1) {
+        const radius = Math.max(width, height) * (0.12 + orb * 0.018);
+        const centerX = width * (0.15 + orb * 0.19) + Math.sin(time * (0.9 + orb * 0.12)) * width * 0.08;
+        const centerY = height * (0.25 + (orb % 3) * 0.2) + Math.cos(time * (1.1 + orb * 0.14)) * height * 0.1;
+        const glow = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, radius);
+        glow.addColorStop(0, colorWithAlpha(palette[orb % palette.length], 0.18));
+        glow.addColorStop(1, colorWithAlpha(palette[orb % palette.length], 0));
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.filter = 'none';
+      ctx.globalCompositeOperation = 'source-over';
+    }
+  );
+}
+
+function mountParticleNetwork(container, palette) {
+  let particles = [];
+
+  const reseedParticles = ({ width, height }) => {
+    const total = Math.max(24, Math.min(60, Math.round((width * height) / 28000)));
+    particles = Array.from({ length: total }, (_, index) => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      vx: (Math.random() - 0.5) * 0.45,
+      vy: (Math.random() - 0.5) * 0.45,
+      radius: 1.2 + Math.random() * 2.2,
+      color: palette[index % palette.length]
+    }));
+  };
+
+  return mountCanvasEffect(
+    container,
+    'login-background particle-network-theme',
+    ({ ctx, width, height }) => {
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = colorWithAlpha(palette[4], 0.05);
+      ctx.fillRect(0, 0, width, height);
+
+      particles.forEach(particle => {
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+
+        if (particle.x <= 0 || particle.x >= width) {
+          particle.vx *= -1;
+        }
+        if (particle.y <= 0 || particle.y >= height) {
+          particle.vy *= -1;
+        }
+
+        ctx.fillStyle = colorWithAlpha(particle.color, 0.9);
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      const maxDistance = Math.min(190, Math.max(110, width * 0.14));
+      for (let i = 0; i < particles.length; i += 1) {
+        for (let j = i + 1; j < particles.length; j += 1) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const distance = Math.hypot(dx, dy);
+
+          if (distance < maxDistance) {
+            const alpha = (1 - distance / maxDistance) * 0.28;
+            ctx.strokeStyle = colorWithAlpha(palette[(i + j) % palette.length], alpha);
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+    },
+    reseedParticles
+  );
+}
+
+function mountNeonGrid(container, palette) {
+  return mountCanvasEffect(
+    container,
+    'login-background neon-grid-theme',
+    ({ ctx, width, height, now }) => {
+      const spacing = Math.max(30, Math.min(60, width / 24));
+      const offset = (now * 0.02) % spacing;
+      const sweepX = (now * 0.12) % (width + 220) - 110;
+      const sweepY = (now * 0.05) % (height + 160) - 80;
+
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = colorWithAlpha(palette[4], 0.04);
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.save();
+      ctx.strokeStyle = colorWithAlpha(palette[2], 0.22);
+      ctx.lineWidth = 1;
+
+      for (let x = -spacing; x < width + spacing; x += spacing) {
+        ctx.beginPath();
+        ctx.moveTo(x + offset, 0);
+        ctx.lineTo(x + offset, height);
+        ctx.stroke();
+      }
+
+      for (let y = -spacing; y < height + spacing; y += spacing) {
+        ctx.beginPath();
+        ctx.moveTo(0, y + offset * 0.6);
+        ctx.lineTo(width, y + offset * 0.6);
+        ctx.stroke();
+      }
+
+      ctx.restore();
+
+      const verticalSweep = ctx.createLinearGradient(sweepX - 90, 0, sweepX + 90, 0);
+      verticalSweep.addColorStop(0, colorWithAlpha(palette[1], 0));
+      verticalSweep.addColorStop(0.5, colorWithAlpha(palette[1], 0.18));
+      verticalSweep.addColorStop(1, colorWithAlpha(palette[1], 0));
+      ctx.fillStyle = verticalSweep;
+      ctx.fillRect(sweepX - 90, 0, 180, height);
+
+      const horizontalSweep = ctx.createLinearGradient(0, sweepY - 70, 0, sweepY + 70);
+      horizontalSweep.addColorStop(0, colorWithAlpha(palette[3], 0));
+      horizontalSweep.addColorStop(0.5, colorWithAlpha(palette[3], 0.14));
+      horizontalSweep.addColorStop(1, colorWithAlpha(palette[3], 0));
+      ctx.fillStyle = horizontalSweep;
+      ctx.fillRect(0, sweepY - 70, width, 140);
+    }
+  );
+}
+
+function mountLeatherUpholstery(container, palette) {
+  let leatherTexture = null;
+
+  const buildLeatherTexture = ({ width, height }) => {
+    const texture = document.createElement('canvas');
+    const tw = Math.max(320, Math.round(width * 0.42));
+    const th = Math.max(220, Math.round(height * 0.42));
+    texture.width = tw;
+    texture.height = th;
+    const tctx = texture.getContext('2d');
+
+    if (!tctx) {
+      leatherTexture = null;
+      return;
+    }
+
+    const base = tctx.createLinearGradient(0, 0, tw, th);
+    base.addColorStop(0, '#bb6930');
+    base.addColorStop(0.22, '#b35f2c');
+    base.addColorStop(0.58, '#9f5125');
+    base.addColorStop(1, '#71351a');
+    tctx.fillStyle = base;
+    tctx.fillRect(0, 0, tw, th);
+
+    const warmLight = tctx.createRadialGradient(tw * 0.24, th * 0.18, 0, tw * 0.24, th * 0.18, tw * 0.7);
+    warmLight.addColorStop(0, 'rgba(255, 205, 150, 0.22)');
+    warmLight.addColorStop(1, 'rgba(255, 196, 132, 0)');
+    tctx.fillStyle = warmLight;
+    tctx.fillRect(0, 0, tw, th);
+
+    const shade = tctx.createRadialGradient(tw * 0.82, th * 0.22, 0, tw * 0.82, th * 0.22, tw * 0.52);
+    shade.addColorStop(0, 'rgba(47, 20, 8, 0.2)');
+    shade.addColorStop(1, 'rgba(47, 20, 8, 0)');
+    tctx.fillStyle = shade;
+    tctx.fillRect(0, 0, tw, th);
+
+    const cloudCount = Math.max(14, Math.round((tw * th) / 18000));
+    for (let i = 0; i < cloudCount; i += 1) {
+      const px = Math.random() * tw;
+      const py = Math.random() * th;
+      const rx = tw * (0.04 + Math.random() * 0.09);
+      const ry = th * (0.035 + Math.random() * 0.07);
+      const patch = tctx.createRadialGradient(px, py, 0, px, py, Math.max(rx, ry));
+      const alpha = 0.035 + Math.random() * 0.05;
+      const isWarm = Math.random() > 0.5;
+      patch.addColorStop(0, isWarm ? `rgba(255, 192, 136, ${alpha})` : `rgba(70, 28, 12, ${alpha})`);
+      patch.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      tctx.fillStyle = patch;
+      tctx.beginPath();
+      tctx.ellipse(px, py, rx, ry, Math.random() * Math.PI, 0, Math.PI * 2);
+      tctx.fill();
+    }
+
+    const coarseGrainCount = Math.round((tw * th) / 18);
+    for (let i = 0; i < coarseGrainCount; i += 1) {
+      const x = Math.random() * tw;
+      const y = Math.random() * th;
+      const radius = 0.45 + Math.random() * 1.8;
+      const alpha = 0.02 + Math.random() * 0.06;
+      const bright = Math.random() > 0.58;
+      tctx.fillStyle = bright
+        ? `rgba(255, 214, 168, ${alpha})`
+        : `rgba(66, 26, 11, ${alpha})`;
+      tctx.beginPath();
+      tctx.ellipse(
+        x,
+        y,
+        radius * (0.45 + Math.random() * 1.7),
+        radius * (0.3 + Math.random() * 1.2),
+        Math.random() * Math.PI,
+        0,
+        Math.PI * 2
+      );
+      tctx.fill();
+    }
+
+    const fineGrainCount = Math.round((tw * th) / 8);
+    for (let i = 0; i < fineGrainCount; i += 1) {
+      const x = Math.random() * tw;
+      const y = Math.random() * th;
+      const radius = 0.18 + Math.random() * 0.65;
+      tctx.fillStyle = Math.random() > 0.52
+        ? `rgba(255, 225, 180, ${0.018 + Math.random() * 0.035})`
+        : `rgba(54, 20, 8, ${0.018 + Math.random() * 0.03})`;
+      tctx.beginPath();
+      tctx.ellipse(
+        x,
+        y,
+        radius * (0.5 + Math.random() * 0.8),
+        radius * (0.35 + Math.random() * 0.55),
+        Math.random() * Math.PI,
+        0,
+        Math.PI * 2
+      );
+      tctx.fill();
+    }
+
+    const creaseCount = Math.max(12, Math.round((tw + th) / 75));
+    tctx.lineCap = 'round';
+    for (let i = 0; i < creaseCount; i += 1) {
+      const startX = Math.random() * tw;
+      const startY = Math.random() * th;
+      const length = tw * (0.16 + Math.random() * 0.34);
+      const bend = th * (0.015 + Math.random() * 0.08);
+      const endY = startY + (Math.random() - 0.5) * bend * 1.6;
+
+      tctx.strokeStyle = `rgba(255, 214, 176, ${0.02 + Math.random() * 0.03})`;
+      tctx.lineWidth = 0.5 + Math.random() * 1.2;
+      tctx.beginPath();
+      tctx.moveTo(startX, startY);
+      tctx.bezierCurveTo(
+        startX + length * (0.18 + Math.random() * 0.1),
+        startY - bend,
+        startX + length * (0.58 + Math.random() * 0.12),
+        startY + bend,
+        startX + length,
+        endY
+      );
+      tctx.stroke();
+
+      tctx.strokeStyle = `rgba(72, 30, 10, ${0.02 + Math.random() * 0.03})`;
+      tctx.lineWidth *= 0.65;
+      tctx.beginPath();
+      tctx.moveTo(startX, startY + 0.8);
+      tctx.bezierCurveTo(
+        startX + length * 0.22,
+        startY - bend + 0.8,
+        startX + length * 0.68,
+        startY + bend + 0.8,
+        startX + length,
+        endY + 0.8
+      );
+      tctx.stroke();
+    }
+
+    for (let i = 0; i < 22; i += 1) {
+      const patchX = Math.random() * tw;
+      const patchY = Math.random() * th;
+      const patchR = tw * (0.045 + Math.random() * 0.1);
+      const patch = tctx.createRadialGradient(patchX, patchY, 0, patchX, patchY, patchR);
+      patch.addColorStop(0, `rgba(255, 208, 150, ${0.025 + Math.random() * 0.04})`);
+      patch.addColorStop(1, 'rgba(255, 205, 148, 0)');
+      tctx.fillStyle = patch;
+      tctx.beginPath();
+      tctx.arc(patchX, patchY, patchR, 0, Math.PI * 2);
+      tctx.fill();
+    }
+
+    const vignette = tctx.createRadialGradient(tw * 0.48, th * 0.46, tw * 0.16, tw * 0.5, th * 0.5, tw * 0.82);
+    vignette.addColorStop(0, 'rgba(0, 0, 0, 0)');
+    vignette.addColorStop(1, 'rgba(26, 9, 0, 0.22)');
+    tctx.fillStyle = vignette;
+    tctx.fillRect(0, 0, tw, th);
+
+    leatherTexture = texture;
+  };
+
+  return mountCanvasEffect(
+    container,
+    'login-background leather-upholstery-theme',
+    ({ ctx, width, height, now }) => {
+      ctx.clearRect(0, 0, width, height);
+      if (leatherTexture) {
+        ctx.drawImage(leatherTexture, 0, 0, width, height);
+      }
+
+      const sheenX = width * 0.08 + ((now * 0.028) % (width * 1.25));
+      const sheen = ctx.createLinearGradient(sheenX - width * 0.12, 0, sheenX + width * 0.05, 0);
+      sheen.addColorStop(0, 'rgba(255, 235, 210, 0)');
+      sheen.addColorStop(0.45, 'rgba(255, 235, 210, 0.045)');
+      sheen.addColorStop(0.6, 'rgba(255, 255, 255, 0.018)');
+      sheen.addColorStop(1, 'rgba(255, 235, 210, 0)');
+      ctx.fillStyle = sheen;
+      ctx.fillRect(0, 0, width, height);
+
+      const sideShade = ctx.createLinearGradient(0, 0, width, 0);
+      sideShade.addColorStop(0, 'rgba(25, 10, 0, 0.2)');
+      sideShade.addColorStop(0.18, 'rgba(25, 10, 0, 0)');
+      sideShade.addColorStop(0.82, 'rgba(25, 10, 0, 0)');
+      sideShade.addColorStop(1, 'rgba(18, 6, 0, 0.32)');
+      ctx.fillStyle = sideShade;
+      ctx.fillRect(0, 0, width, height);
+    }
+    ,
+    buildLeatherTexture
+  );
+}
+
+function mountGlassBubbles(container, palette) {
+  let bubbles = [];
+
+  const reseed = ({ width, height }) => {
+    const total = Math.max(16, Math.min(34, Math.round((width * height) / 42000)));
+    bubbles = Array.from({ length: total }, (_, index) => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      radius: Math.max(24, Math.min(88, 24 + Math.random() * 72)),
+      speed: 0.12 + Math.random() * 0.45,
+      drift: (Math.random() - 0.5) * 0.35,
+      phase: Math.random() * Math.PI * 2,
+      color: palette[index % palette.length]
+    }));
+  };
+
+  return mountCanvasEffect(
+    container,
+    'login-background glass-bubbles-theme',
+    ({ ctx, width, height, now }) => {
+      const time = now * 0.001;
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = colorWithAlpha(palette[4], 0.06);
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.save();
+      ctx.filter = 'blur(2px)';
+      bubbles.forEach((bubble, index) => {
+        bubble.y -= bubble.speed;
+        bubble.x += Math.sin(time + bubble.phase) * bubble.drift;
+        if (bubble.y < -bubble.radius * 1.2) {
+          bubble.y = height + bubble.radius * 1.1;
+          bubble.x = Math.random() * width;
+        }
+
+        const gradient = ctx.createRadialGradient(
+          bubble.x - bubble.radius * 0.25,
+          bubble.y - bubble.radius * 0.35,
+          bubble.radius * 0.1,
+          bubble.x,
+          bubble.y,
+          bubble.radius
+        );
+        gradient.addColorStop(0, colorWithAlpha('#ffffff', 0.22));
+        gradient.addColorStop(0.25, colorWithAlpha(palette[(index + 1) % palette.length], 0.16));
+        gradient.addColorStop(1, colorWithAlpha(bubble.color, 0.02));
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        ctx.arc(bubble.x, bubble.y, bubble.radius, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = colorWithAlpha('#ffffff', 0.18);
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.arc(bubble.x, bubble.y, bubble.radius * 0.92, 0, Math.PI * 2);
+        ctx.stroke();
+      });
+      ctx.restore();
+    },
+    reseed
+  );
+}
+
+function mountRadarRings(container, palette) {
+  return mountCanvasEffect(
+    container,
+    'login-background radar-rings-theme',
+    ({ ctx, width, height, now }) => {
+      const cx = width * 0.5;
+      const cy = height * 0.5;
+      const maxRadius = Math.hypot(width, height) * 0.55;
+      const time = now * 0.001;
+
+      ctx.clearRect(0, 0, width, height);
+      const radial = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxRadius);
+      radial.addColorStop(0, colorWithAlpha(palette[0], 0.1));
+      radial.addColorStop(0.45, colorWithAlpha(palette[1], 0.08));
+      radial.addColorStop(1, colorWithAlpha(palette[4], 0.02));
+      ctx.fillStyle = radial;
+      ctx.fillRect(0, 0, width, height);
+
+      ctx.strokeStyle = colorWithAlpha(palette[2], 0.14);
+      ctx.lineWidth = 1;
+      for (let ring = 0; ring < 8; ring += 1) {
+        ctx.beginPath();
+        ctx.arc(cx, cy, maxRadius * ((ring + 1) / 8), 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      ctx.strokeStyle = colorWithAlpha(palette[3], 0.16);
+      ctx.beginPath();
+      ctx.moveTo(cx, 0);
+      ctx.lineTo(cx, height);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(0, cy);
+      ctx.lineTo(width, cy);
+      ctx.stroke();
+
+      const sweepAngle = time * 0.7;
+      const wedge = Math.PI / 5.5;
+      const beam = ctx.createRadialGradient(cx, cy, 0, cx, cy, maxRadius);
+      beam.addColorStop(0, colorWithAlpha(palette[4], 0.28));
+      beam.addColorStop(1, colorWithAlpha(palette[4], 0));
+      ctx.fillStyle = beam;
+      ctx.beginPath();
+      ctx.moveTo(cx, cy);
+      ctx.arc(cx, cy, maxRadius, sweepAngle - wedge, sweepAngle + wedge);
+      ctx.closePath();
+      ctx.fill();
+
+      for (let pulse = 0; pulse < 3; pulse += 1) {
+        const progress = ((time * 0.24 + pulse * 0.33) % 1);
+        const radius = maxRadius * progress;
+        ctx.strokeStyle = colorWithAlpha(palette[pulse % palette.length], (1 - progress) * 0.35);
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+    }
+  );
+}
+
+function mountDiagonalShimmer(container, palette) {
+  return mountCanvasEffect(
+    container,
+    'login-background diagonal-shimmer-theme',
+    ({ ctx, width, height, now }) => {
+      const spacing = Math.max(90, Math.min(160, width / 7));
+      const travel = (now * 0.09) % (spacing * 2);
+      ctx.clearRect(0, 0, width, height);
+
+      const base = ctx.createLinearGradient(0, 0, width, height);
+      base.addColorStop(0, colorWithAlpha(palette[0], 0.14));
+      base.addColorStop(0.5, colorWithAlpha(palette[2], 0.08));
+      base.addColorStop(1, colorWithAlpha(palette[4], 0.12));
+      ctx.fillStyle = base;
+      ctx.fillRect(0, 0, width, height);
+
+      for (let offset = -height - spacing * 2; offset < width + height + spacing * 2; offset += spacing) {
+        const shimmer = ctx.createLinearGradient(offset + travel, 0, offset + travel + spacing * 0.9, 0);
+        shimmer.addColorStop(0, colorWithAlpha(palette[1], 0));
+        shimmer.addColorStop(0.45, colorWithAlpha(palette[3], 0.18));
+        shimmer.addColorStop(0.55, colorWithAlpha('#ffffff', 0.12));
+        shimmer.addColorStop(1, colorWithAlpha(palette[1], 0));
+        ctx.strokeStyle = shimmer;
+        ctx.lineWidth = spacing * 0.38;
+        ctx.beginPath();
+        ctx.moveTo(offset + travel, height);
+        ctx.lineTo(offset + height + travel, 0);
+        ctx.stroke();
+      }
+    }
+  );
+}
+
+function mountMosaicPulse(container, palette) {
+  return mountCanvasEffect(
+    container,
+    'login-background mosaic-pulse-theme',
+    ({ ctx, width, height, now }) => {
+      const size = Math.max(34, Math.min(70, width / 18));
+      const cols = Math.ceil(width / size) + 1;
+      const rows = Math.ceil(height / size) + 1;
+      const time = now * 0.0015;
+
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = colorWithAlpha(palette[4], 0.08);
+      ctx.fillRect(0, 0, width, height);
+
+      for (let row = 0; row < rows; row += 1) {
+        for (let col = 0; col < cols; col += 1) {
+          const x = col * size;
+          const y = row * size;
+          const phase = time + row * 0.42 + col * 0.24;
+          const alpha = 0.08 + ((Math.sin(phase) + 1) / 2) * 0.18;
+          ctx.fillStyle = colorWithAlpha(palette[(row + col) % palette.length], alpha);
+          ctx.fillRect(x, y, size - 2, size - 2);
+
+          ctx.strokeStyle = colorWithAlpha('#ffffff', 0.04);
+          ctx.lineWidth = 1;
+          ctx.strokeRect(x + 0.5, y + 0.5, size - 3, size - 3);
+        }
+      }
+
+      const glow = ctx.createRadialGradient(
+        width * (0.5 + Math.sin(time * 0.45) * 0.18),
+        height * (0.5 + Math.cos(time * 0.38) * 0.16),
+        0,
+        width * 0.5,
+        height * 0.5,
+        Math.max(width, height) * 0.48
+      );
+      glow.addColorStop(0, colorWithAlpha(palette[2], 0.18));
+      glow.addColorStop(1, colorWithAlpha(palette[2], 0));
+      ctx.fillStyle = glow;
+      ctx.fillRect(0, 0, width, height);
+    }
+  );
+}
+
+function mountStaticBackground(container) {
+  prepareBackgroundContainer(container, 'login-background static-theme');
+  return () => {
+    container.replaceChildren();
+  };
+}
+
+function mountLiquidEtherTheme(container, palette, perf) {
+  prepareBackgroundContainer(container, 'liquid-ether-container liquid-ether-theme');
+  return mountLiquidEther(container, {
     ...perf,
-    colors: ['#00c2ff', '#38d9ff', '#7cecff', '#b9f4ff', '#ffe5b8'],
-    color0: '#00c2ff',
-    color1: '#38d9ff',
-    color2: '#7cecff',
+    colors: palette,
+    color0: palette[0],
+    color1: palette[1],
+    color2: palette[2],
     className: 'liquid-ether-container liquid-ether-theme',
     style: {
       position: 'fixed',
@@ -1349,4 +2050,43 @@ if (liquidContainer && !prefersReducedMotion) {
       height: '100vh'
     }
   });
+}
+
+function mountLoginBackground(container, mode, palette, perf) {
+  switch (mode) {
+    case 'aurora-flow':
+      return mountAuroraFlow(container, palette);
+    case 'particle-network':
+      return mountParticleNetwork(container, palette);
+    case 'neon-grid':
+      return mountNeonGrid(container, palette);
+    case 'leather-upholstery':
+      return mountLeatherUpholstery(container, palette);
+    case 'glass-bubbles':
+      return mountGlassBubbles(container, palette);
+    case 'radar-rings':
+      return mountRadarRings(container, palette);
+    case 'diagonal-shimmer':
+      return mountDiagonalShimmer(container, palette);
+    case 'mosaic-pulse':
+      return mountMosaicPulse(container, palette);
+    case 'none':
+      return mountStaticBackground(container);
+    case 'liquid-ether':
+    default:
+      return mountLiquidEtherTheme(container, palette, perf);
+  }
+}
+
+const liquidContainer = document.getElementById('liquid-ether-bg');
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const perf = getLiquidEtherPerfProfile();
+const themePalette = getLoginThemePalette();
+const animationMode = prefersReducedMotion ? 'none' : readLoginAnimationMode();
+
+if (liquidContainer) {
+  if (typeof window.__destroyLiquidEtherLogin === 'function') {
+    window.__destroyLiquidEtherLogin();
+  }
+  window.__destroyLiquidEtherLogin = mountLoginBackground(liquidContainer, animationMode, themePalette, perf);
 }

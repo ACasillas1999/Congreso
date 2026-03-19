@@ -16,31 +16,29 @@ $conn->query("CREATE TABLE IF NOT EXISTS configuracion_css (
     valor_css VARCHAR(255) NOT NULL
 )");
 
-// Verificar si hay registros, si no, insertar defaults
-$check = $conn->query("SELECT COUNT(*) as total FROM configuracion_css");
-$row = $check->fetch_assoc();
-if ($row['total'] == 0) {
-    $defaults = [
-        '--azul-oscuro' => '#054a6b',
-        '--azul-medio' => '#1ca9dc',
-        '--azul-suave' => '#dff8ff',
-        '--gris-suave' => '#f5f6fa',
-        '--naranja' => '#38d9ff',
-        '--verde' => '#0ea5c6',
-        '--bg-gradient-start' => '#95ecff',
-        '--bg-gradient-end' => '#054a6b',
-        '--container-bg' => 'rgba(8, 27, 50, 0.7)',
-        '--titulo-neon' => '#7cecff'
-    ];
-    $stmt = $conn->prepare("INSERT INTO configuracion_css (nombre_variable, valor_css) VALUES (?, ?)");
-    foreach ($defaults as $var => $val) {
-        $stmt->bind_param("ss", $var, $val);
-        $stmt->execute();
-    }
+$defaults = [
+    '--azul-oscuro' => '#054a6b',
+    '--azul-medio' => '#1ca9dc',
+    '--azul-suave' => '#dff8ff',
+    '--gris-suave' => '#f5f6fa',
+    '--naranja' => '#38d9ff',
+    '--verde' => '#0ea5c6',
+    '--bg-gradient-start' => '#95ecff',
+    '--bg-gradient-end' => '#054a6b',
+    '--container-bg' => 'rgba(8, 27, 50, 0.7)',
+    '--titulo-neon' => '#7cecff',
+    '--login-animation' => 'liquid-ether'
+];
+
+// Insertar cualquier default faltante sin tocar los ya personalizados
+$stmt = $conn->prepare("INSERT IGNORE INTO configuracion_css (nombre_variable, valor_css) VALUES (?, ?)");
+foreach ($defaults as $var => $val) {
+    $stmt->bind_param("ss", $var, $val);
+    $stmt->execute();
 }
 
 // Cargar valores actuales
-$current_vars = [];
+$current_vars = $defaults;
 $result = $conn->query("SELECT nombre_variable, valor_css FROM configuracion_css");
 while ($row = $result->fetch_assoc()) {
     $current_vars[$row['nombre_variable']] = $row['valor_css'];
@@ -92,6 +90,18 @@ while ($row = $result->fetch_assoc()) {
             padding: 5px 10px;
             border-radius: 5px;
             width: 100px;
+        }
+        select {
+            width: 100%;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 10px 12px;
+            border-radius: 8px;
+        }
+        select option {
+            background: #0d2f44;
+            color: white;
         }
         .actions {
             margin-top: 30px;
@@ -165,6 +175,22 @@ while ($row = $result->fetch_assoc()) {
                         <input type="color" name="--naranja" value="<?php echo $current_vars['--naranja']; ?>">
                         <input type="text" value="<?php echo $current_vars['--naranja']; ?>" readonly>
                     </div>
+                </div>
+
+                <div class="color-group">
+                    <label>Animaci&oacute;n del Login</label>
+                    <select name="--login-animation">
+                        <option value="liquid-ether" <?php echo $current_vars['--login-animation'] === 'liquid-ether' ? 'selected' : ''; ?>>Liquid Ether</option>
+                        <option value="aurora-flow" <?php echo $current_vars['--login-animation'] === 'aurora-flow' ? 'selected' : ''; ?>>Aurora Flow</option>
+                        <option value="particle-network" <?php echo $current_vars['--login-animation'] === 'particle-network' ? 'selected' : ''; ?>>Particle Network</option>
+                        <option value="neon-grid" <?php echo $current_vars['--login-animation'] === 'neon-grid' ? 'selected' : ''; ?>>Neon Grid</option>
+                        <option value="leather-upholstery" <?php echo $current_vars['--login-animation'] === 'leather-upholstery' ? 'selected' : ''; ?>>Piel / Tapicer&iacute;a</option>
+                        <option value="glass-bubbles" <?php echo $current_vars['--login-animation'] === 'glass-bubbles' ? 'selected' : ''; ?>>Burbujas de Cristal</option>
+                        <option value="radar-rings" <?php echo $current_vars['--login-animation'] === 'radar-rings' ? 'selected' : ''; ?>>Anillos Radiales</option>
+                        <option value="diagonal-shimmer" <?php echo $current_vars['--login-animation'] === 'diagonal-shimmer' ? 'selected' : ''; ?>>Brillo Diagonal</option>
+                        <option value="mosaic-pulse" <?php echo $current_vars['--login-animation'] === 'mosaic-pulse' ? 'selected' : ''; ?>>Mosaico Pulsante</option>
+                        <option value="none" <?php echo $current_vars['--login-animation'] === 'none' ? 'selected' : ''; ?>>Sin animaci&oacute;n</option>
+                    </select>
                 </div>
             </div>
 
