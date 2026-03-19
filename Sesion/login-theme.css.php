@@ -4,8 +4,6 @@ header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
 header("Pragma: no-cache");
 header("Expires: 0");
 
-require_once __DIR__ . "/../Conexiones/config.php";
-
 $css_vars = [
     '--azul-oscuro' => '#054a6b',
     '--azul-medio' => '#1ca9dc',
@@ -22,7 +20,7 @@ $css_vars = [
 
 try {
     mysqli_report(MYSQLI_REPORT_OFF);
-    $conn = @new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_NAME);
+    $conn = @new mysqli('localhost', 'root', '', 'gpoascen_congresos');
 
     if ($conn instanceof mysqli && !$conn->connect_error) {
         $conn->set_charset("utf8mb4");

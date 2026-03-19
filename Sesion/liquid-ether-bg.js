@@ -2,7 +2,7 @@
 let useRef;
 let useEffect;
 let _jsx;
-const defaultColors = ['#ffffffff', '#000000ff', '#000000ff'];
+const defaultColors = ['#5227FF', '#FF9FFC', '#B19EEF'];
 function LiquidEther({ mouseForce = 20, cursorSize = 100, isViscous = false, viscous = 30, iterationsViscous = 32, iterationsPoisson = 32, dt = 0.014, BFECC = true, resolution = 0.5, isBounce = false, colors = defaultColors, color0, color1, color2, style = {}, className = '', autoDemo = true, autoSpeed = 0.5, autoIntensity = 2.2, takeoverDuration = 0.25, autoResumeDelay = 1000, autoRampDuration = 0.6, maxPixelRatio = 1.25, antialias = false, targetFps = 30 }) {
     const mountRef = useRef(null);
     const webglRef = useRef(null);
@@ -20,7 +20,7 @@ function LiquidEther({ mouseForce = 20, cursorSize = 100, isViscous = false, vis
                 arr = stops.length === 1 ? [stops[0], stops[0]] : stops;
             }
             else {
-                arr = ['#000000ff', '#000000ff'];
+                arr = ['#ffffff', '#ffffff'];
             }
             const w = arr.length;
             const data = new Uint8Array(w * 4);
@@ -1358,11 +1358,11 @@ function readLoginAnimationMode() {
 
 function getLoginThemePalette() {
   return [
-    readThemeColor('--bg-gradient-start', '#030303ff'),
-    readThemeColor('--azul-medio', '#030303ff'),
-    readThemeColor('--titulo-neon', '#030303ff'),
-    readThemeColor('--naranja', '#030303ff'),
-    readThemeColor('--bg-gradient-end', '#030303ff')
+    readThemeColor('--bg-gradient-start', '#00c2ff'),
+    readThemeColor('--azul-medio', '#38d9ff'),
+    readThemeColor('--titulo-neon', '#7cecff'),
+    readThemeColor('--naranja', '#b9f4ff'),
+    readThemeColor('--bg-gradient-end', '#ffe5b8')
   ];
 }
 
@@ -1868,7 +1868,7 @@ function mountGlassBubbles(container, palette) {
           bubble.y,
           bubble.radius
         );
-        gradient.addColorStop(0, colorWithAlpha('#000000ff', 0.22));
+        gradient.addColorStop(0, colorWithAlpha('#ffffff', 0.22));
         gradient.addColorStop(0.25, colorWithAlpha(palette[(index + 1) % palette.length], 0.16));
         gradient.addColorStop(1, colorWithAlpha(bubble.color, 0.02));
         ctx.fillStyle = gradient;
@@ -1876,7 +1876,7 @@ function mountGlassBubbles(container, palette) {
         ctx.arc(bubble.x, bubble.y, bubble.radius, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.strokeStyle = colorWithAlpha('#000000ff', 0.18);
+        ctx.strokeStyle = colorWithAlpha('#ffffff', 0.18);
         ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.arc(bubble.x, bubble.y, bubble.radius * 0.92, 0, Math.PI * 2);
@@ -2005,7 +2005,7 @@ function mountMosaicPulse(container, palette) {
           ctx.fillStyle = colorWithAlpha(palette[(row + col) % palette.length], alpha);
           ctx.fillRect(x, y, size - 2, size - 2);
 
-          ctx.strokeStyle = colorWithAlpha('#000000ff', 0.04);
+          ctx.strokeStyle = colorWithAlpha('#ffffff', 0.04);
           ctx.lineWidth = 1;
           ctx.strokeRect(x + 0.5, y + 0.5, size - 3, size - 3);
         }
