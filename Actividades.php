@@ -1,318 +1,307 @@
 <?php
-
-// Iniciar la sesión de forma segura
-
-ini_set('session.cookie_httponly', true); // Sólo permitir cookies de sesión vía HTTP
-ini_set('session.cookie_secure', true); // Solo enviar cookies de sesión a través de conexiones HTTPS
 session_name("CON");
 session_start();
 
-// Verificar si el usuario no está logeado
-if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION["Rol"] === "Vendedor") {
-
-    // Si no está logeado, redirigir al formulario de inicio de sesión
+// Verificar si el usuario no está logueado
+if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     header("location: /Congreso/Sesion/login.html");
     exit;
 }
-// Incluye el archivo de conexión a la base de datos
+
 require_once __DIR__ . "/Conexiones/Conexion.php";
 
-// Verifica si el ID de la actividad está presente en la URL
-if (isset($_GET['id']) && is_numeric($_GET['id'])) {
-    $id = intval($_GET['id']);
+$id_actividad = isset($_GET['id']) ? intval($_GET['id']) : 0;
+$id_evento = isset($_GET['evento']) ? intval($_GET['evento']) : 0;
+$is_list_view = false;
+$actividad_row = null;
+$actividades = [];
+$nombre_evento = '';
 
-    // Prepara la consulta para obtener los detalles de la actividad
-    $actividad_sql = "SELECT ID, Actividad, Descripcion, ID_Evento, capacidad, Puntos_Default FROM actividades WHERE ID = ?";
+if ($id_evento > 0) {
+    $is_list_view = true;
+    $sidebar_event_id = $id_evento;
 
-    if ($stmt_actividad = $conn->prepare($actividad_sql)) {
-        $stmt_actividad->bind_param("i", $id);
-        $stmt_actividad->execute();
-        $actividad_result = $stmt_actividad->get_result();
-
-        if ($actividad_result && $actividad_result->num_rows > 0) {
-            // Obtiene los datos de la actividad
-            $actividad_row = $actividad_result->fetch_assoc();
-            $id_evento = $actividad_row['ID_Evento'];
-            ?>
-
-            <!DOCTYPE html>
-            <html lang="es">
-
-            <head>
-                <meta charset="UTF-8">
-                <link rel="icon" href="/Congreso/educacion.png" type="image/x-icon">
-
-                <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Detalles de la Actividad</title>
-                <link rel="stylesheet" type="text/css" href="styles.css">
-                <script>
-                    function confirmarAgendar() {
-                        return confirm("¿Estás seguro de que deseas agendar esta actividad?");
-                    }
-
-                    function agendarActividad(fecha, hora, salon, idActividad) {
-                        if (confirm('¿Estás seguro de que deseas agendar esta actividad para la fecha ' + fecha + ', hora ' + hora + ', en el salón ' + salon + '?')) {
-                            // Configurar los valores del formulario oculto
-                            document.getElementById('fecha').value = fecha;
-                            document.getElementById('hora').value = hora;
-                            document.getElementById('salon').value = salon;
-                            document.getElementById('id_actividad').value = idActividad;
-
-                            // Enviar la solicitud AJAX
-                            var xhr = new XMLHttpRequest();
-                            xhr.open('POST', 'agendar_actividad.php', true);
-                            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                            xhr.onload = function () {
-                                if (xhr.status >= 200 && xhr.status < 400) {
-                                    var response = JSON.parse(xhr.responseText);
-                                    if (response.success) {
-                                        alert('Actividad agendada con éxito.');
-                                        // Aquí puedes actualizar la agenda en la página si es necesario
-                                    } else {
-                                        alert('Error al agendar la actividad: ' + response.error);
-                                    }
-                                } else {
-                                    alert('Error en la solicitud.');
-                                }
-                            };
-                            xhr.send(new URLSearchParams(new FormData(document.getElementById('agendar-form'))).toString());
-                        }
-                    }
-
-                    document.addEventListener('DOMContentLoaded', function () {
-                        // Aquí puedes agregar la lógica adicional si es necesario
-                    });
-                </script>
-
-
-                <style>
-                    .agenda-tabla {
-  margin-top: 40px;
-  padding: 20px;
-  background: rgba(255, 255, 255, 0.02);
-  border-radius: 16px;
-  box-shadow: 0 0 20px rgba(0,255,255,0.07);
-}
-
-.agenda-dia {
-  font-size: 22px;
-  font-weight: 600;
-  margin-bottom: 20px;
-  color: #90caf9;
-  text-shadow: 0 0 6px rgba(144, 202, 249, 0.4);
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-  padding-bottom: 10px;
-}
-
-.tabla-agenda {
-  width: 100%;
-  border-collapse: collapse;
-  color: #fff;
-}
-
-.tabla-agenda th, .tabla-agenda td {
-  border: 1px solid rgba(255,255,255,0.1);
-  padding: 12px;
-  text-align: center;
-}
-
-.tabla-agenda th {
-  background-color: #1e2a78;
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-.tabla-agenda td {
-  background-color: rgba(255,255,255,0.02);
-  vertical-align: middle;
-}
-
-.tabla-agenda tr:hover td {
-  background-color: rgba(255,255,255,0.05);
-}
-
-                </style>
-            </head>
-
-            <body class="fade-in">
-
-                <div class="sidebar">
-                    <ul>
-                        <!--   <li><a href="/Congreso/Registrar">Agregar</a></li>-->
-                        <li class="corner-left-bottom"><a
-                                href="Evento_inicio.php?id=<?php echo htmlspecialchars($id_evento); ?>">Volver</a></li>
-                    </ul>
-                </div>
-
-                <div class="container">
-                    <h2 class="titulo">Detalles de la Actividad</h2>
-                    <table class="mi-tabla" border="1">
-                        <tr>
-                            <th>ID</th>
-                            <td><?php echo htmlspecialchars($actividad_row['ID']); ?></td>
-                        </tr>
-                        <tr>
-                            <th>Actividad</th>
-                            <td><?php echo htmlspecialchars($actividad_row['Actividad']); ?></td>
-                        </tr>
-                        <tr>
-                            <th>Descripción</th>
-                            <td><?php echo htmlspecialchars($actividad_row['Descripcion']); ?></td>
-                           
-
-                        </tr>
-                        
-                        <tr>
-                            
-                             <th>Puntos</th>
-                            <td><?php echo htmlspecialchars($actividad_row['Puntos_Default']); ?></td>
-                            </tr>
-                        <tr>
-                            <th> Cap. Participantes</th>
-                            <td><?php echo htmlspecialchars($actividad_row['capacidad']); ?></td>
-
-                        </tr>
-                    </table>
-                    <p></p>
-                    <button class="button"
-                        onclick="window.location.href='Actualizar_Actividad.php?id=<?php echo $id; ?>'">Actualizar
-                        Actividad</button>
-
-                    <?php
-                    // Consulta SQL para verificar si la actividad ya está agendada
-                    $agenda_sql = "SELECT Fecha, Horario, Salon FROM agenda WHERE ID_Evento = ? AND Actividad = ? ORDER BY Fecha";
-                    if ($stmt_agenda = $conn->prepare($agenda_sql)) {
-                        $stmt_agenda->bind_param("is", $id_evento, $actividad_row['Actividad']);
-                        $stmt_agenda->execute();
-                        $agenda_result = $stmt_agenda->get_result();
-
-                        if ($agenda_result && $agenda_result->num_rows > 0) {
-                            echo "<h2 class='titulo'>Detalles de la Actividad en la Agenda</h2>";
-                            echo "<table class='mi-tabla' border='1'>";
-                            echo "<tr><th>Horario</th><th>Salón</th><th>Fecha</th></tr>";
-
-                            while ($agenda_row = $agenda_result->fetch_assoc()) {
-                                echo "<tr>";
-                                echo "<td>" . htmlspecialchars($agenda_row['Horario']) . "</td>";
-                                echo "<td>" . htmlspecialchars($agenda_row['Salon']) . "</td>";
-                                echo "<td>" . htmlspecialchars($agenda_row['Fecha']) . "</td>";
-                                echo "</tr>";
-                            }
-                            echo "</table>";
-                        } else {
-                            echo "<p>Esta actividad aún no ha sido agendada.</p>";
-                        }
-                        $stmt_agenda->close(); // Cierra el stmt para agenda
-                    } else {
-                        echo "Error al preparar la consulta de agenda: " . htmlspecialchars($conn->error);
-                    }
-
-                    // Consulta SQL para obtener las fechas, horas, actividades y salones del evento
-                    $agenda_sql = "SELECT Fecha, Horario, Actividad, Salon FROM agenda WHERE ID_Evento = ? ORDER BY Horario";
-                    if ($stmt_agenda = $conn->prepare($agenda_sql)) {
-                        $stmt_agenda->bind_param("i", $id_evento);
-                        $stmt_agenda->execute();
-                        $agenda_result = $stmt_agenda->get_result();
-
-                        if ($agenda_result && $agenda_result->num_rows > 0) {
-                            $agenda_array = array();
-                            while ($agenda_row = $agenda_result->fetch_assoc()) {
-                                $fecha = $agenda_row["Fecha"];
-                                $hora = $agenda_row["Horario"];
-                                $salon = $agenda_row["Salon"];
-                                $actividad = $agenda_row["Actividad"];
-
-                                if (!isset($agenda_array[$fecha])) {
-                                    $agenda_array[$fecha] = array();
-                                }
-                                $agenda_array[$fecha][] = array("hora" => $hora, "actividad" => $actividad, "salon" => $salon);
-                            }
-
-                            echo "<h2 class='titulo'><div class='chart-title'>Fechas y Actividades del Evento</div></h2>";
-                            echo "<div class='agenda-grid'>";
-
-                            echo "<div class='agenda-grid'>";
-                           foreach ($agenda_array as $fecha => $actividades) {
-    echo "<div class='agenda-tabla'>";
-    echo "<h3 class='agenda-dia'>🗓️ Fecha: " . htmlspecialchars($fecha) . "</h3>";
-
-    // Ordenar actividades por hora y organizar por salón
-    $horarios = [];
-
-    foreach ($actividades as $actividad) {
-        $hora = $actividad['hora'];
-        $salon = $actividad['salon'];
-        $nombreActividad = $actividad['actividad'];
-
-        $horarios[$hora][$salon] = $nombreActividad;
+    if ($stmt_evento = $conn->prepare("SELECT name_evento FROM evento WHERE ID = ?")) {
+        $stmt_evento->bind_param("i", $id_evento);
+        $stmt_evento->execute();
+        $res_evento = $stmt_evento->get_result();
+        $evento_row = $res_evento ? $res_evento->fetch_assoc() : null;
+        $nombre_evento = $evento_row['name_evento'] ?? '';
+        $stmt_evento->close();
     }
 
-    echo "<table class='tabla-agenda'>";
-    echo "<thead><tr><th>Hora</th><th>Salón 1</th><th>Salón 2</th></tr></thead><tbody>";
+    $stmt = $conn->prepare("SELECT ID, Actividad, Descripcion, Puntos_Default, capacidad FROM actividades WHERE ID_Evento = ? ORDER BY Actividad");
+    if (!$stmt) {
+        echo "No fue posible consultar las actividades del evento.";
+        exit;
+    }
+    $stmt->bind_param("i", $id_evento);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $actividades = $result ? $result->fetch_all(MYSQLI_ASSOC) : [];
+    $stmt->close();
+} elseif ($id_actividad > 0) {
+    $stmt = $conn->prepare("SELECT * FROM actividades WHERE ID = ?");
+    if (!$stmt) {
+        echo "No fue posible consultar la actividad.";
+        exit;
+    }
+    $stmt->bind_param("i", $id_actividad);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $actividad_row = $result->fetch_assoc();
+    $stmt->close();
 
-    foreach ($horarios as $hora => $salones) {
-        echo "<tr>";
-        echo "<td>" . htmlspecialchars($hora) . "</td>";
+    if (!$actividad_row) {
+        echo "Actividad no encontrada.";
+        exit;
+    }
 
-        for ($i = 1; $i <= 2; $i++) {
-            $salon_nombre = "Salon $i";
-            $actividad_texto = $salones[$salon_nombre] ?? "Vacio";
+    $id_evento = (int)($actividad_row['ID_Evento'] ?? 0);
+    $id = $id_actividad; // Para compatibilidad con botones de actualizar
+    $sidebar_event_id = $id_evento;
+} else {
+    echo "ID de actividad o evento no proporcionado.";
+    exit;
+}
+?>
 
-            $color = $actividad_texto !== 'Vacio' ? 'badge-verde' : 'badge-rojo';
-
-            echo "<td>";
-            echo "<div class='badge $color'>" . htmlspecialchars($actividad_texto) . "</div>";
-            echo "<button class='boton-agendar' onclick=\"agendarActividad('" . htmlspecialchars($fecha) . "', '" . htmlspecialchars($hora) . "', '" . htmlspecialchars($salon_nombre) . "', '" . htmlspecialchars($id) . "')\">Agendar</button>";
-            echo "</td>";
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="/Congreso/educacion.png" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo $is_list_view ? 'Actividades del Evento' : 'Detalles de la Actividad'; ?></title>
+    <link rel="stylesheet" type="text/css" href="styles.css?v=3">
+    <?php include "header_css.php"; ?>
+    <style>
+        body, button, input, select, textarea {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
         }
+    </style>
+</head>
+<body class="fade-in">
 
-        echo "</tr>";
-    }
+    <?php include "sidebar.php"; ?>
 
-    echo "</tbody></table>";
+    <div class="container">
+        <?php if ($is_list_view): ?>
+            <h2 class="titulo">
+                Actividades del Evento<?php echo $nombre_evento !== '' ? ': ' . htmlspecialchars($nombre_evento) : ''; ?>
+            </h2>
+            <button class="button" type="button" onclick="abrirModalActividad()">
+                Agregar Actividad
+            </button>
+            <p></p>
 
-    echo "<button class='boton-consultar mt-3' onclick=\"location.href='ver_horario_dia.php?id=" . htmlspecialchars($id_evento) . "&fecha=" . urlencode($fecha) . "'\">📅 Ver Horario de este Día</button>";
-    echo "</div>"; // cierre de agenda-tabla
-}
+            <?php if (!empty($actividades)): ?>
+                <table class="mi-tabla" border="1">
+                    <tr>
+                        <th>ID</th>
+                        <th>Actividad</th>
+                        <th>Descripción</th>
+                        <th>Puntos</th>
+                        <th>Capacidad</th>
+                        <th>Acciones</th>
+                    </tr>
+                    <?php foreach ($actividades as $actividad): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($actividad['ID']); ?></td>
+                            <td><?php echo htmlspecialchars($actividad['Actividad']); ?></td>
+                            <td><?php echo htmlspecialchars($actividad['Descripcion'] ?? ''); ?></td>
+                            <td><?php echo htmlspecialchars($actividad['Puntos_Default'] ?? '0'); ?></td>
+                            <td><?php echo htmlspecialchars($actividad['capacidad'] ?? '0'); ?></td>
+                            <td>
+                                <a href="Actividades.php?id=<?php echo (int)$actividad['ID']; ?>" class="btn-tabla" style="background:rgba(56,217,255,0.1); color:var(--theme-title); border:1px solid rgba(56,217,255,0.2);">Ver</a>
+                                <a href="javascript:void(0)" class="btn-tabla" onclick="abrirModalEditar(<?php echo (int)$actividad['ID']; ?>, '<?php echo addslashes($actividad['Actividad']); ?>', '<?php echo addslashes($actividad['Descripcion'] ?? ''); ?>', <?php echo (int)$actividad['capacidad']; ?>, <?php echo (int)$actividad['Puntos_Default']; ?>)">Editar</a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </table>
+            <?php else: ?>
+                <p class="note">No hay actividades registradas para este evento.</p>
+            <?php endif; ?>
+        <?php else: ?>
+            <h2 class="titulo">Detalles de la Actividad</h2>
+            <table class="mi-tabla" border="1">
+                <tr>
+                    <th>ID</th>
+                    <td><?php echo htmlspecialchars($actividad_row['ID']); ?></td>
+                </tr>
+                <tr>
+                    <th>Actividad</th>
+                    <td><?php echo htmlspecialchars($actividad_row['Actividad']); ?></td>
+                </tr>
+                <tr>
+                    <th>Descripción</th>
+                    <td><?php echo htmlspecialchars($actividad_row['Descripcion'] ?? ''); ?></td>
+                </tr>
+                <tr>
+                    <th>Puntos</th>
+                    <td><?php echo htmlspecialchars($actividad_row['Puntos_Default'] ?? '0'); ?></td>
+                </tr>
+                <tr>
+                    <th>Cap. Participantes</th>
+                    <td><?php echo htmlspecialchars($actividad_row['capacidad'] ?? '0'); ?></td>
+                </tr>
+            </table>
 
-                            echo "</div>"; // agenda-grid
-        
-
-                        } else {
-                            echo "No se encontraron actividades para este evento.";
-                        }
-                    } else {
-                        echo "Error al preparar la consulta de agenda: " . htmlspecialchars($conn->error);
-                    }
-                    ?>
-
-                   <form id="agendar-form" style="display: none;">
-  <input type="hidden" id="fecha" name="fecha">
-  <input type="hidden" id="hora" name="hora">
-  <input type="hidden" id="salon" name="salon">
-  <input type="hidden" id="id_actividad" name="id_actividad">
-  <input type="hidden" id="id_evento" name="id_evento" value="<?= htmlspecialchars($id_evento) ?>">
-</form>
-
-
-                </div>
-            </body>
-
-            </html>
+            <p></p>
+            <button class="button" onclick="window.location.href='Actualizar_Actividad.php?id=<?php echo $id; ?>'">
+                Actualizar Actividad
+            </button>
+            <button class="button" onclick="window.location.href='Actividades.php?evento=<?php echo $id_evento; ?>'">
+                Ver todas las actividades
+            </button>
 
             <?php
-        } else {
-            echo "No se encontraron detalles para esta actividad.";
-        }
-        $stmt_actividad->close(); // Cierra el stmt para actividad
-    } else {
-        echo "Error al preparar la consulta de detalles de la actividad: " . htmlspecialchars($conn->error);
+            $agenda_sql = "SELECT Fecha, Horario, Salon FROM agenda WHERE ID_Evento = ? AND Actividad = ? ORDER BY Fecha";
+            if ($stmt_agenda = $conn->prepare($agenda_sql)) {
+                $stmt_agenda->bind_param("is", $id_evento, $actividad_row['Actividad']);
+                $stmt_agenda->execute();
+                $agenda_result = $stmt_agenda->get_result();
+
+                if ($agenda_result && $agenda_result->num_rows > 0) {
+                    echo "<h2 class='titulo'>Detalles de la Actividad en la Agenda</h2>";
+                    echo "<table class='mi-tabla' border='1'>";
+                    echo "<tr><th>Horario</th><th>Salón</th><th>Fecha</th></tr>";
+
+                    while ($agenda_row = $agenda_result->fetch_assoc()) {
+                        echo "<tr>";
+                        echo "<td>" . htmlspecialchars($agenda_row['Horario']) . "</td>";
+                        echo "<td>" . htmlspecialchars($agenda_row['Salon']) . "</td>";
+                        echo "<td>" . htmlspecialchars($agenda_row['Fecha']) . "</td>";
+                        echo "</tr>";
+                    }
+                    echo "</table>";
+                } else {
+                    echo "<p class='note'>Esta actividad aún no ha sido asignada a la agenda.</p>";
+                }
+                $stmt_agenda->close();
+            }
+            ?>
+        <?php endif; ?>
+    </div>
+
+    <?php if ($is_list_view): ?>
+        <div id="modalActividad" class="modal">
+            <div class="modal-content" style="max-width: 640px; margin: 5% auto;">
+                <span class="close" onclick="cerrarModalActividad()">&times;</span>
+                <h3 style="color:var(--theme-title); margin-bottom:20px; border-bottom:1px solid var(--theme-border); padding-bottom:10px;">
+                    Agregar Actividad
+                </h3>
+                <form action="Funcion_Agregar_Actividad.php" method="POST">
+                    <input type="hidden" name="Evento" value="<?php echo $id_evento; ?>">
+                    <input type="hidden" name="redirect_to" value="Actividades.php?evento=<?php echo $id_evento; ?>">
+
+                    <div style="display:grid; gap:14px;">
+                        <div>
+                            <label for="ActividadModal" style="display:block; margin-bottom:6px;">Nombre de la Actividad:</label>
+                            <input type="text" id="ActividadModal" name="Actividad" required style="width:100%; padding:12px;">
+                        </div>
+
+                        <div>
+                            <label for="DescripcionModal" style="display:block; margin-bottom:6px;">Descripcion:</label>
+                            <input type="text" id="DescripcionModal" name="Descripcion" required style="width:100%; padding:12px;">
+                        </div>
+
+                        <div>
+                            <label for="CapacidadModal" style="display:block; margin-bottom:6px;">Capacidad:</label>
+                            <input type="number" id="CapacidadModal" name="capacidad" required min="1" style="width:100%; padding:12px;">
+                        </div>
+
+                        <div>
+                            <label for="PuntosModal" style="display:block; margin-bottom:6px;">Puntos por asistencia:</label>
+                            <input type="number" id="PuntosModal" name="Puntos_Default" min="0" step="1" value="0" required style="width:100%; padding:12px;">
+                        </div>
+
+                        <label style="display:flex; align-items:center; gap:8px; color:var(--theme-text);">
+                            <input type="checkbox" name="Exclusiva" value="1">
+                            Actividad exclusiva (solo Gerente/Admin)
+                        </label>
+                    </div>
+
+                    <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:22px;">
+                        <button type="button" class="button" onclick="cerrarModalActividad()" style="background:#4b5b70;">Cancelar</button>
+                        <input type="submit" value="Guardar Actividad">
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        <div id="modalEditarActividad" class="modal">
+            <div class="modal-content" style="max-width: 640px; margin: 5% auto;">
+                <span class="close" onclick="cerrarModalEditar()">&times;</span>
+                <h3 style="color:var(--theme-title); margin-bottom:20px; border-bottom:1px solid var(--theme-border); padding-bottom:10px;">
+                    Editar Actividad
+                </h3>
+                <form action="Funcion_Actualizar_Actividad.php" method="POST">
+                    <input type="hidden" name="id" id="edit_id">
+                    <input type="hidden" name="id_evento" value="<?php echo $id_evento; ?>">
+                    <input type="hidden" name="redirect_to" value="Actividades.php?evento=<?php echo $id_evento; ?>">
+
+                    <div style="display:grid; gap:14px;">
+                        <div>
+                            <label for="edit_actividad" style="display:block; margin-bottom:6px;">Nombre de la Actividad:</label>
+                            <input type="text" id="edit_actividad" name="actividad" required style="width:100%; padding:12px;">
+                        </div>
+
+                        <div>
+                            <label for="edit_descripcion" style="display:block; margin-bottom:6px;">Descripcion:</label>
+                            <textarea id="edit_descripcion" name="descripcion" required style="width:100%; padding:12px; min-height:80px; background:rgba(0,0,0,0.2); color:white; border:1px solid var(--theme-border); border-radius:8px;"></textarea>
+                        </div>
+
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+                            <div>
+                                <label for="edit_capacidad" style="display:block; margin-bottom:6px;">Capacidad:</label>
+                                <input type="number" id="edit_capacidad" name="capacidad" required min="1" style="width:100%; padding:12px;">
+                            </div>
+
+                            <div>
+                                <label for="edit_puntos" style="display:block; margin-bottom:6px;">Puntos:</label>
+                                <input type="number" id="edit_puntos" name="puntos" min="0" step="1" required style="width:100%; padding:12px;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:22px;">
+                        <button type="button" class="button" onclick="cerrarModalEditar()" style="background:#4b5b70;">Cancelar</button>
+                        <input type="submit" value="Guardar Cambios">
+                    </div>
+                </form>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <script>
+    const modalActividad = document.getElementById('modalActividad');
+    const modalEditarActividad = document.getElementById('modalEditarActividad');
+
+    function abrirModalActividad() {
+        if(modalActividad) modalActividad.style.display = 'block';
+    }
+    function cerrarModalActividad() {
+        if(modalActividad) modalActividad.style.display = 'none';
+    }
+    
+    function abrirModalEditar(id, nombre, descripcion, capacidad, puntos) {
+        if(!modalEditarActividad) return;
+        document.getElementById('edit_id').value = id;
+        document.getElementById('edit_actividad').value = nombre;
+        document.getElementById('edit_descripcion').value = descripcion;
+        document.getElementById('edit_capacidad').value = capacidad;
+        document.getElementById('edit_puntos').value = puntos;
+        modalEditarActividad.style.display = 'block';
+    }
+    function cerrarModalEditar() {
+        if(modalEditarActividad) modalEditarActividad.style.display = 'none';
     }
 
-} else {
-    echo "ID de actividad no válido.";
-}
-
-// Cierra la conexión a la base de datos
-$conn->close();
-?>
+    window.addEventListener('click', function(event) {
+        if (event.target === modalActividad) cerrarModalActividad();
+        if (event.target === modalEditarActividad) cerrarModalEditar();
+    });
+    </script>
+</body>
+</html>

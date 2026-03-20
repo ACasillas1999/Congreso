@@ -120,19 +120,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['qr'])) {
 
   <title>Canjear Premios</title>
   <link rel="stylesheet" href="styles.css">
+  <?php include "header_css.php"; ?>
   <script src="https://unpkg.com/@zxing/browser@latest"></script>
   <style>
     /* ===== Variables base (modo oscuro actual) ===== */
     :root {
-      --bg-grad: radial-gradient(circle at 20% 0%, #142455 0%, #0b1535 70%);
-      --panel: rgba(255, 255, 255, .08);
-      --panel-strong: rgba(255, 255, 255, .14);
-      --text: #fff;
-      --muted: rgba(255, 255, 255, .75);
-      --line: rgba(255, 255, 255, .18);
-      --accent: #1976d2;
-      --accent-2: #21a1f3;
-      --warn: #ff8c00;
+      --bg-grad: radial-gradient(circle at 20% 0%, var(--theme-primary, #142455) 0%, var(--theme-primary-dark, #0b1535) 70%);
+      --panel: var(--theme-surface-soft, rgba(255, 255, 255, .08));
+      --panel-strong: var(--theme-surface-strong, rgba(255, 255, 255, .14));
+      --text: var(--theme-text, #fff);
+      --muted: var(--theme-text-soft, rgba(255, 255, 255, .75));
+      --line: var(--theme-border, rgba(255, 255, 255, .18));
+      --accent: var(--theme-primary-dark, #1976d2);
+      --accent-2: var(--theme-accent, #21a1f3);
+      --warn: var(--naranja, #ff8c00);
       --danger: #ff5252;
     }
 
@@ -327,26 +328,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['qr'])) {
     }
 
     #qrMsg {
-      margin-top: 10px;
-      color: #9fd3ff;
-      font-size: 14px;
-    }
-
-    /* ===== Tabla -> Tarjetas en móvil ===== */
-    table.mi-tabla {
-      width: 100%;
-      border-collapse: collapse;
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 4px 18px rgba(0, 0, 0, .45);
-    }
-
-    @media (max-width: 720px) {
-      .mi-tabla thead {
-        display: none;
-      }
 
       .mi-tabla,
       .mi-tabla tbody,
@@ -634,23 +615,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['qr'])) {
       padding: 6px 10px;
       border-radius: 999px;
       background: rgba(33, 161, 243, .18);
-      border: 1px solid rgba(33, 161, 243, .35);
-      font-size: 14px;
-      font-weight: 700;
-    }
-
-    /* Tabla -> tarjetas en móvil (mejoras visuales) */
-    table.mi-tabla {
-      border-radius: 16px;
-      overflow: hidden;
-    }
-
-    @media (max-width: 740px) {
-      .mi-tabla thead {
-        display: none;
-      }
-
-      .mi-tabla,
       .mi-tabla tbody,
       .mi-tabla tr,
       .mi-tabla td {
@@ -734,6 +698,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['qr'])) {
       text-align: center;
       padding-inline: 10px;
     }
+    h1,
+    h2,
+    .app-header__title,
+    #qrMsg {
+      color: var(--theme-title, #7cecff);
+    }
+
+    input[type="text"],
+    input[type="number"],
+    #cameraSelect {
+      background: var(--theme-surface, #1f2a4d);
+      color: var(--theme-text, #fff);
+      border-color: var(--line);
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    #cameraSelect:focus {
+      background: var(--theme-surface-strong, #27356a);
+      border-color: var(--theme-accent, #21a1f3);
+    }
+
+    #qrBox,
+    #reader {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, .35), 0 0 0 1px var(--line);
+    }
+
+    .btn-primary,
+    .button,
+    button[type="submit"] {
+      background: linear-gradient(135deg, var(--accent-2), var(--accent));
+    }
+
+    .btn-secondary {
+      background: linear-gradient(135deg, var(--theme-primary, #21a1f3), var(--theme-primary-dark, #1976d2));
+    }
+
+    .chip {
+      background: linear-gradient(135deg, var(--naranja, #ff8c00), var(--theme-accent, #21a1f3));
+    }
+
   </style>
 </head>
 
@@ -802,7 +807,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['qr'])) {
       <video id="qrVideo" playsinline></video>
       <div id="qrFrame"></div>
     </div>
-    <div id="qrMsg" style="margin-top:8px;color:#9fd3ff;font-size:14px"></div>
+    <div id="qrMsg" style="margin-top:8px;color:var(--theme-title,#9fd3ff);font-size:14px"></div>
   </div>
 
 

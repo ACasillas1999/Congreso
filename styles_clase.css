@@ -24,11 +24,11 @@
    BASE MOBILE-FIRST
    ========================================================= */
 *{ box-sizing: border-box; }
-html,body{ height:100%; }
+html,body{ min-height:100%; }
 body{
   margin:0;
   color:var(--txt);
-  background: radial-gradient(circle at center, var(--bg-app), var(--bg-app-2));
+  /* El fondo se maneja en header_css.php */
   -webkit-tap-highlight-color: transparent;
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif;
 }
@@ -51,32 +51,7 @@ button{ font: inherit; cursor: pointer; }
   *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; }
 }
 
-/* =========================================================
-   CONTENEDOR PRINCIPAL
-   ========================================================= */
-.container{
-  width: 95%;
-  margin: 12px auto;
-  padding: 16px;
-  border-radius: 15px;
-  background: rgba(30, 30, 47, 0.95);
-  box-shadow:
-    0 -40px 40px -20px rgba(199, 111, 57, 0.3),
-    0 40px 40px -20px rgba(30, 144, 255, 0.2),
-    var(--shadow-1);
-  transition: background-color .3s, color .3s;
-  animation: fadeInUp .8s ease;
-}
 
-/* Espacio superior para que el botón Volver fijo no tape el contenido */
-@media (max-width: 991px){
-  body{ padding-top: calc(68px + env(safe-area-inset-top, 0px)); }
-}
-
-/* Escritorio con sidebar visible */
-@media (min-width: 992px){
-  .container{ margin-left: 260px; padding: 22px; }
-}
 
 /* =========================================================
    TIPOGRAFÍA Y FORMULARIOS
@@ -261,98 +236,7 @@ form#agregarParticipanteForm .button{ width: 100%; }
   #qrMsg{ margin-top:6px; font-size:14px; }
 }
 
-/* =========================================================
-   SIDEBAR
-   ========================================================= */
-/* Desktop/Tablet grande: sidebar fijo visible */
-.sidebar{
-  position: fixed;
-  top: 0; left: 0;
-  height: 100dvh;
-  width: 250px;
-  background: var(--bg-card);
-  backdrop-filter: blur(6px);
-  border-right: 1px solid rgba(255,255,255,.08);
-  box-shadow: var(--shadow-2);
-  z-index: 1200;
-  padding: calc(env(safe-area-inset-top, 0px) + 14px) 14px 18px calc(env(safe-area-inset-left, 0px) + 14px);
-  display: flex; flex-direction: column;
-}
 
-.sidebar ul{
-  list-style:none; margin:0; padding:6px 0;
-  display:flex; flex-direction:column; gap:8px; min-height:100%;
-}
-.sidebar li{ margin:0; }
-.sidebar a{
-  display:flex; align-items:center; gap:10px;
-  padding:12px 12px;
-  border-radius:12px;
-  color:var(--txt);
-  border:1px solid rgba(255,255,255,.08);
-  background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-}
-.sidebar a:hover{
-  border-color: rgba(255,255,255,.16);
-  background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
-}
-
-/* Botón Volver dentro del sidebar (desktop) */
-.sidebar .corner-left-bottom{ margin-top:auto; position: sticky; bottom:8px; }
-.sidebar .corner-left-bottom a{
-  position:relative;
-  padding:14px 14px 14px 44px;
-  border-radius:16px;
-  border-bottom-left-radius:26px;
-  color:#0b2542;
-  background:#e7f2ff;
-  border:1px solid #9fd3ff;
-  font-weight:600; letter-spacing:.2px;
-  box-shadow:0 8px 20px rgba(0,0,0,.20);
-}
-.sidebar .corner-left-bottom a::before{
-  content:'←'; position:absolute; left:14px; top:50%; transform:translateY(-50%);
-  font-weight:700; opacity:.9;
-}
-.sidebar .corner-left-bottom a:active{ transform: translateY(1px); }
-
-/* =========================================================
-   VOLVER (SOLO MÓVIL) — BOTÓN FIJO ARRIBA IZQUIERDA
-   ========================================================= */
-@media (max-width: 991px){
-  /* El sidebar no ocupa layout en móvil, dejamos sólo el botón Volver */
-  .sidebar{
-    position: static; background: transparent; border:0; box-shadow:none;
-    width:auto; height:auto; padding:0; z-index:auto;
-  }
-  .sidebar ul{ list-style:none; margin:0; padding:0; }
-  .sidebar ul > li{ display:none; }
-  .sidebar ul > li.corner-left-bottom{ display:block; }
-
-  /* Botón fijo arriba izquierda */
-  .sidebar .corner-left-bottom a{
-    position: fixed;
-    top: calc(12px + env(safe-area-inset-top, 0px));
-    left: calc(12px + env(safe-area-inset-left, 0px));
-    right: auto; bottom: auto;
-
-    display: inline-flex; align-items: center; gap: 8px;
-    min-height: 44px; line-height: 1;
-    padding: 10px 14px 10px 40px; /* espacio para flecha */
-    border-radius: 14px;
-    border: 1px solid #9fd3ff;
-    background: #e7f2ff;
-    color: #0b2542;
-    font-weight: 700; letter-spacing: .2px;
-    box-shadow: 0 8px 24px rgba(0,0,0,.25);
-    z-index: 1500;
-    touch-action: manipulation;
-  }
-  .sidebar .corner-left-bottom a::before{
-    content: '←'; position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
-    font-weight: 900; opacity: .9;
-  }
-}
 
 /* =========================================================
    TOASTS (coincide con tu HTML)
@@ -468,91 +352,5 @@ form#agregarParticipanteForm .button{ width: 100%; }
   text-shadow: 0 1px 0 rgba(0,0,0,.35);
 }
 
-/* =================== TOP BAR (reemplaza sidebar) =================== */
-:root{
-  --topbar-h-m: 60px;  /* altura móvil */
-  --topbar-h-d: 64px;  /* altura desktop */
-}
 
-/* Oculta el sidebar existente en todas las vistas */
-.sidebar{ display:none !important; }
-
-/* Deja espacio en el layout para la barra (móvil/desktop) */
-body.has-topbar{
-  padding-top: calc(var(--topbar-h-m) + env(safe-area-inset-top, 0px));
-}
-@media (min-width: 992px){
-  body.has-topbar{
-    padding-top: calc(var(--topbar-h-d) + env(safe-area-inset-top, 0px));
-  }
-  /* Anula el margen que ponías cuando había sidebar fijo */
-  .container{ margin-left: auto !important; }
-}
-
-/* Barra superior fija */
-.topbar{
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  height: var(--topbar-h-m);
-  padding: calc(env(safe-area-inset-top, 0px) + 8px) 12px 8px;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 8px;
-  z-index: 1600;
-
-  /* Estilo vidriado a juego con tu tema */
-  background: linear-gradient(180deg, rgba(15,20,45,.75), rgba(15,20,45,.55));
-  backdrop-filter: blur(8px);
-  border-bottom: 1px solid rgba(255,255,255,.08);
-  box-shadow: 0 12px 28px rgba(0,0,0,.28);
-}
-@media (min-width: 992px){
-  .topbar{ height: var(--topbar-h-d); }
-}
-
-/* Botón Volver */
-.topbar__back{
-  appearance: none;
-  border: 1px solid rgba(255,255,255,.14);
-  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-  color: var(--txt);
-  border-radius: 12px;
-  padding: 10px 14px;
-  min-height: 40px;
-  line-height: 1;
-  font-weight: 700;
-  box-shadow: 0 8px 20px rgba(0,0,0,.25);
-  cursor: pointer;
-  transition: transform .08s ease, border-color .2s ease;
-}
-.topbar__back:active{ transform: translateY(1px); }
-.topbar__back::first-letter{ color: var(--accent); font-weight: 900; }
-
-/* Título centrado */
-.topbar__title{
-  text-align: center;
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--warn);
-  letter-spacing: .2px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-@media (min-width: 992px){
-  .topbar__title{ font-size: 18px; }
-}
-
-/* Contenedor de acciones (derecha) — opcional */
-.topbar__actions{
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-
-/* Si tu QR usa el viewport completo en móvil, deja un poco más de altura útil */
-@media (max-width: 991px){
-  #qrWrap{ min-height: calc(100dvh - (var(--topbar-h-m) + 16px)); }
-}
 

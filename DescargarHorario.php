@@ -3,6 +3,25 @@
 require_once __DIR__ . "/Conexiones/Conexion.php";
 require_once __DIR__ . "/config.php";
 
+function renderHorarioError(string $titulo, string $mensaje, ?string $link = null, ?string $linkLabel = null): void {
+    ob_start();
+    include __DIR__ . "/header_css.php";
+    $themeCss = ob_get_clean();
+
+    echo "<!DOCTYPE html><html><head><meta charset='UTF-8'><meta name='viewport' content='width=device-width, initial-scale=1'>{$themeCss}<style>
+    body{margin:0;padding:24px;font-family:'Segoe UI',sans-serif;background:radial-gradient(circle at center,var(--theme-primary,#202040),var(--theme-primary-dark,#121212));color:var(--theme-text,#fff);display:flex;justify-content:center;align-items:center;min-height:100vh}
+    .card{max-width:680px;width:100%;background:var(--theme-surface-strong,#1e1e2f);border:1px solid var(--theme-border,rgba(255,255,255,.12));border-radius:18px;padding:28px;box-shadow:var(--theme-shadow,0 10px 28px rgba(0,0,0,.35))}
+    h2{margin-top:0;color:var(--theme-title,#7cecff)}
+    a{display:inline-block;margin-top:18px;padding:12px 18px;border-radius:10px;background:linear-gradient(135deg,var(--naranja,#ff8c00),var(--theme-accent,#21a1f3));color:var(--theme-text,#fff);text-decoration:none;font-weight:700}
+    code{word-break:break-all}
+    </style></head><body><div class='card'><h2>{$titulo}</h2><p>{$mensaje}</p>";
+    if ($link && $linkLabel) {
+        echo "<p><a href='" . htmlspecialchars($link, ENT_QUOTES, 'UTF-8') . "'>" . htmlspecialchars($linkLabel, ENT_QUOTES, 'UTF-8') . "</a></p>";
+    }
+    echo "</div></body></html>";
+    exit;
+}
+
 // Obtener ID
 $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 if ($id <= 0) {
@@ -41,12 +60,7 @@ if (empty($rutaHorario)) {
     
     if (empty($files)) {
         http_response_code(404);
-        echo "<!DOCTYPE html><html><head><meta charset='UTF-8'></head><body>";
-        echo "<h2>❌ Horario no disponible</h2>";
-        echo "<p>El horario para este participante aún no ha sido generado.</p>";
-        echo "<p><a href='debug_horario.php?id=$id'>🔧 Generar Horario</a></p>";
-        echo "</body></html>";
-        exit;
+        renderHorarioError("Horario no disponible", "El horario para este participante aún no ha sido generado.", "debug_horario.php?id=$id", "Generar horario");
     }
     
     // Usar el archivo más reciente
@@ -56,13 +70,7 @@ if (empty($rutaHorario)) {
 // Verificar si el archivo existe
 if (!file_exists($rutaHorario) || !is_readable($rutaHorario)) {
     http_response_code(404);
-    echo "<!DOCTYPE html><html><head><meta charset='UTF-8'></head><body>";
-    echo "<h2>❌ Archivo no encontrado</h2>";
-    echo "<p>El archivo del horario no existe o no es accesible.</p>";
-    echo "<p><strong>Ruta buscada:</strong> <code>" . htmlspecialchars($rutaHorario) . "</code></p>";
-    echo "<p><a href='debug_horario.php?id=$id'>🔧 Depurar Problema</a></p>";
-    echo "</body></html>";
-    exit;
+    renderHorarioError("Archivo no encontrado", "El archivo del horario no existe o no es accesible.<br><strong>Ruta buscada:</strong> <code>" . htmlspecialchars($rutaHorario) . "</code>", "debug_horario.php?id=$id", "Depurar problema");
 }
 
 // Limpiar cualquier salida previa

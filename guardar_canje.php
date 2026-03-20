@@ -8,6 +8,10 @@ function salir($ok, $html, $id_evento){
   $grad1 = $ok ? "#34d399" : "#fb7185";   // verdes/rojos
   $grad2 = $ok ? "#059669" : "#b91c1c";
 
+  ob_start();
+  include __DIR__ . "/header_css.php";
+  $themeCss = ob_get_clean();
+
   $id_evento = intval($id_evento);
   $volverCanje = "canjear.php?id=".$id_evento;
   $irEvento    = "Evento_inicio.php?id=".$id_evento;
@@ -19,11 +23,12 @@ function salir($ok, $html, $id_evento){
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>$tit</title>
+  $themeCss
   <style>
     :root{
-      --bg1:#0b1535; --bg2:#142455; --card:rgba(255,255,255,.06);
-      --text:#fff; --ok1:#34d399; --ok2:#059669; --err1:#fb7185; --err2:#b91c1c;
-      --brand:#ff8c00; --brand2:#ff5722;
+      --bg1:var(--theme-primary-dark, #0b1535); --bg2:var(--theme-primary, #142455); --card:var(--theme-surface-soft, rgba(255,255,255,.06));
+      --text:var(--theme-text, #fff); --ok1:#34d399; --ok2:#059669; --err1:#fb7185; --err2:#b91c1c;
+      --brand:var(--naranja, #ff8c00); --brand2:var(--theme-accent, #ff5722);
     }
     *{box-sizing:border-box}
     body{
@@ -67,16 +72,16 @@ function salir($ok, $html, $id_evento){
     .btn:active{ transform:translateY(0) scale(.98); }
 
     .btn-back{
-      background: linear-gradient(135deg, #21a1f3, #1976d2);
+      background: linear-gradient(135deg, var(--theme-primary, #21a1f3), var(--theme-primary-dark, #1976d2));
     }
     .btn-back:hover{
-      background: linear-gradient(135deg, #289cf6, #1e88e5);
+      background: linear-gradient(135deg, var(--theme-accent, #289cf6), var(--theme-primary, #1e88e5));
     }
     .btn-home{
-      background: linear-gradient(135deg, #ff8c00, #ff5722);
+      background: linear-gradient(135deg, var(--brand), var(--brand2));
     }
     .btn-home:hover{
-      background: linear-gradient(135deg, #ff5722, #e64a19);
+      background: linear-gradient(135deg, var(--brand2), var(--theme-primary-dark, #e64a19));
     }
 
     /* cinta de estado al lado del título */

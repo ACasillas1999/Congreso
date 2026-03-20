@@ -48,22 +48,25 @@ if ($rfc !== '') {
       <meta charset="UTF-8">
       <title>Detalle de facturas canjeadas · <?= htmlspecialchars($rfc) ?></title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <?php include "header_css.php"; ?>
       <style>
-        body{margin:0;padding:20px;font-family:'Segoe UI',sans-serif;color:#fff;background: radial-gradient(circle at center,#0d1c3b,#1e2a78);}
-        h2{margin:0 0 10px;text-align:center;color:#ff7f00;text-shadow:0 0 10px #ff7f00;}
+  .wrap{max-width:1000px;margin:0 auto}
+  .filters input{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.18)}
+        body{margin:0;padding:20px;font-family:'Segoe UI',sans-serif;color:var(--theme-text,#fff);background: radial-gradient(circle at center,var(--theme-primary,#1ca9dc),var(--theme-primary-dark,#054a6b));}
+        h2{margin:0 0 10px;text-align:center;color:var(--theme-title,#7cecff);text-shadow:0 0 10px var(--theme-title,#7cecff);}
         .sub{text-align:center;margin-bottom:14px;opacity:.9}
         .toolbar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px auto 16px;}
-        .btn{background:#ff7f00;color:#fff;border:none;border-radius:8px;padding:10px 14px;text-decoration:none;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.35);display:inline-block}
-        .btn.alt{background:#1565c0}
+        .btn{background:var(--theme-primary,#1ca9dc);color:#fff;border:none;border-radius:8px;padding:10px 14px;text-decoration:none;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.35);display:inline-block}
+        .btn.alt{background:var(--theme-primary-dark,#054a6b)}
         .wrap{max-width:1000px;margin:0 auto}
         .filters{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:10px}
         .filters input{padding:6px 8px;border-radius:6px;border:1px solid #294;outline:none}
         .table-wrap{overflow-x:auto}
         table{width:100%;border-collapse:collapse;min-width:680px}
         th,td{padding:10px;text-align:center;border-bottom:1px solid rgba(255,255,255,.15)}
-        th{background:#1f1f3b;color:#ffae42}
-        td{background:#2a2a40}
-        tfoot td{background:#1b1b2e;font-weight:700}
+        th{background:var(--theme-primary-dark,#054a6b);color:var(--theme-title,#7cecff)}
+        td{background:rgba(8,27,50,.78)}
+        tfoot td{background:rgba(8,27,50,.92);font-weight:700}
         .right{text-align:right}
       </style>
       <link rel="icon" href="/Congreso/educacion.png" type="image/x-icon">
@@ -180,23 +183,26 @@ $stmt->close();
 <meta charset="UTF-8">
 <title>Reporte por RFC Canjeado</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <?php include "header_css.php"; ?>
 <style>
-  body{margin:0;padding:20px;font-family:'Segoe UI',sans-serif;color:#fff;background: radial-gradient(circle at center,#0d1c3b,#1e2a78);}
+  .wrap{max-width:1000px;margin:0 auto}
+  .filters input{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.18)}
+  body{margin:0;padding:20px;font-family:'Segoe UI',sans-serif;color:var(--theme-text,#fff);background: radial-gradient(circle at center,var(--theme-primary,#1ca9dc),var(--theme-primary-dark,#054a6b));}
   h2{text-align:center;color:#ff7f00;text-shadow:0 0 10px #ff7f00;margin:0 0 10px;}
   .wrap{max-width:1000px;margin:0 auto}
   .filters{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:8px 0 14px}
   .filters input{padding:6px 8px;border-radius:6px;border:1px solid #294;outline:none}
-  .btn{background:#ff7f00;color:#fff;border:none;border-radius:8px;padding:10px 14px;text-decoration:none;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.35);display:inline-block}
-  .btn.alt{background:#1565c0}
+  .btn{background:var(--theme-primary,#1ca9dc);color:#fff;border:none;border-radius:8px;padding:10px 14px;text-decoration:none;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.35);display:inline-block}
+  .btn.alt{background:var(--theme-primary-dark,#054a6b)}
   .table-wrap{overflow-x:auto}
   table{width:100%;border-collapse:collapse;min-width:560px}
   th,td{padding:10px;text-align:center;border-bottom:1px solid rgba(255,255,255,.15)}
-  th{background:#1f1f3b;color:#ff7f00}
-  td{background:#2a2a40}
-  tfoot td{background:#1b1b2e;font-weight:700}
+  th{background:var(--theme-primary-dark,#054a6b);color:var(--theme-title,#7cecff)}
+  td{background:rgba(8,27,50,.78)}
+  tfoot td{background:rgba(8,27,50,.92);font-weight:700}
   .right{text-align:right}
   .toolbar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:10px 0}
-  a.link{color:#ffd699}
+  a.link{color:var(--theme-title,#7cecff)}
 </style>
 <link rel="icon" href="/Congreso/educacion.png" type="image/x-icon">
 </head>
@@ -252,3 +258,5 @@ $stmt->close();
 </div>
 </body>
 </html>
+
+

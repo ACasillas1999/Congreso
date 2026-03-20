@@ -12,22 +12,24 @@ $row = $result->fetch_assoc();
 <head>
     <meta charset="UTF-8">
     <title>Editar Proveedor</title>
+    <?php include "../header_css.php"; ?>
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
-            background: linear-gradient(to right, #6a11cb, #2575fc);
+            background: linear-gradient(to right, var(--theme-primary-dark, #6a11cb), var(--theme-primary, #2575fc));
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
+            color: var(--theme-text, #fff);
         }
 
         .form-container {
-            background: white;
+            background: var(--theme-surface-strong, white);
             padding: 30px;
             border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            box-shadow: var(--theme-shadow, 0 10px 25px rgba(0, 0, 0, 0.2));
             width: 100%;
             max-width: 400px;
         }
@@ -35,23 +37,25 @@ $row = $result->fetch_assoc();
         .form-container h2 {
             text-align: center;
             margin-bottom: 20px;
-            color: #333;
+            color: var(--theme-title, #333);
         }
 
         label {
             display: block;
             margin-top: 15px;
             margin-bottom: 5px;
-            color: #555;
+            color: var(--theme-text-soft, #555);
         }
 
         input[type="text"],
         input[type="number"] {
             width: 100%;
             padding: 10px;
-            border: 1px solid #ccc;
+            border: 1px solid var(--theme-border, #ccc);
             border-radius: 6px;
             font-size: 14px;
+            background: var(--theme-surface, #fff);
+            color: var(--theme-text, #111);
         }
 
         button,
@@ -59,7 +63,7 @@ $row = $result->fetch_assoc();
             width: 100%;
             margin-top: 20px;
             padding: 12px;
-            background-color: #2575fc;
+            background-color: var(--theme-primary, #2575fc);
             color: white;
             border: none;
             border-radius: 6px;
@@ -71,7 +75,7 @@ $row = $result->fetch_assoc();
 
         button:hover,
         .btn-volver:hover {
-            background-color: #1a5dd8;
+            background-color: var(--theme-primary-dark, #1a5dd8);
         }
     </style>
 </head>

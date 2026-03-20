@@ -3,6 +3,12 @@ require_once __DIR__ . "/conexion_congreso.php";
 require_once __DIR__ . "/conexion_facturas.php";
 require_once __DIR__ . "/config_turnstile.php";
 
+function portalThemeCss(): string {
+    ob_start();
+    include __DIR__ . "/../header_css.php";
+    return ob_get_clean();
+}
+
 function mostrarError($mensaje) {
     echo '
     <!DOCTYPE html>
@@ -11,13 +17,14 @@ function mostrarError($mensaje) {
       <meta charset="UTF-8">
       <title>Error</title>
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      ' . portalThemeCss() . '
       <style>
         body {
           margin: 0;
           padding: 20px;
           font-family: "Segoe UI", sans-serif;
-          background: radial-gradient(circle at center, #202040, #121212);
-          color: #fff;
+          background: radial-gradient(circle at center, var(--theme-primary, #202040), var(--theme-primary-dark, #121212));
+          color: var(--theme-text, #fff);
           display: flex;
           justify-content: center;
           align-items: center;
@@ -25,9 +32,9 @@ function mostrarError($mensaje) {
           text-align: center;
         }
         .card {
-          background: #2a1b1b;
+          background: var(--theme-surface-strong, #2a1b1b);
           border: 2px solid #ff2e2e;
-          box-shadow: 0 0 25px rgba(255, 46, 46, 0.5);
+          box-shadow: var(--theme-shadow, 0 0 25px rgba(255, 46, 46, 0.5));
           padding: 30px 20px;
           border-radius: 15px;
           max-width: 460px;
@@ -47,8 +54,8 @@ function mostrarError($mensaje) {
           display: inline-block;
           margin-top: 25px;
           padding: 12px 20px;
-          background: linear-gradient(90deg, #ff7b00, #ffaa00);
-          color: #000;
+          background: linear-gradient(90deg, var(--naranja, #ff7b00), var(--theme-accent, #ffaa00));
+          color: var(--theme-primary-dark, #000);
           font-weight: bold;
           text-decoration: none;
           border-radius: 8px;
@@ -231,13 +238,14 @@ echo '
   <meta charset="UTF-8">
   <title>Factura Validada</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  ' . portalThemeCss() . '
   <style>
     body {
       margin: 0;
       padding: 20px;
       font-family: "Segoe UI", sans-serif;
-      background: radial-gradient(circle at center, #202040, #121212);
-      color: #fff;
+      background: radial-gradient(circle at center, var(--theme-primary, #202040), var(--theme-primary-dark, #121212));
+      color: var(--theme-text, #fff);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -245,9 +253,9 @@ echo '
       text-align: center;
     }
     .card {
-      background: #1e1e2f;
-      border: 2px solid #ff7b00;
-      box-shadow: 0 0 25px rgba(255, 123, 0, 0.4);
+      background: var(--theme-surface-strong, #1e1e2f);
+      border: 2px solid var(--naranja, #ff7b00);
+      box-shadow: var(--theme-shadow, 0 0 25px rgba(255, 123, 0, 0.4));
       padding: 30px 20px;
       border-radius: 15px;
       max-width: 460px;
@@ -255,24 +263,24 @@ echo '
       animation: slideIn 0.8s ease-out;
     }
     h2 {
-      color: #ff7b00;
+      color: var(--theme-title, #ff7b00);
       margin-bottom: 20px;
       font-size: 24px;
-      text-shadow: 0 0 10px #ff7b00;
+      text-shadow: 0 0 10px var(--theme-title, #ff7b00);
     }
     p {
       margin: 10px 0;
       font-size: 16px;
     }
     strong {
-      color: #ff9900;
+      color: var(--naranja, #ff9900);
     }
     a {
       display: inline-block;
       margin-top: 25px;
       padding: 12px 20px;
-      background: linear-gradient(90deg, #ff7b00, #ffaa00);
-      color: #000;
+      background: linear-gradient(90deg, var(--naranja, #ff7b00), var(--theme-accent, #ffaa00));
+      color: var(--theme-primary-dark, #000);
       font-weight: bold;
       text-decoration: none;
       border-radius: 8px;

@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <title>Canjea tus Puntos</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <?php include "../header_css.php"; ?>
 
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 <?php require_once __DIR__ . '/config_turnstile.php'; ?>
@@ -17,8 +18,8 @@
       margin: 0;
       padding: 20px;
       font-family: 'Segoe UI', sans-serif;
-      background: radial-gradient(circle at center, #202040, #121212);
-      color: #fff;
+      background: radial-gradient(circle at center, var(--theme-primary, #202040), var(--theme-primary-dark, #121212));
+      color: var(--theme-text, #fff);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -34,7 +35,7 @@
       margin-bottom: 20px;
       padding: 20px;
       border-radius: 20px;
-      background: radial-gradient(circle, #ff7b0044 0%, #00000000 70%);
+      background: radial-gradient(circle, rgba(255, 123, 0, 0.27) 0%, #00000000 70%);
       box-shadow: 0 0 25px rgba(255, 123, 0, 0.6),
                   0 0 50px rgba(255, 123, 0, 0.4),
                   0 0 80px rgba(255, 123, 0, 0.2);
@@ -72,21 +73,21 @@
     }
 
     .container {
-      background: #1f1f1f;
+      background: var(--theme-surface-strong, #1f1f1f);
       padding: 30px 20px;
       border-radius: 16px;
       width: 100%;
       max-width: 440px;
-      box-shadow: 0 0 20px #ff7b0077;
+      box-shadow: var(--theme-shadow, 0 0 20px rgba(255,123,0,0.47));
       text-align: center;
-      border: 2px solid #ff7b00;
+      border: 2px solid var(--naranja, #ff7b00);
       margin-bottom: 40px;
     }
 
     h1 {
-      color: #ff7b00;
+      color: var(--theme-title, #ff7b00);
       margin-bottom: 25px;
-      text-shadow: 0 0 10px #ff7b00;
+      text-shadow: 0 0 10px var(--theme-title, #ff7b00);
       font-size: 22px;
     }
 
@@ -95,7 +96,7 @@
       text-align: left;
       margin-bottom: 6px;
       margin-top: 15px;
-      color: #ddd;
+      color: var(--theme-text-soft, #ddd);
       font-size: 14px;
     }
 
@@ -105,8 +106,8 @@
       margin-bottom: 10px;
       border: none;
       border-radius: 8px;
-      background: #292929;
-      color: white;
+      background: var(--theme-surface, #292929);
+      color: var(--theme-text, white);
       font-size: 16px;
       outline: none;
     }
@@ -121,8 +122,8 @@
       margin-top: 20px;
       border: none;
       border-radius: 8px;
-      background: linear-gradient(90deg, #ff7b00, #ff9900);
-      color: #000;
+      background: linear-gradient(90deg, var(--naranja, #ff7b00), var(--theme-accent, #ff9900));
+      color: var(--theme-primary-dark, #000);
       font-weight: bold;
       font-size: 16px;
       cursor: pointer;
@@ -138,14 +139,14 @@
     .link {
       display: block;
       margin-top: 25px;
-      color: #ff7b00;
+      color: var(--naranja, #ff7b00);
       text-decoration: none;
       font-size: 15px;
       transition: color 0.3s;
     }
 
     .link:hover {
-      color: #ffaa00;
+      color: var(--theme-title, #ffaa00);
     }
 
     @media (max-width: 480px) {

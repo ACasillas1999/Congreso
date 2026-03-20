@@ -40,10 +40,11 @@ $stmt_count->close();
 <title>Participantes por RFC</title>
 <link rel="icon" href="/Congreso/educacion.png" type="image/x-icon">
 <meta name="viewport" content="width=device-width, initial-scale=1" />
+<?php include "header_css.php"; ?>
 <style>
 :root{
-  --neon:#ff7f00; --bg1:#0d1c3b; --bg2:#1e2a78;
-  --card:#141821; --text:#f4f6fb; --muted:rgba(255,255,255,.7);
+  --neon:var(--naranja, #ff7f00); --bg1:var(--theme-primary-dark, #0d1c3b); --bg2:var(--theme-primary, #1e2a78);
+  --card:var(--theme-surface-strong, #141821); --text:var(--theme-text, #f4f6fb); --muted:var(--theme-text-soft, rgba(255,255,255,.7));
 }
 body{
   margin:0; font-family:system-ui,Segoe UI,Roboto;
@@ -66,8 +67,8 @@ h2.titulo{
 }
 .resumen{
   display:flex; gap:20px; flex-wrap:wrap; align-items:center;
-  background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.08);
+  background:var(--theme-surface-soft, rgba(255,255,255,.05));
+  border:1px solid var(--theme-border, rgba(255,255,255,.08));
   border-radius:12px; padding:12px 16px; margin-bottom:20px;
   font-size:1rem;
 }
@@ -83,7 +84,7 @@ h2.titulo{
 #buscarRFC{
   width:100%; max-width:460px; font-size:16px;
   padding:12px 14px; border-radius:10px; border:none;
-  background:#0e1627; color:var(--text);
+  background:var(--theme-surface, #0e1627); color:var(--text);
   box-shadow: inset 0 0 0 1px rgba(255,255,255,.06);
 }
 .grupo{ background:linear-gradient(180deg,#141b2a,#0f1625);
@@ -112,7 +113,7 @@ h2.titulo{
 .grupo.open .caret{ transform:rotate(180deg); }
 .participantes{ display:none; padding:12px 12px 16px; }
 .grupo.open .participantes{ display:block; }
-table{ width:100%; border-collapse:collapse; font-size:.95rem; background:rgba(0,0,0,.12); }
+table{ width:100%; border-collapse:collapse; font-size:.95rem; background:var(--theme-surface-soft, rgba(0,0,0,.12)); }
 th,td{ padding:10px 12px; border-bottom:1px solid rgba(255,255,255,.06); text-align:left; }
 th{ color:var(--muted); background:rgba(255,255,255,.03); }
 tr:hover td{ background:rgba(255,255,255,.03); }

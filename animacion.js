@@ -4,6 +4,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Función para manejar la animación de salida al hacer clic en botones y enlaces
     function applyFadeOut(event) {
+        if (event.currentTarget && event.currentTarget.matches("[data-no-fade='1']")) {
+            return;
+        }
+
         event.preventDefault();  // Prevenir la acción inmediata
         body.classList.add("fade-out"); // Aplicar animación de salida
 

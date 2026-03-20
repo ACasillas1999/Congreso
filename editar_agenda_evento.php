@@ -1,26 +1,50 @@
 <?php
+ini_set('session.cookie_httponly', true);
+ini_set('session.cookie_secure', true);
+session_name("CON");
+session_start();
+
+if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION["Rol"] === "Vendedor") {
+    header("location: /Congreso/Sesion/login.html");
+    exit;
+}
+
 require_once __DIR__ . "/Conexiones/Conexion.php";
 
 $evento_id = intval($_GET['id'] ?? 0);
-if (!$evento_id) die("Evento inválido");
+if (!$evento_id) {
+    die("Evento invalido");
+}
 
-// Actividades
+$id_evento = $evento_id;
+$agenda_editar_id = intval($_GET['editar'] ?? 0);
+$agenda_edit = null;
+
+$evento_nombre = '';
+$ev = $conn->prepare("SELECT name_evento FROM evento WHERE ID = ?");
+$ev->bind_param("i", $evento_id);
+$ev->execute();
+$ev_res = $ev->get_result();
+$ev_row = $ev_res ? $ev_res->fetch_assoc() : null;
+$evento_nombre = $ev_row['name_evento'] ?? '';
+$ev->close();
+
 $act = $conn->prepare("SELECT Actividad FROM actividades WHERE ID_Evento = ? ORDER BY Actividad");
 $act->bind_param("i", $evento_id);
 $act->execute();
 $actividades = $act->get_result()->fetch_all(MYSQLI_ASSOC);
 $act->close();
 
-// Fechas del evento (solo éstas en el select)
 $fd = $conn->prepare("SELECT DISTINCT Fecha FROM agenda WHERE ID_Evento = ? ORDER BY Fecha");
 $fd->bind_param("i", $evento_id);
 $fd->execute();
 $fechas_res = $fd->get_result();
 $fechas_evento = [];
-while ($f = $fechas_res->fetch_assoc()) { $fechas_evento[] = $f['Fecha']; }
+while ($f = $fechas_res->fetch_assoc()) {
+    $fechas_evento[] = $f['Fecha'];
+}
 $fd->close();
 
-// Agenda actual
 $q = $conn->prepare("
   SELECT ID, Actividad, Fecha, Horario, Salon
   FROM agenda
@@ -31,222 +55,358 @@ $q->bind_param("i", $evento_id);
 $q->execute();
 $agenda = $q->get_result()->fetch_all(MYSQLI_ASSOC);
 $q->close();
+
+if ($agenda_editar_id > 0) {
+    $qe = $conn->prepare("
+      SELECT ID, Actividad, Fecha, Horario, Salon
+      FROM agenda
+      WHERE ID = ? AND ID_Evento = ? AND Actividad <> 'Vacio'
+      LIMIT 1
+    ");
+    $qe->bind_param("ii", $agenda_editar_id, $evento_id);
+    $qe->execute();
+    $edit_res = $qe->get_result();
+    $agenda_edit = $edit_res ? $edit_res->fetch_assoc() : null;
+    $qe->close();
+
+    if (!$agenda_edit) {
+        $agenda_editar_id = 0;
+    }
+}
+
+$salones_query = $conn->prepare("SELECT DISTINCT Salon FROM agenda WHERE ID_Evento = ? AND Salon <> '' ORDER BY Salon");
+$salones_query->bind_param("i", $evento_id);
+$salones_query->execute();
+$salones_res = $salones_query->get_result();
+$salones = $salones_res->fetch_all(MYSQLI_ASSOC);
+$salones_query->close();
 ?>
 <!doctype html>
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<title>Editar agenda · Evento #<?= $evento_id ?></title>
+<title>Agenda manual - Evento #<?= $evento_id ?></title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
+<?php include "header_css.php"; ?>
 <style>
-  :root{
-    --bg1:#0b1630;        /* azul profundo */
-    --bg2:#0f2246;        /* azul medio */
-    --panel:#1b2236;      /* panel */
-    --ink:#eef2ff;        /* texto */
-    --muted:#9fb0d1;
-    --brand:#ff8a2b;      /* naranja principal */
-    --brand-2:#ffb463;    /* naranja claro */
-    --edge:#ff8a2b;       /* borde exterior */
-    --line:#263250;       /* líneas tabla */
-    --hover:#232c44;
-    --ok:#22c55e;
-    --bad:#ef4444;
+  .page-shell {
+    width: 98%;
+    margin: 10px auto;
+    padding: 20px;
   }
 
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0; color:var(--ink); font-family: "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
-    background:
-      radial-gradient(900px 500px at 50% 10%, rgba(255,138,43,.12), transparent 60%),
-      radial-gradient(1200px 600px at 70% 30%, rgba(87,147,255,.10), transparent 65%),
-      linear-gradient(180deg, var(--bg2), var(--bg1));
+  .hero-panel,
+  .section-panel {
+    background: var(--theme-surface-strong);
+    border: 1px solid var(--theme-border);
+    border-radius: var(--theme-radius);
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: var(--theme-shadow);
   }
 
-  /* Marco exterior naranja */
-  .frame{
-    position:fixed; inset:16px;
-    border:4px solid var(--edge);
-    border-radius:18px;
-    pointer-events:none;
-    box-shadow: 0 0 0 6px rgba(255,138,43,.08), 0 0 40px rgba(255,138,43,.25) inset;
+  .hero-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
   }
 
-  .wrap{
-    max-width:1100px; margin:48px auto 72px; padding:0 16px;
+  body, button, input, select, textarea {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif !important;
   }
 
-  .title{
-    text-align:center; margin:12px 0 24px;
-    font-weight:900; letter-spacing:2px; font-size:48px;
-    color:var(--brand);
-    text-shadow: 0 3px 0 rgba(0,0,0,.25), 0 0 24px rgba(255,138,43,.35);
+  .page-title {
+    margin: 0;
+    color: var(--theme-title);
+    text-shadow: 0 0 10px var(--theme-title);
+    font-size: 28px;
   }
 
-  .card{
-    margin:0 auto; max-width:980px;
-    background: linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,.10)), var(--panel);
-    border-radius:18px; border:1px solid rgba(255,255,255,.06);
-    box-shadow: 0 30px 80px rgba(0,0,0,.35), 0 0 40px rgba(24,50,99,.35);
-    padding:22px;
+  .hero-stats {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
   }
 
-  .header-row{
-    display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:16px;
-  }
-  .back{
-    display:inline-flex; align-items:center; gap:8px;
-    color:var(--brand); text-decoration:none; font-weight:700;
-    padding:8px 12px; border-radius:10px; border:1px solid rgba(255,138,43,.35);
-    background:rgba(255,138,43,.08);
-  }
-  .back:hover{filter:brightness(1.05)}
-
-  .subtitle{
-    font-size:18px; font-weight:800; letter-spacing:.4px;
+  .stat {
+    background: rgba(255,255,255,0.05);
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: 1px solid var(--theme-border);
+    text-align: center;
+    min-width: 100px;
   }
 
-  .form-grid{
-    display:grid; gap:12px; align-items:end;
-    grid-template-columns: 2fr 1fr 1fr 1fr auto;
-  }
-  label{display:block; font-size:12px; color:var(--muted); margin: 0 0 6px 2px;}
-
-  input, select{
-    width:100%; padding:12px 12px; border-radius:12px;
-    border:1px solid rgba(255,255,255,.06); outline:none;
-    color:var(--ink); background:#121a30;
-    box-shadow: inset 0 0 0 1px rgba(255,255,255,.02);
-  }
-  input::placeholder{color:#7d8caf}
-  input:focus, select:focus{box-shadow: 0 0 0 2px rgba(255,138,43,.35); border-color: rgba(255,138,43,.5);}
-
-  .btn{
-    padding:12px 16px; border-radius:12px; border:none; cursor:pointer; font-weight:800;
-    color:#1a1206; background:linear-gradient(180deg, var(--brand), var(--brand-2));
-    box-shadow: 0 10px 22px rgba(255,138,43,.35);
-    transition: transform .05s ease, filter .2s ease;
-  }
-  .btn:hover{filter:brightness(1.05)}
-  .btn:active{transform:translateY(1px)}
-
-  .table{
-    width:100%; border-collapse:collapse; margin-top:18px; overflow:hidden;
-    border-radius:14px; border:1px solid rgba(255,255,255,.06);
-  }
-  .table thead th{
-    font-size:12px; letter-spacing:.6px; text-transform:uppercase; text-align:left;
-    padding:12px; background:#141f38; color:#b2c6ff;
-    border-bottom:1px solid var(--line);
-  }
-  .table tbody td{
-    padding:12px; border-bottom:1px solid var(--line);
-  }
-  .table tbody tr:hover{background:var(--hover)}
-  .tag{
-    display:inline-block; padding:4px 10px; border-radius:999px;
-    background:rgba(255,138,43,.12); color:#ffd7b2; border:1px solid rgba(255,138,43,.35); font-size:12px;
-  }
-  .muted{color:var(--muted)}
-  .empty{
-    margin-top:8px; padding:16px; text-align:center; color:var(--muted);
-    border:1px dashed var(--line); border-radius:12px; background:#111a32;
+  .stat-label {
+    display: block;
+    font-size: 10px;
+    text-transform: uppercase;
+    color: var(--theme-text-soft);
+    margin-bottom: 4px;
   }
 
-  /* Responsive */
-  @media (max-width: 960px){ .form-grid{grid-template-columns: 1fr 1fr;} }
-  @media (max-width: 520px){
-    .title{font-size:36px}
-    .header-row{flex-direction:column; align-items:flex-start}
+  .stat-value {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--theme-title);
+  }
+
+  .toolbar-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+  }
+
+  .toolbar-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: rgba(255,193,77,0.12);
+    color: #ffd27a;
+    border: 1px solid rgba(255,193,77,0.22);
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .toolbar-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    padding: 0 14px;
+    border-radius: 8px;
+    border: 1px solid var(--theme-border);
+    color: var(--theme-text);
+    text-decoration: none;
+    background: rgba(255,255,255,0.04);
+    font-weight: 700;
+  }
+
+  .toolbar-link:hover {
+    background: rgba(255,255,255,0.08);
+  }
+
+  .composer-form {
+    display: grid;
+    gap: 15px;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    align-items: end;
+  }
+
+  .field label {
+    display: block;
+    font-size: 12px;
+    margin-bottom: 5px;
+    color: var(--theme-text-soft);
+  }
+
+  .field input,
+  .field select {
+    width: 100%;
+    height: 44px;
+    padding: 0 12px;
+    border-radius: 8px;
+  }
+
+  .btn-add {
+    height: 44px;
+    background: var(--theme-primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-add:hover {
+    background: var(--theme-primary-dark);
+    transform: translateY(-2px);
+  }
+
+  .helper-strip {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .chip {
+    font-size: 11px;
+    padding: 4px 10px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 4px;
+    color: var(--theme-text-soft);
+  }
+
+  .actions-cell {
+    white-space: nowrap;
+  }
+
+  .btn-inline {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    padding: 0 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(56,217,255,0.22);
+    background: rgba(56,217,255,0.1);
+    color: var(--theme-title);
+    text-decoration: none;
+    font-weight: 700;
+  }
+
+  .btn-inline:hover {
+    background: var(--theme-title);
+    color: #00131f !important;
+  }
+
+  .row-editing td {
+    background: rgba(255,193,77,0.08) !important;
+  }
+
+  @media (max-width: 768px) {
+    .hero-top { flex-direction: column; align-items: flex-start; }
+    .hero-stats { width: 100%; justify-content: space-between; }
   }
 </style>
 </head>
-<body>
-  <div class="frame"></div>
+<body class="fade-in">
+  <?php include "sidebar.php"; ?>
 
-  <div class="wrap">
+  <div class="page-shell">
+    <section class="hero-panel">
+      <div class="hero-top">
+        <div>
+          <h1 class="page-title">Agenda Manual</h1>
+          <p style="color:var(--theme-text-soft); margin-top:5px;">
+            <?= htmlspecialchars($evento_nombre) ?> · #<?= $evento_id ?>
+          </p>
+        </div>
 
-    <div class="card">
-      <div class="header-row">
-        <a class="back" href="Evento_inicio.php?id=<?= $evento_id ?>">← Volver</a>
-        <div class="subtitle">Congresos · Agenda manual — Evento #<?= $evento_id ?></div>
+        <div class="hero-stats">
+          <div class="stat">
+            <span class="stat-label">Actividades</span>
+            <span class="stat-value"><?= count($actividades) ?></span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Horarios</span>
+            <span class="stat-value"><?= count($agenda) ?></span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">Salones</span>
+            <span class="stat-value"><?= count($salones) ?></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-panel">
+      <div class="toolbar-row">
+        <h3 style="color:var(--theme-title); margin:0; font-size:18px;">
+          <?= $agenda_edit ? 'Editar horario' : 'Agregar horario' ?>
+        </h3>
+        <?php if ($agenda_edit): ?>
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+            <span class="toolbar-badge">Editando ID #<?= (int)$agenda_edit['ID'] ?></span>
+            <a class="toolbar-link" href="editar_agenda_evento.php?id=<?= $evento_id ?>">Cancelar edición</a>
+          </div>
+        <?php endif; ?>
       </div>
 
-      <form class="form-grid" method="post" action="guardar_horario.php" autocomplete="off">
+      <form class="composer-form" method="post" action="guardar_horario.php" autocomplete="off">
         <input type="hidden" name="id_evento" value="<?= $evento_id ?>">
+        <?php if ($agenda_edit): ?>
+          <input type="hidden" name="id_agenda" value="<?= (int)$agenda_edit['ID'] ?>">
+        <?php endif; ?>
 
-        <!-- Actividad -->
-        <div>
+        <div class="field">
           <label>Actividad</label>
           <select name="actividad" required>
             <option value="">— Elegir —</option>
-            <?php foreach($actividades as $a): ?>
-              <option><?= htmlspecialchars($a['Actividad']) ?></option>
+            <?php foreach ($actividades as $a): ?>
+              <option value="<?= htmlspecialchars($a['Actividad']) ?>" <?= ($agenda_edit && $agenda_edit['Actividad'] === $a['Actividad']) ? 'selected' : '' ?>>
+                <?= htmlspecialchars($a['Actividad']) ?>
+              </option>
             <?php endforeach; ?>
           </select>
         </div>
 
-        <!-- Fecha: solo días del evento -->
-     <div>
+        <div class="field">
           <label>Fecha</label>
-          <input type="date" name="fecha" required>
+          <input type="date" name="fecha" value="<?= htmlspecialchars($agenda_edit['Fecha'] ?? '') ?>" required>
         </div>
 
-        <!-- Horario -->
-        <div>
+        <div class="field">
           <label>Horario (HH:MM-HH:MM)</label>
-          <input name="horario" placeholder="09:00-10:00" pattern="^\d{2}:\d{2}-\d{2}:\d{2}$" required>
+          <input name="horario" value="<?= htmlspecialchars($agenda_edit['Horario'] ?? '') ?>" placeholder="09:00-10:00" pattern="^\d{2}:\d{2}-\d{2}:\d{2}$" required>
         </div>
 
-        <!-- Salón -->
-          <div>
+        <div class="field">
           <label>Salón</label>
-          <?php
-          // Obtener salones asociados al evento (únicos)
-          $salones_query = $conn->prepare("SELECT DISTINCT Salon FROM agenda WHERE ID_Evento = ? AND Salon <> '' ORDER BY Salon");
-          $salones_query->bind_param("i", $evento_id);
-          $salones_query->execute();
-          $salones_res = $salones_query->get_result();
-          $salones = $salones_res->fetch_all(MYSQLI_ASSOC);
-          $salones_query->close();
-          ?>
-        
-            <input type="text" name="salon" required placeholder="Nombre del salón">
-         
+          <input type="text" name="salon" value="<?= htmlspecialchars($agenda_edit['Salon'] ?? '') ?>" required placeholder="Nombre del salón" list="salones-lista">
+          <datalist id="salones-lista">
+            <?php foreach ($salones as $salon): ?>
+              <option value="<?= htmlspecialchars($salon['Salon']) ?>"></option>
+            <?php endforeach; ?>
+          </datalist>
         </div>
 
-        <button class="btn">Agregar</button>
+        <button class="btn-add" type="submit"><?= $agenda_edit ? 'Guardar cambios' : 'Agregar' ?></button>
       </form>
-    </div>
 
-    <div class="card" style="margin-top:18px;">
+      <div class="helper-strip">
+        <span class="chip">Formato: 09:00-10:00</span>
+        <span class="chip">Fechas: <?= count($fechas_evento) ?></span>
+        <?php if ($agenda_edit): ?>
+          <span class="chip">Editando sin salir de esta pantalla</span>
+        <?php endif; ?>
+      </div>
+    </section>
+
+    <section class="section-panel" style="padding:0; overflow:hidden;">
+      <div style="padding:20px 24px;">
+        <h3 style="color:var(--theme-title); margin:0; font-size:18px;">Horarios Registrados</h3>
+      </div>
       <?php if (empty($agenda)): ?>
-        <div class="empty">No hay horarios todavía. Agrega el primero arriba.</div>
+        <div style="padding:40px; text-align:center; color:var(--theme-text-soft);">
+          No hay horarios todavía.
+        </div>
       <?php else: ?>
-        <table class="table">
+        <table class="mi-tabla">
           <thead>
             <tr>
               <th>Fecha</th>
               <th>Horario</th>
               <th>Salón</th>
               <th>Actividad</th>
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
-            <?php foreach($agenda as $r): ?>
-              <tr>
-                <td><span class="tag"><?= htmlspecialchars($r['Fecha']) ?></span></td>
-                <td><?= htmlspecialchars($r['Horario']) ?></td>
-                <td class="muted"><?= htmlspecialchars($r['Salon']) ?></td>
+            <?php foreach ($agenda as $r): ?>
+              <tr class="<?= ($agenda_edit && (int)$agenda_edit['ID'] === (int)$r['ID']) ? 'row-editing' : '' ?>">
+                <td><span class="badge" style="background:rgba(56,217,255,0.1); color:var(--theme-title); border:1px solid rgba(56,217,255,0.2);"><?= htmlspecialchars($r['Fecha']) ?></span></td>
+                <td style="font-weight:700;"><?= htmlspecialchars($r['Horario']) ?></td>
+                <td style="color:var(--theme-text-soft);"><?= htmlspecialchars($r['Salon']) ?></td>
                 <td><?= htmlspecialchars($r['Actividad']) ?></td>
+                <td class="actions-cell">
+                  <a class="btn-inline" href="editar_agenda_evento.php?id=<?= $evento_id ?>&editar=<?= (int)$r['ID'] ?>">Editar</a>
+                </td>
               </tr>
             <?php endforeach; ?>
           </tbody>
         </table>
       <?php endif; ?>
-    </div>
+    </section>
   </div>
 </body>
 </html>

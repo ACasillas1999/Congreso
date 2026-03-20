@@ -47,6 +47,7 @@ $stmt->close();
     <link rel="icon" href="/Congreso/educacion.png" type="image/x-icon" />
 
     <link rel="stylesheet" href="styles.css">
+    <?php include "header_css.php"; ?>
       <style>
         /* Fondo general */
         body {
@@ -112,47 +113,6 @@ $stmt->close();
             cursor: pointer;
             transition: transform 0.2s ease, background 0.3s ease;
         }
-
-        form button:hover {
-            background: linear-gradient(135deg, #ff5722, #e64a19);
-            transform: scale(1.02);
-        }
-
-        /* Tabla de premios */
-      /* Tabla de premios */
-table.mi-tabla {
-    border-collapse: collapse;
-    margin: 20px auto;
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
-    background: rgba(255,255,255,0.05);
-    width: 100%;
-    max-width: 600px;   /* 👈 límite ancho */
-}
-
-.mi-tabla th, .mi-tabla td {
-    padding: 14px 18px;
-    text-align: center;
-    font-size: 16px;
-    border-bottom: 1px solid rgba(255,255,255,0.15);
-}
-
-.mi-tabla th {
-    background: rgba(255,255,255,0.15);
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.mi-tabla tr:last-child td {
-    border-bottom: none; /* quita borde extra */
-}
-
-.mi-tabla tr:nth-child(even) td {
-    background: rgba(255,255,255,0.05);
-}
-
 .mi-tabla td {
     color: #fff;
 }
@@ -215,6 +175,61 @@ table.mi-tabla {
   outline: 2px solid rgba(33,150,243,.55);
   outline-offset: 3px;
   border-radius: 12px;
+}
+
+body{
+  background: radial-gradient(circle at center, var(--theme-primary, #1e2a78) 0%, var(--theme-primary-dark, #000c2c) 80%);
+  color: var(--theme-text, #fff);
+}
+
+h1,
+h2{
+  color: var(--theme-title, #7cecff);
+}
+
+form,
+table.mi-tabla{
+  background: var(--theme-surface-soft, rgba(255,255,255,0.05));
+  border: 1px solid var(--theme-border, rgba(255,255,255,0.15));
+  box-shadow: var(--theme-shadow, 0 6px 16px rgba(0,0,0,0.35));
+}
+
+form input{
+  background: var(--theme-surface, #1f2a4d);
+  color: var(--theme-text, #fff);
+  border: 1px solid var(--theme-border, rgba(255,255,255,0.12));
+}
+
+form button{
+  background: linear-gradient(135deg, var(--naranja, #ff8c00), var(--theme-accent, #21a1f3));
+}
+
+form button:hover{
+  background: linear-gradient(135deg, var(--theme-accent, #21a1f3), var(--theme-primary-dark, #054a6b));
+}
+
+.mi-tabla th{
+  background: var(--theme-primary-dark, #054a6b);
+}
+
+.mi-tabla td{
+  color: var(--theme-text, #fff);
+}
+
+.mi-tabla a{
+  color: var(--naranja, #ff8c00);
+}
+
+.mi-tabla a:hover{
+  color: var(--theme-title, #7cecff);
+}
+
+.mi-tabla + p a{
+  background: linear-gradient(135deg, var(--theme-accent, #21a1f3), var(--theme-primary-dark, #1976d2));
+}
+
+.mi-tabla + p a:hover{
+  background: linear-gradient(135deg, var(--theme-primary, #289cf6), var(--theme-primary-dark, #1e88e5));
 }
 
 

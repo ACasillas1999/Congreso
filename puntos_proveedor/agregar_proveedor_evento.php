@@ -4,22 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <title>Agregar Proveedor al Evento</title>
+    <?php include "../header_css.php"; ?>
     <style>
          /* ========== FONDO GENERAL ========== */
     body {
       font-family: 'Segoe UI', sans-serif;
-      background: radial-gradient(circle at center, #0d1c3b, #1e2a78);
+      background: radial-gradient(circle at center, var(--theme-primary-dark, #0d1c3b), var(--theme-primary, #1e2a78));
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
       margin: 0;
-      color: #e0e0e0;
+      color: var(--theme-text, #e0e0e0);
     }
 
     /* ========== CONTENEDOR DEL FORMULARIO ========== */
     .form-container {
-      background-color: rgba(30, 30, 47, 0.96);
+      background-color: var(--theme-surface-strong, rgba(30, 30, 47, 0.96));
       padding: 30px;
       border-radius: 15px;
       box-shadow:
@@ -36,10 +37,10 @@
       text-align: center;
       margin-bottom: 25px;
       font-size: 28px;
-      color: #c76f39;
+      color: var(--naranja, #c76f39);
       text-shadow:
-        0 0 6px #c76f39,
-        0 0 12px #c76f39;
+        0 0 6px var(--naranja, #c76f39),
+        0 0 12px var(--naranja, #c76f39);
     }
 
     /* ========== LABELS ========== */
@@ -47,7 +48,7 @@
       display: block;
       margin-top: 15px;
       margin-bottom: 5px;
-      color: #dddddd;
+      color: var(--theme-text-soft, #dddddd);
       font-weight: 500;
     }
 
@@ -60,8 +61,8 @@
       margin-bottom: 10px;
       border: none;
       border-radius: 8px;
-      background-color: #2a2a3f;
-      color: #fff;
+      background-color: var(--theme-surface, #2a2a3f);
+      color: var(--theme-text, #fff);
       font-size: 16px;
       box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.3);
       transition: 0.3s ease;
@@ -71,7 +72,7 @@
     input[type="number"]:focus,
     select:focus {
       outline: none;
-      box-shadow: 0 0 8px #c76f39;
+      box-shadow: 0 0 8px var(--naranja, #c76f39);
     }
 
     /* ========== BOTONES ========== */
@@ -80,7 +81,7 @@
       width: 100%;
       margin-top: 20px;
       padding: 12px;
-      background-color: #c76f39;
+      background-color: var(--naranja, #c76f39);
       color: white;
       border: none;
       border-radius: 10px;
@@ -98,7 +99,7 @@
 
     button:hover,
     .btn-volver:hover {
-      background-color: #a85522;
+      background-color: var(--theme-primary-dark, #a85522);
       transform: scale(1.03);
     }
 

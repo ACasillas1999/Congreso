@@ -37,49 +37,49 @@ $conn->close();
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Estadísticas por Vendedor</title>
+  <title>Estad�sticas por Vendedor</title>
   <link rel="icon" href="/Congreso/educacion.png" type="image/x-icon">
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <?php include "header_css.php"; ?>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body{background:linear-gradient(to right,#12172a,#1d1f3a);color:#f0f0f0;font-family:'Poppins',sans-serif;margin:0}
-    .container{max-width:1100px;margin:40px auto;padding:24px;background:rgba(30,33,58,.95);border-radius:16px;box-shadow:0 0 30px rgba(0,0,0,.35)}
-    .titulo{margin:0 0 14px;font-size:26px;font-weight:700;color:#ffa726;text-align:center;text-shadow:0 0 8px rgba(0,0,0,.6)}
-    .sub{opacity:.9;margin:4px 0 18px;text-align:center}
+    body{background:linear-gradient(180deg,var(--theme-bg-start,#95ecff),var(--theme-bg-end,#054a6b));color:var(--theme-text,#fff);font-family:'Poppins',sans-serif;margin:0}
+    .container{max-width:1100px;margin:40px auto;padding:24px;background:var(--theme-surface-strong,rgba(8,27,50,.9));border:1px solid var(--theme-border,rgba(255,255,255,.12));border-radius:16px;box-shadow:0 0 30px rgba(0,0,0,.35)}
+    .titulo{margin:0 0 14px;font-size:26px;font-weight:700;color:var(--theme-title,#7cecff);text-align:center;text-shadow:0 0 8px rgba(0,0,0,.6)}
+    .sub{color:var(--theme-text-soft,rgba(255,255,255,.78));margin:4px 0 18px;text-align:center}
     .toolbar{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin:12px 0 18px}
-    select,button{border-radius:10px;border:1px solid rgba(255,255,255,.12);background:#222845;color:#fff;padding:10px 12px}
-    .btn-volver{background:linear-gradient(90deg,#00c6ff,#0072ff);border:none}
+    select,button{border-radius:10px;border:1px solid var(--theme-border,rgba(255,255,255,.12));background:rgba(255,255,255,.08);color:#fff;padding:10px 12px}
+    .btn-volver{display:inline-block;background:linear-gradient(90deg,var(--theme-primary,#1ca9dc),var(--theme-primary-dark,#054a6b));border:none;color:#fff;text-decoration:none}
     .btn-volver:hover{filter:brightness(1.05)}
     .resume{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin:12px 0 8px}
-    .chip{background:#26315a;border:1px solid rgba(255,255,255,.12);padding:8px 12px;border-radius:999px}
-    .chip strong{color:#ffd180}
+    .chip{background:rgba(255,255,255,.08);border:1px solid var(--theme-border,rgba(255,255,255,.12));padding:8px 12px;border-radius:999px}
+    .chip strong{color:var(--theme-title,#7cecff)}
     .grid-tops{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
     @media(max-width:900px){.grid-tops{grid-template-columns:1fr 1fr}}
     @media(max-width:640px){.grid-tops{grid-template-columns:1fr}}
-    .card{background:#23284a;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:12px}
+    .card{background:rgba(255,255,255,.07);border:1px solid var(--theme-border,rgba(255,255,255,.08));border-radius:12px;padding:12px}
     .card h4{margin:0 0 6px}
-    .muted{color:#cfd6ff;opacity:.9;font-size:.9rem}
-    canvas{background:#1e1e2f;border-radius:12px;padding:12px;margin-top:16px;box-shadow:0 0 15px rgba(0,0,0,.25)}
+    .muted{color:var(--theme-text-soft,rgba(255,255,255,.78));font-size:.9rem}
+    canvas{background:rgba(8,27,50,.62);border-radius:12px;padding:12px;margin-top:16px;box-shadow:0 0 15px rgba(0,0,0,.25)}
     table{width:100%;border-collapse:collapse;margin-top:18px}
     th,td{padding:10px;border-bottom:1px solid rgba(255,255,255,.1)}
-    thead th{background:#0d47a1}
-    tbody tr:hover{background:#33335b;cursor:pointer}
-    .highlight{background:#004d40!important;color:#a7ffeb}
-    .empty{padding:10px;text-align:center;color:#cfd6ff;opacity:.85}
-    /* Modal */
+    thead th{background:var(--theme-primary-dark,#054a6b)}
+    tbody tr:hover{background:rgba(255,255,255,.08);cursor:pointer}
+    .highlight{background:rgba(56,217,255,.14)!important;color:#fff}
+    .empty{padding:10px;text-align:center;color:var(--theme-text-soft,rgba(255,255,255,.78))}
     .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);display:none;align-items:center;justify-content:center;z-index:9999;padding:16px}
-    .modal{background:#1d2139;color:#eef1ff;width:min(900px,96vw);max-height:90vh;overflow:hidden;border-radius:14px;box-shadow:0 20px 70px rgba(0,0,0,.5);display:flex;flex-direction:column}
-    .modal-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(255,167,38,.15),rgba(255,167,38,.02))}
+    .modal{background:var(--theme-surface-strong,rgba(8,27,50,.94));color:#eef1ff;width:min(900px,96vw);max-height:90vh;overflow:hidden;border:1px solid var(--theme-border,rgba(255,255,255,.12));border-radius:14px;box-shadow:0 20px 70px rgba(0,0,0,.5);display:flex;flex-direction:column}
+    .modal-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.08);background:linear-gradient(180deg,rgba(56,217,255,.2),rgba(56,217,255,.03))}
     .modal-title{font-weight:700}
     .modal-close{background:transparent;color:#fff;border:none;font-size:22px;cursor:pointer}
     .modal-body{padding:12px 16px 16px;overflow:auto}
     .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 10px}
-    .tab-btn{padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.15);background:#2a2f52;color:#fff;cursor:pointer;font-weight:600}
-    .tab-btn.active{background:#4c58a5}
+    .tab-btn{padding:8px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);color:#fff;cursor:pointer;font-weight:600}
+    .tab-btn.active{background:var(--theme-primary,#1ca9dc)}
     .tab-panel{display:none}
     .tab-panel.active{display:block}
-    .badge{display:inline-block;min-width:18px;padding:2px 8px;border-radius:999px;background:#ffa726;color:#111;font-weight:800;font-size:.85rem;text-align:center;margin-left:6px}
-    .pill{display:inline-block;padding:2px 10px;border-radius:999px;background:#00c78c;color:#06221a;font-weight:700;font-size:.85rem;margin-left:6px}
+    .badge{display:inline-block;min-width:18px;padding:2px 8px;border-radius:999px;background:var(--theme-title,#7cecff);color:#05273a;font-weight:800;font-size:.85rem;text-align:center;margin-left:6px}
+    .pill{display:inline-block;padding:2px 10px;border-radius:999px;background:var(--verde,#0ea5c6);color:#05273a;font-weight:700;font-size:.85rem;margin-left:6px}
     .grid {display:grid;grid-template-columns:1fr 1fr;gap:10px}
     @media(max-width:720px){.grid{grid-template-columns:1fr}}
   </style>
@@ -155,6 +155,10 @@ const resumenTops = document.getElementById('resumenTops');
 const topsBox = document.getElementById('topsPorSucursal');
 const gridTops = document.getElementById('gridTops');
 
+const themeStyles = getComputedStyle(document.documentElement);
+const chartPrimary = themeStyles.getPropertyValue('--theme-title').trim() || '#7cecff';
+const chartSecondary = themeStyles.getPropertyValue('--verde').trim() || '#0ea5c6';
+
 let chart;
 function ensureChart(){ 
   const ctx = document.getElementById('graficaVendedores').getContext('2d');
@@ -162,8 +166,8 @@ function ensureChart(){
   chart = new Chart(ctx, {
     type: 'bar',
     data: { labels: [], datasets: [
-      { label: 'Registrados', data: [], backgroundColor: 'rgba(235,172,54,.75)', borderColor: 'rgba(235,172,54,1)', borderWidth:1, borderRadius:6 },
-      { label: 'Con ≥1 asistencia', data: [], backgroundColor: 'rgba(0,199,140,.75)', borderColor: 'rgba(0,199,140,1)', borderWidth:1, borderRadius:6 }
+      { label: 'Registrados', data: [], backgroundColor: chartPrimary, borderColor: chartPrimary, borderWidth:1, borderRadius:6 },
+      { label: 'Con ≥1 asistencia', data: [], backgroundColor: chartSecondary, borderColor: chartSecondary, borderWidth:1, borderRadius:6 }
     ]},
     options: { responsive:true, scales:{ y:{ beginAtZero:true, ticks:{ stepSize:1 } } } }
   });
@@ -287,3 +291,5 @@ function escapeAttr(s){ return escapeHtml(s); }
 </script>
 </body>
 </html>
+
+

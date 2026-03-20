@@ -32,7 +32,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Redirigir según el rol del usuario
               if ($Rol == 'Admin') {
                 header("location: ../index.php");
-            } elseif ($Rol == 'Vendedor' || $Rol == 'Gerente') {
+            } elseif ($Rol == 'Vendedor') {
+                header("location: ../Participantes.php");
+            } elseif ($Rol == 'Gerente') {
                 header("location: ../Participantes.php");
             } elseif ($Rol == 'Evento') {
                 header("location: https://congresos.grupoascencio.com.mx/Congreso/ver_horario_dia.php?id=25&fecha=2025-10-17");

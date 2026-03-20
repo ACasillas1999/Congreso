@@ -18,11 +18,12 @@ $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
     <meta charset="UTF-8">
     <title>Participantes por Puesto</title>
+    <?php include "header_css.php"; ?>
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
-  background: radial-gradient(circle at center, #0d1c3b, #1e2a78); /* nuevo fondo neón oscuro */
-            color: white;
+  background: radial-gradient(circle at center, var(--theme-primary-dark, #0d1c3b), var(--theme-primary, #1e2a78));
+            color: var(--theme-text, white);
             margin: 0;
             padding: 20px;
         }
@@ -30,16 +31,16 @@ $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
         .titulo {
             text-align: center;
             font-size: 32px;
-            color: #ff7f00;
-            text-shadow: 0 0 10px #ff7f00;
+            color: var(--theme-title, #ff7f00);
+            text-shadow: 0 0 10px var(--theme-title, #ff7f00);
             margin-bottom: 30px;
         }
 
         .btn-volver {
             display: inline-block;
             padding: 10px 20px;
-            background: #ff7f00;
-            color: white;
+            background: var(--naranja, #ff7f00);
+            color: var(--theme-text, white);
             text-decoration: none;
             border-radius: 5px;
             box-shadow: 0 0 10px rgba(255,127,0,0.5);
@@ -60,12 +61,12 @@ $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
             border-radius: 5px;
             border: none;
             outline: none;
-            background: #eee;
+            background: var(--theme-surface, #eee);
             color: #222;
         }
 
         .grupo {
-            background: #1a1a2e;
+            background: var(--theme-surface-strong, #1a1a2e);
             margin: 0 auto 20px auto;
             max-width: 1000px;
             padding: 15px;
@@ -74,7 +75,7 @@ $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
         }
 
         .grupo h3 {
-            color: #ff7f00;
+            color: var(--theme-title, #ff7f00);
             margin: 0;
             cursor: pointer;
             display: flex;
@@ -107,17 +108,17 @@ $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
         }
 
         th {
-            background-color: #1f1f3b;
-            color: #ff7f00;
+            background-color: var(--theme-primary-dark, #1f1f3b);
+            color: var(--theme-title, #ff7f00);
             font-weight: bold;
         }
 
         td {
-            background-color: #2a2a40;
+            background-color: var(--theme-surface, #2a2a40);
         }
 
         .no-datos {
-            color: #ccc;
+            color: var(--theme-text-soft, #ccc);
             text-align: center;
             padding: 20px;
         }

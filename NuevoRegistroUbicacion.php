@@ -23,6 +23,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION
     <link rel="icon" href="/Congreso/educacion.png" type="image/x-icon">
 
     <link rel="stylesheet" href="styles3.css">
+    <?php include "header_css.php"; ?>
     <title>Nueva Ubicacion</title>
 </head>
 <body>

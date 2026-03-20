@@ -6,6 +6,7 @@
 
   <meta charset="UTF-8">
   <title>Kiosko de Puntos</title>
+  <?php include "header_css.php"; ?>
   <style>
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600&display=swap');
 
@@ -27,6 +28,16 @@
   --t-pts:  calc(5.2 * var(--u));
   --t-err:  calc(2.2 * var(--u));
   --t-hist: calc(2.2 * var(--u));
+  --k-bg-start: var(--theme-primary, #1a2c4e);
+  --k-bg-end: var(--theme-primary-dark, #0c1221);
+  --k-accent: var(--naranja, #ff7f00);
+  --k-accent-soft: var(--theme-title, #ffb36b);
+  --k-surface: var(--theme-surface, #111927);
+  --k-surface-dark: var(--theme-surface-strong, #0c101b);
+  --k-title: var(--theme-title, #ff7f00);
+  --k-text: var(--theme-text, #fff);
+  --k-points: var(--theme-title, #00ffcc);
+  --k-muted: var(--theme-text-soft, #ccc);
 }
 
 /* ===== Lienzo base ===== */
@@ -35,7 +46,7 @@ html, body{
   height:100vh; height:100svh;      /* svh para móviles */
   width:100vw;
   font-family:'Segoe UI', sans-serif;
-  background: radial-gradient(circle at center, #1a2c4e 0%, #0c1221 100%);
+  background: radial-gradient(circle at center, var(--k-bg-start) 0%, var(--k-bg-end) 100%);
   display:grid;
   place-items:center;
   overflow:hidden;
@@ -46,9 +57,9 @@ html, body{
 body::before{
   content:'';
   position:absolute; inset: calc(2 * var(--u));
-  border: var(--frame) solid #ff7f00;
+  border: var(--frame) solid var(--k-accent);
   border-radius: var(--radius);
-  box-shadow: 0 0 var(--glow) #ff7f00;
+  box-shadow: 0 0 var(--glow) var(--k-accent);
   pointer-events:none;
   z-index:0;
 }
@@ -77,12 +88,12 @@ body::before{
 .neon-word,
 .neon-year{
   font-family:'Orbitron', sans-serif;
-  color:#ff7f00;
+  color:var(--k-title);
   line-height:1;
   text-shadow:
-    0 0 .3vmin #ff7f00,
-    0 0 .8vmin #ff7f00,
-    0 0 1.5vmin #cc6600;
+    0 0 .3vmin var(--k-title),
+    0 0 .8vmin var(--k-title),
+    0 0 1.5vmin var(--k-accent-soft);
 }
 .neon-word{ font-size: clamp(28px, var(--t-word), 14vmin); letter-spacing:.02em; }
 .neon-year{ font-size: clamp(24px, var(--t-year), 12vmin); letter-spacing:.06em; }
@@ -98,8 +109,8 @@ body::before{
 .kiosko{
     margin-top: 59vw;
   width: min(var(--kioskoW), 92vw);
-  background: linear-gradient(to bottom, #111927, #0c101b);
-  border: var(--frame) solid #ff7f00;
+  background: linear-gradient(to bottom, var(--k-surface), var(--k-surface-dark));
+  border: var(--frame) solid var(--k-accent);
   border-radius: var(--radius);
   box-shadow: 0 0 calc(2 * var(--u)) rgba(255,127,0,.3),
               0 0 calc(3 * var(--u)) rgba(255,127,0,.1);
@@ -107,19 +118,19 @@ body::before{
 }
 .kiosko h2{
   font-size: clamp(18px, var(--t-h2), 8vmin);
-  color:#ff7f00; margin:0;
+  color:var(--k-title); margin:0;
 }
 
 /* ===== Datos dinámicos ===== */
-.nombre{ font-size: clamp(16px, var(--t-name), 6.5vmin); color:#fff; margin-top: calc(2 * var(--u)); }
-.puntos{ font-size: clamp(18px, var(--t-pts), 7.5vmin); font-weight:700; color:#00ffcc; margin-top: calc(1 * var(--u)); }
+.nombre{ font-size: clamp(16px, var(--t-name), 6.5vmin); color:var(--k-text); margin-top: calc(2 * var(--u)); }
+.puntos{ font-size: clamp(18px, var(--t-pts), 7.5vmin); font-weight:700; color:var(--k-points); margin-top: calc(1 * var(--u)); }
 .error { font-size: clamp(14px, var(--t-err), 4.2vmin); font-weight:700; color:#ff4d4d; margin-top: calc(2 * var(--u)); }
 
 /* ===== Historial ===== */
 .historial{
   margin-top: calc(2 * var(--u));
   font-size: clamp(12px, var(--t-hist), 3.6vmin);
-  color:#ccc; text-align:left;
+  color:var(--k-muted); text-align:left;
   background: rgba(255,255,255,.05);
   padding: calc(2 * var(--u)) calc(2 * var(--u));
   border-radius: calc(1 * var(--u));
@@ -160,14 +171,14 @@ body::before{ z-index:4; }
 @keyframes neonPulse{
   0%,100%{
     text-shadow:
-      0 0 .20vmin #ff7f00, 0 0 .60vmin #ff7f00,
-      0 0 1.20vmin #cc6600, 0 0 2.00vmin rgba(255,127,0,.30);
+      0 0 .20vmin var(--k-title), 0 0 .60vmin var(--k-title),
+      0 0 1.20vmin var(--k-accent-soft), 0 0 2.00vmin rgba(255,127,0,.30);
     opacity:1;
   }
   50%{
     text-shadow:
-      0 0 .12vmin #ff7f00, 0 0 .40vmin #ff7f00,
-      0 0 .90vmin #cc6600, 0 0 1.60vmin rgba(255,127,0,.22);
+      0 0 .12vmin var(--k-title), 0 0 .40vmin var(--k-title),
+      0 0 .90vmin var(--k-accent-soft), 0 0 1.60vmin rgba(255,127,0,.22);
     opacity:.98;
   }
 }
@@ -235,7 +246,7 @@ body::before{
   inset: 2vmin;
   border-width: .4vmin;
   border-radius: 2vmin;
-  box-shadow: 0 0 1.2vmin #ff7f00;
+  box-shadow: 0 0 1.2vmin var(--k-accent);
 }
 
 
@@ -395,7 +406,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   const NODE_R_MINMAX  = [3.2, 6.5];    // puntos más grandes (opcional)
   const VEL_MINMAX     = [0.06, 0.16];  // más velocidad que antes
   const FPS            = 40;
-  const ORANGE         = '255,127,0';
+  const themeAccent    = getComputedStyle(document.documentElement).getPropertyValue('--k-accent').trim() || '#ff7f00';
+  const ORANGE         = colorToRgbTriplet(themeAccent);
   const MARGIN         = 36;
   const CENTER_PULL    = 0;             // sin atracción al centro
   const LINE_WIDTH     = 1.6;           // enlaces más gruesos
@@ -411,6 +423,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   const BEAM_RATE_MS    = 1100;         // más chispas
   const BEAM_SPEED      = 0.009;        // chispas un poco más rápidas
   const BEAM_PER_BURST  = 6;
+
+  function colorToRgbTriplet(color) {
+    const value = (color || '').trim();
+    const hex = value.match(/^#([0-9a-f]{3}|[0-9a-f]{6})$/i);
+    if (hex) {
+      let raw = hex[1];
+      if (raw.length === 3) raw = raw.split('').map(ch => ch + ch).join('');
+      const int = parseInt(raw, 16);
+      return `${(int >> 16) & 255},${(int >> 8) & 255},${int & 255}`;
+    }
+    const rgb = value.match(/(\d{1,3})\D+(\d{1,3})\D+(\d{1,3})/);
+    return rgb ? `${rgb[1]},${rgb[2]},${rgb[3]}` : '255,127,0';
+  }
 
   // ===== Estrellas fugaces (meteors) =====
   const METEOR_CAP        = 4;      // máx estrellas activas

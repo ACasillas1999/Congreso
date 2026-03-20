@@ -23,6 +23,7 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION
     <link rel="icon" href="/Congreso/educacion.png" type="image/x-icon">
 
     <title>Registro de Usuario</title>
+    <?php include "../header_css.php"; ?>
    <!-- <link rel="stylesheet" type="text/css" href="styles.css">-->
     <style>
 
@@ -170,6 +171,66 @@ input[type="submit"]:focus {
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
+}
+
+body {
+  background: radial-gradient(circle at center, var(--theme-primary-dark, #0d1c3b), var(--theme-primary, #1e2a78));
+  color: var(--theme-text, #e0e0e0);
+}
+
+.header {
+  background: linear-gradient(145deg, var(--theme-primary-dark, #1e2a78), var(--theme-primary, #3f51b5));
+}
+
+.logo,
+.container h2 {
+  color: var(--naranja, #c76f39);
+  text-shadow:
+    0 0 6px var(--naranja, #c76f39),
+    0 0 12px var(--naranja, #c76f39);
+}
+
+.nav-link:hover {
+  color: var(--theme-title, #ffcc00);
+}
+
+.container {
+  background-color: var(--theme-surface-strong, rgba(30, 30, 47, 0.96));
+  box-shadow: var(--theme-shadow, 0 12px 32px rgba(0, 0, 0, 0.3));
+}
+
+label {
+  color: var(--theme-text-soft, #dddddd);
+}
+
+input[type="text"],
+input[type="password"],
+select {
+  background-color: var(--theme-surface, #2a2a3f);
+  color: var(--theme-text, #fff);
+  border: 1px solid var(--theme-border, rgba(255,255,255,0.12));
+}
+
+input:focus,
+select:focus {
+  box-shadow: 0 0 8px var(--naranja, #c76f39);
+}
+
+input[type="submit"] {
+  background-color: var(--naranja, #c76f39);
+  box-shadow:
+    0 0 10px var(--naranja, #c76f39),
+    0 0 20px var(--naranja, #c76f39);
+}
+
+input[type="submit"]:hover {
+  background-color: var(--theme-primary-dark, #a85522);
+}
+
+input[type="submit"]:focus {
+  box-shadow:
+    0 0 12px var(--naranja, #c76f39),
+    0 0 24px var(--naranja, #c76f39);
 }
 
     </style>

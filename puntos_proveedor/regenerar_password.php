@@ -1,6 +1,10 @@
 <?php
 include "../Conexiones/Conexion.php";
 
+ob_start();
+include __DIR__ . "/../header_css.php";
+$providerThemeCss = ob_get_clean();
+
 echo "<!DOCTYPE html>
 <html lang='es'>
 <head>
@@ -9,38 +13,40 @@ echo "<!DOCTYPE html>
     <style>
         body {
             font-family: 'Segoe UI', sans-serif;
-            background: #f5f7fb;
+            background: radial-gradient(circle at center, var(--theme-primary, #f5f7fb), var(--theme-primary-dark, #dfe6f1));
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
+            color: var(--theme-text, #111);
         }
 
         .card {
-            background: white;
+            background: var(--theme-surface-strong, white);
             padding: 30px;
             border-radius: 10px;
             max-width: 400px;
             width: 100%;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            box-shadow: var(--theme-shadow, 0 10px 25px rgba(0, 0, 0, 0.15));
             text-align: center;
         }
 
         .card h2 {
-            color: #2575fc;
+            color: var(--theme-title, #2575fc);
         }
 
         .card p {
             font-size: 16px;
             margin: 10px 0;
+            color: var(--theme-text-soft, #333);
         }
 
         .btn {
             display: inline-block;
             margin: 10px 5px;
             padding: 10px 15px;
-            background: #2575fc;
+            background: var(--theme-primary, #2575fc);
             color: white;
             border: none;
             border-radius: 5px;
@@ -49,9 +55,10 @@ echo "<!DOCTYPE html>
         }
 
         .btn:hover {
-            background: #1a5dd8;
+            background: var(--theme-primary-dark, #1a5dd8);
         }
     </style>
+    {$providerThemeCss}
 </head>
 <body>";
 

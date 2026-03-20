@@ -40,15 +40,16 @@ $nivel = $puntos == 0 ? "Sin puntos aún" : ($puntos < 100 ? "En progreso" : "¡
   <meta charset="UTF-8">
   <title>Progreso de Facturas</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <?php include "../header_css.php"; ?>
   <style>
     * { box-sizing: border-box; }
 
     body {
       margin: 0;
       padding: 0;
-      background: radial-gradient(circle at center, #202040, #121212);
+      background: radial-gradient(circle at center, var(--theme-primary, #202040), var(--theme-primary-dark, #121212));
       font-family: 'Segoe UI', sans-serif;
-      color: #fff;
+      color: var(--theme-text, #fff);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -56,13 +57,13 @@ $nivel = $puntos == 0 ? "Sin puntos aún" : ($puntos < 100 ? "En progreso" : "¡
     }
 
     .panel {
-      background: #1e1e2f;
-      border: 2px solid #ff7b00;
+      background: var(--theme-surface-strong, #1e1e2f);
+      border: 2px solid var(--naranja, #ff7b00);
       border-radius: 16px;
       padding: 40px 30px;
       width: 90%;
       max-width: 460px;
-      box-shadow: 0 0 25px rgba(255, 123, 0, 0.4);
+      box-shadow: var(--theme-shadow, 0 0 25px rgba(255, 123, 0, 0.4));
       text-align: center;
       animation: slideIn 0.8s ease-out;
     }
@@ -73,10 +74,10 @@ $nivel = $puntos == 0 ? "Sin puntos aún" : ($puntos < 100 ? "En progreso" : "¡
     }
 
     .panel h2 {
-      color: #ff7b00;
+      color: var(--theme-title, #ff7b00);
       font-size: 26px;
       margin-bottom: 20px;
-      text-shadow: 0 0 10px #ff7b00;
+      text-shadow: 0 0 10px var(--theme-title, #ff7b00);
     }
 
     .panel p {
@@ -85,7 +86,7 @@ $nivel = $puntos == 0 ? "Sin puntos aún" : ($puntos < 100 ? "En progreso" : "¡
     }
 
     .progress-container {
-      background: #292929;
+      background: var(--theme-surface, #292929);
       border-radius: 50px;
       height: 22px;
       margin: 20px 0;
@@ -95,15 +96,15 @@ $nivel = $puntos == 0 ? "Sin puntos aún" : ($puntos < 100 ? "En progreso" : "¡
 
     .progress-bar {
       height: 100%;
-      background: linear-gradient(90deg, #ff7b00, #ffaa00);
+      background: linear-gradient(90deg, var(--naranja, #ff7b00), var(--theme-accent, #ffaa00));
       width: <?= $porcentaje ?>%;
       transition: width 0.5s ease;
       border-radius: 50px;
     }
 
     .badge {
-      background-color: #ff7b00;
-      color: #000;
+      background-color: var(--naranja, #ff7b00);
+      color: var(--theme-primary-dark, #000);
       font-weight: bold;
       padding: 6px 14px;
       border-radius: 30px;
@@ -116,8 +117,8 @@ $nivel = $puntos == 0 ? "Sin puntos aún" : ($puntos < 100 ? "En progreso" : "¡
       margin-top: 25px;
       display: inline-block;
       padding: 10px 18px;
-      background: linear-gradient(90deg, #ff7b00, #ffaa00);
-      color: #000;
+      background: linear-gradient(90deg, var(--naranja, #ff7b00), var(--theme-accent, #ffaa00));
+      color: var(--theme-primary-dark, #000);
       font-weight: bold;
       border-radius: 8px;
       text-decoration: none;

@@ -118,11 +118,8 @@ while ($row = $result->fetch_assoc()) {
     </style>
 </head>
 <body class="fade-in">
-    <div class="sidebar">
-        <ul>
-            <li><a href="index.php">Volver al Inicio</a></li>
-        </ul>
-    </div>
+    <?php include "sidebar.php"; ?>
+
 
     <div class="container">
         <h2 class="titulo">Personalizar Apariencia</h2>

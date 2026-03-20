@@ -1,45 +1,51 @@
 <?php
 include "../Conexiones/Conexion.php";
 
+ob_start();
+include __DIR__ . "/../header_css.php";
+$providerThemeCss = ob_get_clean();
+
 echo "<!DOCTYPE html>
 <html lang='es'>
 <head>
     <meta charset='UTF-8'>
     <title>Resultado</title>
+    {$providerThemeCss}
     <style>
         body {
-            background: #f0f4f8;
+            background: radial-gradient(circle at center, var(--theme-primary, #f0f4f8), var(--theme-primary-dark, #d8e1ee));
             font-family: 'Segoe UI', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 40px;
+            color: var(--theme-text, #111);
         }
 
         .card {
-            background: white;
+            background: var(--theme-surface-strong, white);
             padding: 30px;
             border-radius: 10px;
             max-width: 500px;
             width: 100%;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            box-shadow: var(--theme-shadow, 0 10px 25px rgba(0,0,0,0.1));
         }
 
         .card h2 {
-            color: #2575fc;
+            color: var(--theme-title, #2575fc);
             margin-bottom: 20px;
         }
 
         .card p {
             font-size: 16px;
-            color: #333;
+            color: var(--theme-text-soft, #333);
         }
 
         .btn {
             display: inline-block;
             margin-top: 20px;
             padding: 10px 20px;
-            background: #2575fc;
+            background: var(--theme-primary, #2575fc);
             color: white;
             border: none;
             border-radius: 5px;
@@ -49,7 +55,7 @@ echo "<!DOCTYPE html>
         }
 
         .btn:hover {
-            background: #1a5dd8;
+            background: var(--theme-primary-dark, #1a5dd8);
         }
     </style>
 </head>

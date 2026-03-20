@@ -33,6 +33,7 @@ $conn->close();
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles3.css">
+    <?php include "header_css.php"; ?>
     <title>Nuevo Evento</title>
     <script>
         function calcularDuracion() {
@@ -51,7 +52,8 @@ $conn->close();
     </script>
 </head>
 <body>
-    
+    <?php include "sidebar.php"; ?>
+
 <header class="header">
     <div class="logo">Agregar Evento</div>
     <nav class="navbar">

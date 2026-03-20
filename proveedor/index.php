@@ -39,15 +39,16 @@ if ($res->num_rows > 0) {
     <title>Escaneo QR - <?= htmlspecialchars($usuario) ?></title>
     <script src="https://unpkg.com/html5-qrcode"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php include "../header_css.php"; ?>
     <style>
        /* ====== Base / Fondo ====== */
 :root{
-  --bg1:#0b1535; --bg2:#142455;
-  --card:rgba(255,255,255,.06);
-  --field:#233055; --field2:#2a3a6a;
-  --ok:#22c55e; --warn:#f59e0b; --info:#21a1f3;
-  --brand1:#ff8c00; --brand2:#ff5722;
-  --text:#fff;
+  --bg1:var(--theme-primary-dark, #0b1535); --bg2:var(--theme-primary, #142455);
+  --card:var(--theme-surface-soft, rgba(255,255,255,.06));
+  --field:var(--theme-surface, #233055); --field2:var(--theme-surface-strong, #2a3a6a);
+  --ok:var(--theme-title, #22c55e); --warn:var(--naranja, #f59e0b); --info:var(--theme-accent, #21a1f3);
+  --brand1:var(--naranja, #ff8c00); --brand2:var(--theme-accent, #ff5722);
+  --text:var(--theme-text, #fff);
 }
 *{box-sizing:border-box}
 html,body{height:100%}
@@ -233,6 +234,24 @@ p{
   .controls .btn{ flex: 1 1 auto; max-width: none; width: 100%; }
 }
 
+.info{
+  color: var(--theme-title, #d1fae5);
+}
+
+p,
+.resultado{
+  color: var(--theme-text-soft, #e5e7eb);
+}
+
+#btnSwitch,
+.btn-switch{
+  background: linear-gradient(135deg, var(--theme-primary, #21a1f3), var(--theme-primary-dark, #1976d2));
+}
+
+#btnSwitch:hover,
+.btn-switch:hover{
+  background: linear-gradient(135deg, var(--theme-accent, #289cf6), var(--theme-primary, #1e88e5));
+}
 
     </style>
 </head>

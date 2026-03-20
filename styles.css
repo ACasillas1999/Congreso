@@ -21,8 +21,15 @@
 
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(180deg, #95ecff 0%, #57d6ff 18%, #1ca9dc 46%, #0b6d9f 72%, #054a6b 100%);
-  color: #e9f7ff;
+  background: linear-gradient(
+    180deg,
+    var(--bg-gradient-start, #95ecff) 0%,
+    var(--bg-gradient-start, #95ecff) 18%,
+    var(--azul-medio, #1ca9dc) 46%,
+    var(--azul-oscuro, #054a6b) 72%,
+    var(--bg-gradient-end, #054a6b) 100%
+  );
+  color: var(--blanco, #e9f7ff);
   padding-left: 250px;
   min-height: 100vh;
   animation: fadeIn 0.8s ease-in;
@@ -291,3 +298,35 @@ body.dark-mode .top-vendedor {
   border-left-color: #81c784;
   color: #fff;
 }
+
+/* =================== THEME OVERRIDES =================== */
+.container {
+  background-color: var(--container-bg, rgba(8, 27, 50, 0.7));
+}
+
+.titulo {
+  color: var(--titulo-neon, #7cecff);
+  text-shadow:
+    0 0 5px var(--titulo-neon, #7cecff),
+    0 0 10px var(--titulo-neon, #7cecff),
+    0 0 20px var(--titulo-neon, #7cecff);
+}
+
+body.dark-mode .titulo {
+  color: var(--titulo-neon, #90caf9);
+}
+
+.mi-tabla th {
+  background: linear-gradient(180deg, var(--azul-medio, #1ca9dc) 0%, var(--azul-oscuro, #054a6b) 100%);
+}
+
+.mi-tabla td a {
+  color: var(--titulo-neon, #7cecff);
+}
+
+.mi-tabla td a:hover {
+  color: var(--azul-suave, #b9f4ff);
+}
+
+.badge-azul { background: var(--azul-medio, #1ca9dc); color: white; }
+.badge-verde { background: var(--verde, #0ea5c6); color: white; }

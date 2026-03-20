@@ -91,102 +91,77 @@ $js_data = json_encode($data);
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Estadísticas Proveedores</title>
-
-    <!-- ✅ Bootstrap 5 -->
+    <title>Estad�sticas Proveedores</title>
+    <link rel="icon" href="/Congreso/educacion.png" type="image/x-icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <?php include "header_css.php"; ?>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- ✅ Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <!-- (Opcional) Estilo personalizado -->
-   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 <style>
     body {
-        background: linear-gradient(to right, #12172a, #1d1f3a);
-        color: #f0f0f0;
+        background: linear-gradient(180deg, var(--theme-bg-start, #95ecff), var(--theme-bg-end, #054a6b));
+        color: var(--theme-text, #fff);
         font-family: 'Poppins', sans-serif;
         margin: 0;
         padding: 0;
     }
-
     h2 {
-        color: #ffa726;
+        color: var(--theme-title, #7cecff);
         text-align: center;
         font-weight: 600;
         margin-bottom: 30px;
         text-shadow: 1px 1px 5px #000;
     }
-
     .accordion-button {
-        background-color: #1e1e2f;
-        color: #f0f0f0;
+        background-color: rgba(8, 27, 50, 0.88);
+        color: var(--theme-text, #fff);
         font-weight: 600;
-        border-bottom: 1px solid #333;
+        border-bottom: 1px solid rgba(255,255,255,.08);
     }
-
-    .accordion-button:hover {
-        background-color: #292944;
-    }
-
+    .accordion-button:hover { background-color: rgba(255,255,255,.08); }
     .accordion-button:not(.collapsed) {
-        background-color: #283593;
+        background-color: var(--theme-primary-dark, #054a6b);
         color: #fff;
         box-shadow: inset 0 -1px 0 rgba(0,0,0,.125);
     }
-
     .accordion-item {
-        background-color: #1a1a2e;
-        border: 1px solid #333;
+        background-color: rgba(8, 27, 50, 0.88);
+        border: 1px solid rgba(255,255,255,.08);
         margin-bottom: 10px;
         border-radius: 8px;
     }
-
-    .accordion-body {
-        background-color: #212140;
-    }
-
+    .accordion-body { background-color: rgba(255,255,255,.04); }
     .table {
-        background-color: #2a2a40; !important
+        background-color: rgba(255,255,255,.04) !important;
         color: #fff;
     }
-
-    .table thead {
-        background-color: #303f9f;
-        color: #fff;
-    }
-
-    .table tbody tr:hover {
-        background-color: #33335b;
-    }
-
+    .table thead { background-color: var(--theme-primary-dark, #054a6b); color: #fff; }
+    .table tbody tr:hover { background-color: rgba(255,255,255,.08); }
     .btn-volver {
         display: inline-block;
-        background: linear-gradient(90deg, #00c6ff, #0072ff);
+        background: linear-gradient(90deg, var(--theme-primary, #1ca9dc), var(--theme-primary-dark, #054a6b));
         color: white;
         padding: 12px 25px;
         border-radius: 30px;
         text-decoration: none;
         font-weight: 600;
         transition: background 0.3s ease, transform 0.2s;
-        box-shadow: 0 0 15px rgba(0, 114, 255, 0.5);
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.25);
     }
-
     .btn-volver:hover {
-        background: linear-gradient(90deg, #0072ff, #00c6ff);
+        background: linear-gradient(90deg, var(--theme-primary-dark, #054a6b), var(--theme-primary, #1ca9dc));
         transform: scale(1.05);
     }
-
     canvas {
-        background: #1e1e2f;
+        background: rgba(8,27,50,.62);
         border-radius: 12px;
         padding: 20px;
         margin-top: 30px;
-        box-shadow: 0 0 20px rgba(0,255,255,0.1);
+        box-shadow: 0 0 20px rgba(0,0,0,0.18);
     }
 </style>
-
 </head>
 <body>
 
@@ -197,6 +172,9 @@ $js_data = json_encode($data);
 </div>
 
 <script>
+const themeStyles = getComputedStyle(document.documentElement);
+const themeBar = themeStyles.getPropertyValue('--theme-title').trim() || '#7cecff';
+const themeBorder = themeStyles.getPropertyValue('--theme-primary').trim() || '#1ca9dc';
 const ctx = document.getElementById('graficaPuntos').getContext('2d');
 new Chart(ctx, {
     type: 'bar',
@@ -205,8 +183,8 @@ new Chart(ctx, {
         datasets: [{
             label: 'Puntos otorgados',
             data: <?= $js_data ?>,
-                backgroundColor: 'rgba(235, 172, 54, 0.7)',
-            borderColor: 'rgba(54, 162, 235, 1)',
+                backgroundColor: themeBar,
+            borderColor: themeBorder,
             borderWidth: 1
         }]
     },
@@ -224,3 +202,5 @@ new Chart(ctx, {
     }
 });
 </script>
+
+

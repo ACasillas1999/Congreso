@@ -2,6 +2,7 @@
 require_once __DIR__ . "/Conexiones/Conexion.php";
 
 $id_evento = intval($_POST['id_evento'] ?? 0);
+$id_agenda = intval($_POST['id_agenda'] ?? 0);
 $actividad = trim($_POST['actividad'] ?? '');
 $fecha     = $_POST['fecha'] ?? '';
 $horario   = strtoupper(trim($_POST['horario'] ?? ''));
@@ -21,14 +22,31 @@ $ini = toMin($m[1].":".$m[2]);
 $fin = toMin($m[3].":".$m[4]);
 if ($fin <= $ini) die("Rango horario inválido");
 
+if ($id_agenda > 0) {
+  $own = $conn->prepare("
+    SELECT ID
+    FROM agenda
+    WHERE ID = ? AND ID_Evento = ?
+    LIMIT 1
+  ");
+  $own->bind_param("ii", $id_agenda, $id_evento);
+  $own->execute();
+  $own_rs = $own->get_result();
+  if (!$own_rs || !$own_rs->num_rows) {
+    die("Registro de agenda inválido");
+  }
+  $own->close();
+}
+
 // validar solape en mismo salón/fecha
 $chk = $conn->prepare("
   SELECT ID, Horario
   FROM agenda
   WHERE ID_Evento = ? AND Fecha = ? AND Salon = ?
     AND Actividad <> 'Vacio'
+    AND (? = 0 OR ID <> ?)
 ");
-$chk->bind_param("iss", $id_evento, $fecha, $salon);
+$chk->bind_param("issii", $id_evento, $fecha, $salon, $id_agenda, $id_agenda);
 $chk->execute();
 $rs = $chk->get_result();
 while ($r = $rs->fetch_assoc()) {
@@ -39,13 +57,23 @@ while ($r = $rs->fetch_assoc()) {
     }
   }
 }
-// insertar
-$ins = $conn->prepare("
-  INSERT INTO agenda (ID_Evento, Salon, Fecha, Horario, Actividad)
-  VALUES (?,?,?,?,?)
-");
-$ins->bind_param("issss", $id_evento, $salon, $fecha, $horario, $actividad);
-$ins->execute();
+
+if ($id_agenda > 0) {
+  $ins = $conn->prepare("
+    UPDATE agenda
+    SET Salon = ?, Fecha = ?, Horario = ?, Actividad = ?
+    WHERE ID = ? AND ID_Evento = ?
+  ");
+  $ins->bind_param("ssssii", $salon, $fecha, $horario, $actividad, $id_agenda, $id_evento);
+  $ins->execute();
+} else {
+  $ins = $conn->prepare("
+    INSERT INTO agenda (ID_Evento, Salon, Fecha, Horario, Actividad)
+    VALUES (?,?,?,?,?)
+  ");
+  $ins->bind_param("issss", $id_evento, $salon, $fecha, $horario, $actividad);
+  $ins->execute();
+}
 
 // limpiar VACIO que se empalmen en ese salón/fecha
 $vac = $conn->prepare("

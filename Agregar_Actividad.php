@@ -33,6 +33,7 @@ $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
     <link rel="icon" href="/Congreso/educacion.png" type="image/x-icon">
 
     <link rel="stylesheet" href="styles3.css">
+    <?php include "header_css.php"; ?>
     <title>Nueva Actividad</title>
 </head>
 <!--<body class = "fade-in">-->
@@ -59,7 +60,8 @@ $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
         // Mostrar las ubicaciones en el combo box
         if ($result->num_rows > 0) {
             while($row = $result->fetch_assoc()) {
-                echo "<option value='" . $row["ID"] . "'>" . $row["name_evento"] . "</option>";
+                $selected = ((int)$row["ID"] === $id) ? " selected" : "";
+                echo "<option value='" . $row["ID"] . "'" . $selected . ">" . $row["name_evento"] . "</option>";
             }
         } else {
             echo "<option value=''>No hay ubicaciones disponibles</option>";

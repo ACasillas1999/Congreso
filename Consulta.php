@@ -60,7 +60,7 @@ if ($result === false) {
     echo "Error en la consulta: " . $conn->error;
 } else {
     if ($result->num_rows > 0) {
-        echo "<table class='mi-tabla' border='1'>";
+        echo "<table class='mi-tabla'>";
         echo "<tr>
             <th>ID</th>
             <th>Evento</th>
@@ -72,8 +72,7 @@ if ($result === false) {
             <th>Proveedor</th>
             <th>Telefono</th>
             <th>QR</th>
-            <th>Accion</th>
-            <th></th>
+            <th colspan='2'>Acciones</th>
         </tr>";
 
         while ($row = $result->fetch_assoc()) {
@@ -89,18 +88,18 @@ if ($result === false) {
             $qrImagePath = $row["QR_Code"] ? htmlspecialchars((string)$row["QR_Code"], ENT_QUOTES, 'UTF-8') : 'path_to_default_image.png';
 
             echo "<tr>";
-            echo "<td>{$id}</td>";
+            echo "<td><b>{$id}</b></td>";
             echo "<td>{$evento}</td>";
             echo "<td>{$sucursal}</td>";
             echo "<td>{$vendedor}</td>";
-            echo "<td>{$nombre}</td>";
+            echo "<td style='max-width: 150px; word-wrap: break-word;'>{$nombre}</td>";
             echo "<td>{$rfc}</td>";
             echo "<td>{$puesto}</td>";
             echo "<td>{$proveedor}</td>";
             echo "<td>{$telefono}</td>";
-            echo "<td><img src='{$qrImagePath}' alt='QR Code' width='100'></td>";
-            echo "<td><a href='DescargarGafete.php?id={$id}'>Descargar Gafete</a></td>";
-            echo "<td><a href='DescargarHorario.php?id={$id}'>Descargar Horario</a></td>";
+            echo "<td><img src='{$qrImagePath}' alt='QR' style='width: 60px; height: auto;'></td>";
+            echo "<td><a href='DescargarGafete.php?id={$id}' class='btn-tabla' title='Gafete'>Gafete</a></td>";
+            echo "<td><a href='DescargarHorario.php?id={$id}' class='btn-tabla' title='Horario' style='background: rgba(234, 179, 8, 0.15); color: #eab308; border-color: rgba(234, 179, 8, 0.3);'>Horario</a></td>";
             echo "</tr>";
         }
         echo "</table>";

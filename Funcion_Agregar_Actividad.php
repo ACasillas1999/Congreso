@@ -9,6 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $descripcion    = trim($_POST['Descripcion'] ?? '');
     $capacidad      = isset($_POST['capacidad']) ? (int)$_POST['capacidad'] : 0;
     $puntosDefault  = isset($_POST['Puntos_Default']) ? (int)$_POST['Puntos_Default'] : 0;
+    $redirectTo     = trim($_POST['redirect_to'] ?? '');
 
     if (!$evento || $actividad === '' || !$capacidad) {
         // Cierra y muestra error simple (puedes mejorar UX con un redirect + msg)
@@ -30,7 +31,11 @@ if (!$stmt) {
 $stmt->bind_param("issiii", $evento, $actividad, $descripcion, $capacidad, $puntosDefault, $exclusiva);
 
 if ($stmt->execute()) {
-    header("Location: Evento_inicio.php?id=" . $evento . "&mensaje=exito");
+    if ($redirectTo !== '') {
+        header("Location: " . $redirectTo);
+    } else {
+        header("Location: Evento_inicio.php?id=" . $evento . "&mensaje=exito");
+    }
     exit();
 } else {
     echo "Error al guardar la actividad: " . $conn->error;
