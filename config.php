@@ -95,4 +95,3 @@ function getPublicUrl($relativePath) {
 function buildAppUrl($relativePath) {
     return getPublicUrl($relativePath);
 }
-?>

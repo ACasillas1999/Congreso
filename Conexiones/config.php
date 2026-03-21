@@ -1,7 +1,7 @@
 <?php
 if (!defined('DB_SERVER')) {
     define('DB_SERVER', '18.211.75.118');
-   //  define('DB_SERVER', 'localhost');
+     //define('DB_SERVER', 'localhost');
 
 }
 
@@ -17,5 +17,4 @@ if (!defined('DB_PASSWORD')) {
 if (!defined('DB_NAME')) {
     define('DB_NAME', 'gpoascen_congresos');
 }
-?>
  

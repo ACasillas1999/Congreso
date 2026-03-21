@@ -1,8 +1,8 @@
 <?php
-// Iniciar la sesión y verificar el inicio de sesión del usuario
+// Iniciar la sesion y verificar el inicio de sesion del usuario
 /*
-ini_set('session.cookie_httponly', true); // Sólo permitir cookies de sesión vía HTTP
-ini_set('session.cookie_secure', true); // Solo enviar cookies de sesión a través de conexiones HTTPS
+ini_set('session.cookie_httponly', true); // Solo permitir cookies de sesion via HTTP
+ini_set('session.cookie_secure', true); // Solo enviar cookies de sesion a traves de conexiones HTTPS
 session_start();
 
 if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
@@ -11,7 +11,6 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 }
 */
 
-// Conectar a la base de datos
 require_once __DIR__ . "/Conexiones/Conexion.php";
 require_once __DIR__ . "/config.php";
 
@@ -45,55 +44,72 @@ function resolverRutaGafeteDescarga(?string $rutaGuardada, int $id): ?string
     return null;
 }
 
-// Obtener el ID del participante desde la solicitud
-$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
 
-// Validar el ID
 if ($id <= 0) {
-    die("ID inválido.");
+    http_response_code(400);
+    exit("ID invalido.");
 }
 
-// Consultar la base de datos para obtener la ruta del gafete
-$sql = "SELECT Ruta_Gafete FROM participante WHERE ID = $id";
-$result = $conn->query($sql);
-
-if ($result === false) {
-    die("Error en la consulta: " . $conn->error);
+$sql = "SELECT Ruta_Gafete FROM participante WHERE ID = ?";
+$stmt = $conn->prepare($sql);
+if (!$stmt) {
+    http_response_code(500);
+    exit("Error al preparar la consulta.");
 }
 
-if ($result->num_rows > 0) {
-    $row = $result->fetch_assoc();
-    $filePath = resolverRutaGafeteDescarga($row["Ruta_Gafete"] ?? '', $id);
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$result = $stmt->get_result();
 
-    // Verificar si el archivo existe
-    if ($filePath !== null) {
-        if (($row["Ruta_Gafete"] ?? '') !== $filePath) {
-            $upd = $conn->prepare("UPDATE participante SET Ruta_Gafete = ? WHERE ID = ?");
-            if ($upd) {
-                $upd->bind_param("si", $filePath, $id);
-                $upd->execute();
-                $upd->close();
-            }
-        }
+if ($result->num_rows === 0) {
+    $stmt->close();
+    $conn->close();
+    http_response_code(404);
+    exit("No se encontro el participante.");
+}
 
-        // Configurar encabezados para la descarga del archivo
-        header('Content-Description: File Transfer');
-        header('Content-Type: application/octet-stream');
-        header('Content-Disposition: attachment; filename="' . basename($filePath) . '"');
-        header('Expires: 0');
-        header('Cache-Control: must-revalidate');
-        header('Pragma: public');
-        header('Content-Length: ' . filesize($filePath));
-        
-        // Leer el archivo y enviarlo al navegador
-        readfile($filePath);
-        exit;
-    } else {
-        die("El archivo no existe.");
+$row = $result->fetch_assoc();
+$stmt->close();
+
+$filePath = resolverRutaGafeteDescarga($row["Ruta_Gafete"] ?? '', $id);
+if ($filePath === null) {
+    $conn->close();
+    http_response_code(404);
+    exit("El archivo no existe.");
+}
+
+if (($row["Ruta_Gafete"] ?? '') !== $filePath) {
+    $upd = $conn->prepare("UPDATE participante SET Ruta_Gafete = ? WHERE ID = ?");
+    if ($upd) {
+        $upd->bind_param("si", $filePath, $id);
+        $upd->execute();
+        $upd->close();
     }
-} else {
-    die("No se encontró el participante.");
 }
 
 $conn->close();
-?>
+
+while (ob_get_level()) {
+    ob_end_clean();
+}
+
+$ext = strtolower((string)pathinfo($filePath, PATHINFO_EXTENSION));
+$mime = 'application/octet-stream';
+if (in_array($ext, ['jpg', 'jpeg'], true)) {
+    $mime = 'image/jpeg';
+} elseif ($ext === 'png') {
+    $mime = 'image/png';
+}
+
+header('Content-Description: File Transfer');
+header('Content-Type: ' . $mime);
+header('Content-Disposition: attachment; filename="' . basename($filePath) . '"');
+header('Content-Transfer-Encoding: binary');
+header('Content-Length: ' . filesize($filePath));
+header('Cache-Control: private, max-age=0, must-revalidate');
+header('Pragma: public');
+header('Expires: 0');
+
+readfile($filePath);
+exit;
