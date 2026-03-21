@@ -10,12 +10,18 @@ define('VECTOR', substr(hash('sha256', 'vectorConexion2025'), 0, 16));
 // DETECCIÓN AUTOMÁTICA DE ENTORNO
 // ============================================
 // Detecta si estamos en desarrollo local o producción
+$serverAddr = (string)($_SERVER['SERVER_ADDR'] ?? '');
+$httpHost = (string)($_SERVER['HTTP_HOST'] ?? '');
+$serverPort = (string)($_SERVER['SERVER_PORT'] ?? '');
+$httpsFlag = (string)($_SERVER['HTTPS'] ?? '');
+$isHttps = ($httpsFlag !== '' && strtolower($httpsFlag) !== 'off') || $serverPort === '443';
+
 $isLocal = (
-    $_SERVER['SERVER_ADDR'] === '192.168.60.194' || 
-    $_SERVER['HTTP_HOST'] === '192.168.60.194' ||
-    strpos($_SERVER['HTTP_HOST'], 'localhost') !== false ||
-    strpos($_SERVER['HTTP_HOST'], '127.0.0.1') !== false ||
-    strpos($_SERVER['HTTP_HOST'], '192.168.') !== false
+    $serverAddr === '192.168.60.194' ||
+    $httpHost === '192.168.60.194' ||
+    strpos($httpHost, 'localhost') !== false ||
+    strpos($httpHost, '127.0.0.1') !== false ||
+    strpos($httpHost, '192.168.') !== false
 );
 
 define('IS_LOCAL', $isLocal);
@@ -33,7 +39,9 @@ if (IS_LOCAL) {
     define('QR_OUTPUT', BASE_PATH . DIRECTORY_SEPARATOR . 'qrcodes');
     
     // URLs públicas (para enlaces)
-    define('BASE_URL', 'http://192.168.60.194/Congreso');
+    $localHost = $httpHost !== '' ? $httpHost : '192.168.60.194';
+    $localScheme = $isHttps ? 'https' : 'http';
+    define('BASE_URL', $localScheme . '://' . $localHost . '/Congreso');
     define('GAFETES_URL', BASE_URL . '/Machote/Generados');
     define('HORARIOS_URL', BASE_URL . '/Machote/Horarios_Generados');
     
@@ -86,5 +94,9 @@ function getFullPath($relativePath) {
 // ============================================
 function getPublicUrl($relativePath) {
     return BASE_URL . '/' . ltrim($relativePath, '/');
+}
+
+function buildAppUrl($relativePath) {
+    return getPublicUrl($relativePath);
 }
 ?>

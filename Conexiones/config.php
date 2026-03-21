@@ -11,7 +11,7 @@ if (!defined('DB_USERNAME')) {
 
 if (!defined('DB_PASSWORD')) {
    define('DB_PASSWORD', '04nm2fdLefCxM');
-    // define('DB_PASSWORD', '');
+     //define('DB_PASSWORD', '');
 }
 
 if (!defined('DB_NAME')) {

@@ -9,6 +9,48 @@ require_once 'phpqrcode/qrlib.php';
 require_once __DIR__ . "/Conexiones/Conexion.php";
 require_once __DIR__ . "/config.php";
 
+session_name("CON");
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+
+function dispararGeneracionHorario(int $participanteId): void
+{
+    $genUrl = buildAppUrl("Generar_Horario.php?id={$participanteId}&format=png&silent=1");
+
+    if (function_exists('curl_init')) {
+        $ch = curl_init($genUrl);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 12);
+        if (IS_LOCAL) {
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        }
+        $respHor = curl_exec($ch);
+        $httpCode = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
+        curl_close($ch);
+
+        if ($respHor === false || $httpCode >= 400) {
+            @file_put_contents(
+                __DIR__ . "/log_horario.txt",
+                date('c') . " ID:{$participanteId} URL:{$genUrl} HTTP:{$httpCode} ERR:{$curlError}" . PHP_EOL,
+                FILE_APPEND
+            );
+        }
+        return;
+    }
+
+    $respHor = @file_get_contents($genUrl);
+    if ($respHor === false) {
+        @file_put_contents(
+            __DIR__ . "/log_horario.txt",
+            date('c') . " ID:{$participanteId} URL:{$genUrl} HTTP:file_get_contents_failed" . PHP_EOL,
+            FILE_APPEND
+        );
+    }
+}
+
 // Verificar si se enviaron los datos del formulario
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $evento = $conn->real_escape_string($_POST['Evento']);
@@ -120,20 +162,7 @@ if (!empty($actividades)) {
 
 // 🔹 GENERAR HORARIO (solo si hubo actividades seleccionadas)
 if (!empty($actividades)) {
-    $host = $_SERVER['HTTP_HOST'] ?? 'congresos.grupoascencio.com.mx';
-    $genUrl = "https://{$host}/Congreso/Generar_Horario.php?id={$last_id}&format=png&silent=1";
-
-    if (function_exists('curl_init')) {
-        $ch = curl_init($genUrl);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 8);
-        $respHor = curl_exec($ch);
-        curl_close($ch);
-        // Opcional: guardar log si quieres depurar
-        // @file_put_contents(__DIR__."/logs/horarios.log", date('c')." ID:$last_id RESP:$respHor\n", FILE_APPEND);
-    } else {
-        @file_get_contents($genUrl);
-    }
+    dispararGeneracionHorario((int)$last_id);
 }
 
 
@@ -141,11 +170,10 @@ if (!empty($actividades)) {
 $token = openssl_encrypt($last_id, METODO_CIFRADO, CLAVE_SECRETA, 0, VECTOR);
 $token = urlencode($token);
 
-$url_gafete_publico = "https://congresos.grupoascencio.com.mx/congreso/DescargarGafeteCifrado.php?token=$token";
-
-
-
-$url_gafete = "https://congresos.grupoascencio.com.mx/congreso/DescargarGafete.php?id=$last_id";
+$url_gafete_publico = buildAppUrl("descargargafetecifrado.php?token=$token");
+$url_horario_publico = buildAppUrl("descargarhorariocifrado.php?token=$token");
+$url_gafete = buildAppUrl("DescargarGafete.php?id=$last_id");
+$url_horario = buildAppUrl("DescargarHorario.php?id=$last_id");
 
 
 
@@ -158,7 +186,8 @@ $url_gafete = "https://congresos.grupoascencio.com.mx/congreso/DescargarGafete.p
                 mkdir($qrDirectory, 0777, true); // Crear el directorio si no existe
             }
 
-            $qrFilename = $qrDirectory . 'participante_' . $last_id . '.png';
+            $qrFilenameRel = 'qrcodes/participante_' . $last_id . '.png';
+            $qrFilename = QR_OUTPUT . DIRECTORY_SEPARATOR . 'participante_' . $last_id . '.png';
             QRcode::png($qrData, $qrFilename, QR_ECLEVEL_L, 4);
 
             // Crear la información para el gafete
@@ -235,7 +264,7 @@ $url_gafete = "https://congresos.grupoascencio.com.mx/congreso/DescargarGafete.p
             imagedestroy($qrResized);
 
             // Actualizar la base de datos para guardar la ruta del gafete
-            $sqlUpdate = "UPDATE participante SET QR_Code = '$qrFilename', Ruta_Gafete = '$outputPath' WHERE ID = $last_id";
+            $sqlUpdate = "UPDATE participante SET QR_Code = '$qrFilenameRel', Ruta_Gafete = '$outputPath' WHERE ID = $last_id";
 
 
 // ENVIAR WHATSAPP CON CLOUD API

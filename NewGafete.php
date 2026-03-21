@@ -48,12 +48,15 @@ if ($regenHorario) {
   $tieneClase = (bool)$chkClase->get_result()->fetch_column();
 
   if ($tieneClase) {
-    $host   = $_SERVER['HTTP_HOST'] ?? 'congresos.grupoascencio.com.mx';
-    $genUrl = "https://{$host}/Congreso/Generar_Horario.php?id={$last_id}&format=png&silent=1";
+    $genUrl = buildAppUrl("Generar_Horario.php?id={$last_id}&format=png&silent=1");
     if (function_exists('curl_init')) {
       $ch = curl_init($genUrl);
       curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
       curl_setopt($ch, CURLOPT_TIMEOUT, 8);
+      if (IS_LOCAL) {
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+      }
       curl_exec($ch);
       curl_close($ch);
     } else {
@@ -66,8 +69,8 @@ if ($regenHorario) {
 $token = openssl_encrypt((string)$last_id, METODO_CIFRADO, CLAVE_SECRETA, 0, VECTOR);
 $token = urlencode($token);
 
-$url_gafete_publico = "https://congresos.grupoascencio.com.mx/congreso/DescargarGafeteCifrado.php?token={$token}";
-$url_gafete_directo = "https://congresos.grupoascencio.com.mx/congreso/DescargarGafete.php?id={$last_id}";
+$url_gafete_publico = buildAppUrl("descargargafetecifrado.php?token={$token}");
+$url_gafete_directo = buildAppUrl("DescargarGafete.php?id={$last_id}");
 
 // ===== Generar QR =====
 $qrData = "ID: {$last_id}\nEvento: {$evento}\nNombre: {$Nombre}\nSucursal: {$sucursal}";

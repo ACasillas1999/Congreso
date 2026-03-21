@@ -13,6 +13,37 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 
 // Conectar a la base de datos
 require_once __DIR__ . "/Conexiones/Conexion.php";
+require_once __DIR__ . "/config.php";
+
+function resolverRutaGafeteDescarga(?string $rutaGuardada, int $id): ?string
+{
+    $candidatas = [];
+    $rutaGuardada = trim((string)$rutaGuardada);
+
+    if ($rutaGuardada !== '') {
+        $candidatas[] = $rutaGuardada;
+
+        $normalizada = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $rutaGuardada);
+        if ($normalizada !== $rutaGuardada) {
+            $candidatas[] = $normalizada;
+        }
+
+        $base = basename($rutaGuardada);
+        if ($base !== '') {
+            $candidatas[] = rtrim(GAFETES_OUTPUT, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $base;
+        }
+    }
+
+    $candidatas[] = rtrim(GAFETES_OUTPUT, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'Gafete_personalizado_' . $id . '.jpg';
+
+    foreach (array_unique($candidatas) as $ruta) {
+        if ($ruta !== '' && file_exists($ruta) && is_readable($ruta)) {
+            return $ruta;
+        }
+    }
+
+    return null;
+}
 
 // Obtener el ID del participante desde la solicitud
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
@@ -32,10 +63,19 @@ if ($result === false) {
 
 if ($result->num_rows > 0) {
     $row = $result->fetch_assoc();
-    $filePath = $row["Ruta_Gafete"];
+    $filePath = resolverRutaGafeteDescarga($row["Ruta_Gafete"] ?? '', $id);
 
     // Verificar si el archivo existe
-    if (file_exists($filePath)) {
+    if ($filePath !== null) {
+        if (($row["Ruta_Gafete"] ?? '') !== $filePath) {
+            $upd = $conn->prepare("UPDATE participante SET Ruta_Gafete = ? WHERE ID = ?");
+            if ($upd) {
+                $upd->bind_param("si", $filePath, $id);
+                $upd->execute();
+                $upd->close();
+            }
+        }
+
         // Configurar encabezados para la descarga del archivo
         header('Content-Description: File Transfer');
         header('Content-Type: application/octet-stream');
