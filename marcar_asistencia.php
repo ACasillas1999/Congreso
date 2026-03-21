@@ -6,9 +6,10 @@ session_name("CON");
 session_start();
 
 require_once __DIR__ . "/Conexiones/Conexion.php";
+require_once __DIR__ . "/qr_helper.php";
 
 $id_clase = (int)($_POST['id_clase'] ?? 0);        // ID de la AGENDA (sesión)
-$id_part  = (int)($_POST['id_participante'] ?? 0); // ID del PARTICIPANTE
+$id_part  = extraer_id_participante_qr($_POST['id_participante'] ?? null); // ID del PARTICIPANTE
 
 if (!$id_clase || !$id_part) {
   http_response_code(400);

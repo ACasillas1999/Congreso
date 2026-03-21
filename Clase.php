@@ -179,6 +179,21 @@ document.addEventListener("DOMContentLoaded", function() {
     const scanForm = document.getElementById("scanForm");
     const btnProcesarScan = document.getElementById("btnProcesarScan");
 
+    function extraerIdParticipante(raw) {
+        const limpio = String(raw || '').trim();
+        if (!limpio) return 0;
+        if (/^\d+$/.test(limpio)) return parseInt(limpio, 10);
+
+        let match = limpio.match(/\bID\b\s*[:\-NÑ]?\s*(\d{1,10})(?=\D|$)/i);
+        if (match) return parseInt(match[1], 10);
+
+        match = limpio.match(/ID\s*[:\-NÑ]?\s*(\d{1,10})(?=\D|$)/i);
+        if (match) return parseInt(match[1], 10);
+
+        match = limpio.match(/(?:^|\D)(\d{1,10})(?=\D|$)/);
+        return match ? parseInt(match[1], 10) : 0;
+    }
+
     function refresh() {
         const xhr = new XMLHttpRequest();
         xhr.open("POST", "Consultar_Clase.php", true);
@@ -217,8 +232,14 @@ document.addEventListener("DOMContentLoaded", function() {
         e.preventDefault();
         const raw = scanInput.value.trim();
         if(!raw) return;
+        const idParticipante = extraerIdParticipante(raw);
+        if(!idParticipante) {
+            toast("No se pudo extraer un ID valido del QR", false);
+            scanInput.focus();
+            return;
+        }
         const modo = document.querySelector('input[name="modo"]:checked').value;
-        enviarAccion((modo === 'agregar' ? "Agregar_Participante_Manual.php" : "marcar_asistencia.php"), raw);
+        enviarAccion((modo === 'agregar' ? "Agregar_Participante_Manual.php" : "marcar_asistencia.php"), idParticipante);
         scanInput.value = '';
         scanInput.focus();
     }

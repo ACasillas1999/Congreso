@@ -3,9 +3,10 @@ header('Content-Type: application/json; charset=utf-8');
 
 // Establecer la conexión a la base de datos
 require_once __DIR__ . "/Conexiones/Conexion.php";
+require_once __DIR__ . "/qr_helper.php";
 
 // Obtener el ID del participante y de la clase desde la solicitud POST
-$idParticipante = isset($_POST['id_participante']) ? intval($_POST['id_participante']) : 0;
+$idParticipante = extraer_id_participante_qr($_POST['id_participante'] ?? null);
 $idClase = isset($_POST['id_clase']) ? intval($_POST['id_clase']) : 0;
 
 if ($idParticipante <= 0 || $idClase <= 0) {
