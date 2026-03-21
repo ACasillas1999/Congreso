@@ -74,23 +74,20 @@ $url_gafete_directo = buildAppUrl("DescargarGafete.php?id={$last_id}");
 
 // ===== Generar QR =====
 $qrData = "ID: {$last_id}\nEvento: {$evento}\nNombre: {$Nombre}\nSucursal: {$sucursal}";
-$qrDir  = __DIR__ . '/qrcodes/';
+$qrDir = rtrim(QR_OUTPUT, DIRECTORY_SEPARATOR);
 if (!is_dir($qrDir)) { @mkdir($qrDir, 0775, true); }
 $qrFilenameRel = 'qrcodes/participante_' . $last_id . '.png'; // para guardar en DB (relativo)
-$qrFilenameAbs = __DIR__ . '/' . $qrFilenameRel;
+$qrFilenameAbs = $qrDir . DIRECTORY_SEPARATOR . 'participante_' . $last_id . '.png';
 
 QRcode::png($qrData, $qrFilenameAbs, QR_ECLEVEL_L, 4);
 
 // ===== Crear Gafete (JPG) =====
-$templateFs  = '/home/gpoascen/congresos.grupoascencio.com.mx/Congreso/Machote/Gafetes_visitantes.jpg';
-$templateUrl = 'https://congresos.grupoascencio.com.mx/Congreso/Machote/Gafetes_visitantes.jpg';
-$templatePath = is_file($templateFs) ? $templateFs : $templateUrl;
+$templatePath = TEMPLATE_GAFETE;
+$fontPath = FONT_NEXA;
 
-$fontPath = __DIR__ . '/Machote/Font/nexa-book.ttf';
-
-$outputDir  = '/home/gpoascen/congresos.grupoascencio.com.mx/Congreso/Machote/Generados/';
+$outputDir = rtrim(GAFETES_OUTPUT, DIRECTORY_SEPARATOR);
 if (!is_dir($outputDir)) { @mkdir($outputDir, 0775, true); }
-$outputPath = $outputDir . 'Gafete_personalizado_' . $last_id . '.jpg';
+$outputPath = $outputDir . DIRECTORY_SEPARATOR . 'Gafete_personalizado_' . $last_id . '.jpg';
 
 $image = @imagecreatefromjpeg($templatePath);
 if (!$image) { http_response_code(500); exit('No se pudo abrir el machote de gafete'); }
