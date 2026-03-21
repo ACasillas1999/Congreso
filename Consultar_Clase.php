@@ -67,26 +67,63 @@ if ($busqueda !== '') {
 
     echo "<h2 class='titulo' style='margin-top:30px;'>Resultados de Búsqueda</h2>";
     if ($res->num_rows > 0) {
+        // Vista para Escritorio (Tabla estándar)
         echo "<table class='mi-tabla'><tr><th>ID</th><th>Nombre</th><th>Proveedor</th><th>Estado</th><th>Acción</th></tr>";
+        
+        // Vista para Móvil (Oculta por defecto con estilo inline y CSS)
+        echo "<div class='mobile-card-container' style='display:none;'>";
+        
         while ($r = $res->fetch_assoc()) {
-            $en = !is_null($r['EnClase']); $as = (int)($r['Asistio'] ?? 0) === 1;
+            $en = !is_null($r['EnClase']); 
+            $as = (int)($r['Asistio'] ?? 0) === 1;
+            $nombre = htmlspecialchars($r['Nombre']);
+            $proveedor = htmlspecialchars($r['Proveedor']);
+            $idPart = $r['ID'];
+            
+            $statusClass = $as ? 'badge-encurso' : ($en ? 'badge-finalizado' : 'badge-cancelado');
+            $statusText = $as ? 'Asistió' : ($en ? 'Inscrito' : 'No inscrito');
+
+            // Fila de Tabla (PC)
             echo "<tr>
-                    <td>{$r['ID']}</td>
-                    <td><b>".htmlspecialchars($r['Nombre'])."</b></td>
-                    <td>".htmlspecialchars($r['Proveedor'])."</td>
-                    <td><span class='badge ".($as?'badge-encurso':($en?'badge-finalizado':'badge-cancelado'))."'>".($as?'Asistió':($en?'Inscrito':'No inscrito'))."</span></td>
+                    <td>{$idPart}</td>
+                    <td><b>{$nombre}</b></td>
+                    <td>{$proveedor}</td>
+                    <td><span class='badge {$statusClass}'>{$statusText}</span></td>
                     <td>";
             if ($en) {
-                if (!$as) echo "<button onclick='btnMarcarAsistencia({$r['ID']})' class='button' style='padding:5px 10px;'>Asistencia</button>";
-                else echo "<small style='color:var(--theme-text-soft)'>{$r['Asistencia_Fecha']}</small>";
+                if (!$as) echo "<button onclick='btnMarcarAsistencia({$idPart})' class='button' style='padding:5px 10px;'>Asistencia</button>";
+                else echo "<small style='color:var(--txt-dim)'>{$r['Asistencia_Fecha']}</small>";
             } else {
-                echo "<button onclick='btnInscribirYAsistir({$r['ID']})' class='button' style='padding:5px 10px; background:var(--theme-primary-dark)'>Inscribir</button>";
+                echo "<button onclick='btnInscribirYAsistir({$idPart})' class='button' style='padding:5px 10px;'>Inscribir</button>";
             }
             echo "</td></tr>";
+
+            // Tarjeta (Móvil)
+            echo "<div class='participant-card'>
+                    <div class='participant-header'>
+                        <div>
+                            <span class='participant-name'>{$nombre}</span>
+                            <span class='participant-provider'>{$proveedor}</span>
+                        </div>
+                        <span class='participant-id'>ID: {$idPart}</span>
+                    </div>
+                    <div class='participant-footer'>
+                        <span class='badge " . ($as ? 'badge-encurso' : ($en ? 'badge-finalizado' : 'badge-cancelado')) . "'>{$statusText}</span>
+                        <div style='flex:1; text-align:right;'>";
+            if ($en) {
+                if (!$as) echo "<button onclick='btnMarcarAsistencia({$idPart})' class='btn-mobile-action'>Asistencia</button>";
+                else echo "<span style='color:var(--ok); font-weight:600;'>✔ {$r['Asistencia_Fecha']}</span>";
+            } else {
+                echo "<button onclick='btnInscribirYAsistir({$idPart})' class='btn-mobile-action'>Inscribir</button>";
+            }
+            echo "      </div>
+                    </div>
+                  </div>";
         }
-        echo "</table>";
+        echo "</div>"; // Cierre mobile-card-container
+        echo "</table>"; // Cierre mi-tabla PC
     } else {
-        echo "<div style='text-align:center; padding:30px; background:rgba(255,255,255,0.02); border-radius:var(--theme-radius); border:1px solid var(--theme-border);'>
+        echo "<div style='text-align:center; padding:30px; background:rgba(255,255,255,0.02); border-radius:12px; border:1px solid rgba(255,255,255,0.1);'>
                 <p>No se encontró a nadie. ¿Deseas registrarlo?</p>
                 <button onclick='abrirModalRegistro()' class='button'>Hacer Registro Rápido</button>
               </div>";
@@ -101,20 +138,43 @@ if ($busqueda !== '') {
     echo "<h2 class='titulo' style='margin-top:30px;'>Participantes de la Clase</h2>";
     if ($resP->num_rows > 0) {
         echo "<table class='mi-tabla'><tr><th>ID</th><th>Nombre</th><th>Proveedor</th><th>Asistencia</th><th>Tipo</th></tr>";
+        echo "<div class='mobile-card-container' style='display:none;'>";
+        
         while ($rp = $resP->fetch_assoc()) {
             $as = ((int)$rp["Asistio"] === 1);
             $tipo = ((int)$rp["Tipo_Inscripcion"] === 1) ? "Manual" : "Registro";
+            $nombre = htmlspecialchars($rp['Nombre']);
+            $proveedor = htmlspecialchars($rp['Proveedor']);
+            $idPart = $rp['ID'];
+
+            // Fila Desktop
             echo "<tr>
-                    <td>{$rp['ID']}</td>
-                    <td><b>".htmlspecialchars($rp['Nombre'])."</b></td>
-                    <td>".htmlspecialchars($rp['Proveedor'])."</td>
+                    <td>{$idPart}</td>
+                    <td><b>{$nombre}</b></td>
+                    <td>{$proveedor}</td>
                     <td>".($as ? "✔ <small>{$rp['Asistencia_Fecha']}</small>" : "—")."</td>
                     <td>$tipo</td>
                   </tr>";
+
+            // Tarjeta Móvil
+            echo "<div class='participant-card'>
+                    <div class='participant-header'>
+                        <div>
+                            <span class='participant-name'>{$nombre}</span>
+                            <span class='participant-provider'>{$proveedor}</span>
+                        </div>
+                        <span class='participant-id'>ID: {$idPart}</span>
+                    </div>
+                    <div class='participant-footer'>
+                        <span class='badge ".($as?'badge-encurso':'badge-cancelado')."'>".($as?'Asistió':'No asistió')."</span>
+                        <span style='color:var(--txt-dim); font-size:12px;'>".($as ? $rp['Asistencia_Fecha'] : $tipo)."</span>
+                    </div>
+                  </div>";
         }
+        echo "</div>";
         echo "</table>";
     } else {
-        echo "<p style='text-align:center; padding:20px; color:var(--theme-text-soft)'>No hay inscritos aún.</p>";
+        echo "<p style='text-align:center; padding:20px; color:var(--txt-dim)'>No hay inscritos aún.</p>";
     }
 }
 $conn->close();
