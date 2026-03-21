@@ -1,5 +1,5 @@
 /* =========================================================
-   VARIABLES DE TEMA (ORIGINALES)
+   VARIABLES DE TEMA
    ========================================================= */
 :root{
   --bg-app: #0d1c3b;
@@ -20,40 +20,59 @@
   --radius-sm: 8px;
 }
 
-/* Base */
+/* =========================================================
+   BASE MOBILE-FIRST
+   ========================================================= */
 *{ box-sizing: border-box; }
 html,body{ min-height:100%; }
 body{
   margin:0;
   color:var(--txt);
+  /* El fondo se maneja en header_css.php */
   -webkit-tap-highlight-color: transparent;
   font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif;
+}
+
+/* Evita zoom por inputs en iOS */
+@media (max-width: 991px){
+  input, select, textarea, button{ font-size: 16px; }
 }
 
 a{ color:inherit; text-decoration:none; }
 button{ font: inherit; cursor: pointer; }
 
+/* Animaciones */
 .fade-in { animation: fadeIn .6s ease-in-out; }
 @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
 
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; }
+}
+
+
+
+/* =========================================================
+   TIPOGRAFÍA Y FORMULARIOS
+   ========================================================= */
 .titulo{
   font-size: 26px;
   margin: 6px 0 10px;
   color: var(--accent-2);
-  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
 }
 @media (min-width: 992px){ .titulo{ font-size: 28px; } }
 
-#busqueda, .input-search {
-  padding: 12px 12px 12px 45px;
+#busqueda{
+  padding: 12px;
   font-size: 16px;
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 8px;
+  border: 1px solid #bbb;
+  border-radius: 10px;
   width: 100%;
   max-width: 480px;
-  background: rgba(0,0,0,0.3);
+  background: #f9f9f9;
   margin-bottom: 16px;
-  color:#fff !important;
+  color:#333;
 }
 
 .button{
@@ -63,89 +82,275 @@ button{ font: inherit; cursor: pointer; }
   border: 0;
   font-size: 16px;
   border-radius: 10px;
-  transition: all .25s ease;
+  transition: background .25s ease;
   min-height: 44px;
 }
-.button:hover{ background:#1f6edb; transform: translateY(-1px); }
+.button:hover{ background:#1f6edb; }
 
+form#agregarParticipanteForm{
+  background:#fff;
+  border:1px solid #ddd;
+  border-radius:12px;
+  padding:20px;
+  max-width:520px;
+  box-shadow:0 2px 8px rgba(0,0,0,.05);
+  margin-top:24px;
+}
+form#agregarParticipanteForm input[type="text"]{
+  width:100%; padding:12px; font-size:16px; border:1px solid #ccc; border-radius:10px; margin-bottom:12px;
+}
+form#agregarParticipanteForm .button{ width: 100%; }
+
+/* =========================================================
+   LISTADO Y TARJETAS
+   ========================================================= */
 #resultado{ margin-top:14px; color:var(--txt); }
-
-/* TABLAS ESCRITORIO */
-.mi-tabla {
-  border-collapse: separate;
-  border-spacing: 0;
-  width: 100%;
-  margin-top: 15px;
-  background: rgba(255,255,255,0.02);
-  border-radius: 12px;
-  overflow: hidden;
-  border: 1px solid rgba(255,255,255,0.1);
-}
-.mi-tabla th, .mi-tabla td {
-  padding: 14px;
-  text-align: left;
-  border-bottom: 1px solid rgba(255,255,255,0.05);
-}
-.mi-tabla th { 
-  background: rgba(0,0,0,0.4); 
-  color: var(--accent-2); 
-  font-size: 13px; 
-  text-transform: uppercase; 
-  letter-spacing: 1px; 
-}
-.mi-tabla tr:last-child td { border-bottom: none; }
-.mi-tabla tr:hover td { background: rgba(255,255,255,0.03); }
-
-/* Badges Desktop */
-.badge { padding: 4px 10px; border-radius: 4px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
-.badge-encurso { background: #27ae60; color: #fff; }
-.badge-finalizado { background: #2980b9; color: #fff; }
-.badge-cancelado { background: #c0392b; color: #fff; }
-
-/* ENCAPSULACIÓN MÓVIL */
-.mobile-card-container { display: none !important; }
-
-@media (max-width: 991px) {
-    .container { padding: 15px; }
-    
-    .mi-tabla { display: none !important; }
-    .mobile-card-container { display: grid !important; gap: 15px; margin-top: 20px; }
-    
-    .participant-card {
-        background: rgba(255,255,255,0.05);
-        border: 1px solid rgba(255,255,255,0.1);
-        border-radius: 16px;
-        padding: 20px;
-        backdrop-filter: blur(10px);
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .participant-name { font-size: 18px; font-weight: 700; color: #fff; }
-    .participant-provider { font-size: 13px; color: var(--txt-dim); }
-    
-    .btn-mobile-action {
-        width: 100%; height: 50px; border-radius: 12px; border: none;
-        background: var(--accent); color: #fff; font-weight: 700;
-        display: flex; align-items: center; justify-content: center;
-    }
-
-    .modal-content {
-        background: #0d1224 !important;
-        border-radius: 24px 24px 0 0 !important;
-        width: 100% !important;
-        bottom: 0; position: fixed; margin: 0 !important;
-        padding: 25px !important;
-    }
+.registro-participante{
+  background:#fff; color:#222; padding:12px 14px; border-radius:10px; margin-bottom:10px;
+  border:1px solid #e0e0e0; box-shadow:0 1px 3px rgba(0,0,0,.05);
 }
 
-/* Toasts */
-.ga-toast {
-  position: fixed; right: 20px; bottom: 20px;
-  padding: 12px 20px; border-radius: 10px;
-  color: #fff; background: rgba(0,0,0,0.85);
-  border: 1px solid rgba(255,255,255,0.1);
-  backdrop-filter: blur(10px);
-  z-index: 10000;
+/* =========================================================
+   TABLAS RESPONSIVAS
+   ========================================================= */
+.table-responsive{
+  width:100%;
+  overflow-x:auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable both-edges;
+  background: rgba(255,255,255,.02);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-1);
+  position: relative;
+  padding-bottom: 6px;
+  
 }
+.table-responsive > *{ scroll-snap-align: start; }
+
+/* Indicadores laterales */
+.table-responsive::before,
+.table-responsive::after{
+  content:''; position: sticky; top:0; bottom:0; width:14px; z-index:2; pointer-events:none;
+}
+.table-responsive::before{ left:0;  box-shadow: inset 10px 0 8px -10px rgba(0,0,0,.45); }
+.table-responsive::after { right:0; box-shadow: inset -10px 0 8px -10px rgba(0,0,0,.45); }
+
+/* Tabla base */
+#resultado table{
+  border-collapse: separate; border-spacing:0;
+  min-width:600px; /* cómodo para móviles pequeños */
+  width:100%; color:var(--txt);
+  font-size:12.5px; line-height:1.35;
+}
+
+/* Encabezado pegajoso */
+#resultado thead th{
+  position: sticky; top:0; z-index:3; text-align:left; font-weight:600; color:#eaf2ff;
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+  backdrop-filter: blur(2px);
+  border-bottom:1px solid rgba(255,255,255,.12);
+  padding:9px 10px; white-space:nowrap;
+}
+
+/* Primera columna pegajosa */
+#resultado th:first-child,
+#resultado td:first-child{
+  position: sticky; left:0; z-index:2;
+  background: rgba(18,18,34,.95); backdrop-filter: blur(2px);
+  border-right:1px solid rgba(255,255,255,.06);
+}
+
+/* Celdas + estados */
+#resultado td{
+  padding:9px 10px; border-bottom:1px solid rgba(255,255,255,.08); color:var(--txt-dim);
+}
+#resultado tbody tr:nth-child(2n){ background: rgba(255,255,255,.015); }
+#resultado tbody tr:hover{ background: rgba(255,255,255,.03); }
+
+/* Columnas largas (ajusta índices a tus columnas reales) */
+#resultado td:nth-child(2),
+#resultado td:nth-child(5){
+  white-space: normal; word-break: break-word; max-width: 240px;
+}
+
+/* Scrollbar sutil (WebKit) */
+.table-responsive::-webkit-scrollbar{ height:12px; }
+.table-responsive::-webkit-scrollbar-thumb{ background: rgba(255,255,255,.28); border-radius:20px; }
+
+/* Ajustes de tipografía/padding por breakpoint */
+@media (max-width: 480px){
+  #resultado table{ font-size:12px; min-width:560px; }
+  #resultado th, #resultado td{ padding:8px 9px; }
+}
+@media (min-width: 992px){
+  #resultado table{ font-size:13.5px; min-width:760px; }
+  #resultado th, #resultado td{ padding:11px 12px; }
+}
+
+/* =========================================================
+   QR: VISIBILIDAD Y CENTRADO EN MÓVIL
+   ========================================================= */
+/* Por defecto (desktop/tablet grande): se muestra el form manual */
+#qrWrap{ display:none; }
+#scanForm{ display:block; }
+
+@media (max-width: 991px){
+  /* Muestra QR y oculta form manual */
+  #qrWrap{ display:flex; }
+  #scanForm{ display:none; }
+
+  /* Centrado total con margen para no chocar con Volver fijo */
+  #qrWrap{
+    flex-direction:column;
+    align-items:center;          /* X */
+    justify-content:center;      /* Y */
+    min-height: calc(100dvh - 72px);
+    padding: 12px;
+    text-align:center;
+    gap: 10px;
+  }
+
+  /* Toolbar: apilada/centrada */
+  #qrWrap > div:nth-of-type(1){
+    width:100%;
+    display:flex; flex-wrap:wrap; gap:10px;
+    align-items:center; justify-content:center;
+    margin-bottom:8px;
+  }
+  #qrWrap > div:nth-of-type(1) > *{ min-height: 44px; }
+  #qrWrap #cameraSelect{ flex: 1 1 220px; max-width: 320px; }
+  #qrWrap #btnStartQR,
+  #qrWrap #btnStopQR,
+  #qrWrap #btnTorch{ flex: 1 1 140px; }
+
+  /* Contenedor de vídeo (2º div) — respeta tu max-width inline */
+  #qrWrap > div:nth-of-type(2){
+    width: min(92vw, 520px);
+    margin-left:auto !important; margin-right:auto !important;
+  }
+
+  /* Asegura que el video ocupe el ancho disponible */
+  #qrVideo{ width: 100% !important; height: auto !important; display:block; }
+
+  #qrMsg{ margin-top:6px; font-size:14px; }
+}
+
+
+
+/* =========================================================
+   TOASTS (coincide con tu HTML)
+   ========================================================= */
+.ga-toast{
+  position: fixed; right: 18px; bottom: 18px;
+  padding: 12px 14px; border-radius: 10px;
+  color: #0b2e13; background: #e8f7ee; border: 1px solid #8ed1a6;
+  font-size: 14px; box-shadow: 0 8px 24px rgba(0,0,0,.15);
+  z-index: 9999; max-width: 380px;
+}
+.ga-toast.error{ color:#6b1111; background:#fdecea; border-color:#f5a4a4; }
+.ga-toast.fadeout{ opacity:0; transition: opacity .4s ease; }
+
+
+/* ====== FIX 1: Centrar SIEMPRE el QR en móvil ====== */
+@media (max-width: 991px){
+  /* El wrapper será una mini "página" centrada */
+  #qrWrap{
+    display: grid !important;
+    grid-auto-rows: min-content;
+    justify-items: center;     /* X */
+    align-content: start;      /* Y */
+    gap: 10px;
+    min-height: calc(100dvh - 96px); /* Deja espacio al botón fijo */
+    padding: 14px 12px;
+    text-align: center;
+  }
+
+  /* Toolbar centrada y con ancho máximo cómodo */
+  #qrWrap > div:nth-of-type(1){
+    width: min(92vw, 520px);
+    margin: 0 auto !important;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Contenedor del video: centrado verdadero */
+  #qrWrap > div:nth-of-type(2){
+    width: min(92vw, 520px) !important;
+    margin-inline: auto !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  /* El video ocupa todo el bloque disponible */
+  #qrVideo{
+    display: block;
+    width: 100% !important;
+    height: auto !important;
+  }
+}
+
+/* ====== FIX 2: Botón Volver en móvil a juego con el tema ====== */
+@media (max-width: 991px){
+  /* Más espacio arriba para que el fijo no tape títulos */
+  body{
+    padding-top: calc(96px + env(safe-area-inset-top, 0px)) !important;
+  }
+
+  /* Re-estilo del botón fijo */
+  .sidebar .corner-left-bottom a{
+    position: fixed;
+    top: calc(14px + env(safe-area-inset-top, 0px));
+    left: calc(14px + env(safe-area-inset-left, 0px));
+    z-index: 1500;
+
+    /* Estética oscura/vidriada acorde al fondo */
+    background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+    color: var(--txt);
+    border: 1px solid rgba(255,255,255,.14);
+    box-shadow: 0 10px 28px rgba(0,0,0,.35);
+    backdrop-filter: blur(6px);
+
+    padding: 12px 16px 12px 42px;
+    min-height: 44px;
+    border-radius: 14px;
+    font-weight: 600;
+    letter-spacing: .2px;
+  }
+  .sidebar .corner-left-bottom a::before{
+    content:'←';
+    position:absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-weight: 900;
+    opacity:.9;
+    color: var(--accent); /* leve acento azul */
+  }
+
+  /* Evita que ocupe el flujo del layout */
+  .sidebar{
+    position: static;
+    background: transparent;
+    border: 0;
+    box-shadow: none;
+    width: auto;
+    height: auto;
+    padding: 0;
+    z-index: auto;
+  }
+  .sidebar ul{ padding: 0; margin: 0; }
+  .sidebar ul > li{ display: none; }
+  .sidebar ul > li.corner-left-bottom{ display: block; }
+}
+
+/* ====== (Opcional) realce suave del título para mayor legibilidad ====== */
+.titulo{
+  text-shadow: 0 1px 0 rgba(0,0,0,.35);
+}
+
+
+
