@@ -63,6 +63,54 @@ require_once __DIR__ . "/Conexiones/Conexion.php";
             align-items: center;
             gap: 8px;
         }
+        .control-mode-options {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 20px;
+        }
+        .qr-wrap {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+        }
+        .qr-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 15px;
+            width: 100%;
+            justify-content: center;
+        }
+        .camera-select {
+            padding: 10px;
+            border-radius: var(--theme-radius);
+            border: 1px solid var(--theme-border);
+            background: rgba(0,0,0,0.3);
+            color: #fff;
+            flex: 1;
+            max-width: 300px;
+            font-size: 14px;
+        }
+        .scan-form {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+        .scan-input {
+            flex: 1;
+            padding: 14px;
+            border-radius: var(--theme-radius);
+            border: 1px solid var(--theme-border);
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            font-size: 16px;
+        }
+        .scan-button {
+            padding: 0 30px;
+        }
+        #qrMsg:empty {
+            display: none;
+        }
 
         .input-search {
             width: 100%;
@@ -103,6 +151,114 @@ require_once __DIR__ . "/Conexiones/Conexion.php";
             animation: slideIn 0.3s ease-out;
         }
         @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        @media (max-width: 768px) {
+            .control-panel {
+                display: flex;
+                flex-direction: column;
+                padding: 14px 12px;
+                gap: 12px;
+            }
+            .control-panel h3 {
+                font-size: 18px;
+                margin-bottom: 0;
+            }
+            .control-mode-options {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 10px;
+                margin-bottom: 0;
+                order: 1;
+            }
+            .control-panel label {
+                width: auto;
+                min-height: 46px;
+                padding: 10px 12px;
+                border: 1px solid var(--theme-border);
+                border-radius: var(--theme-radius);
+                background: rgba(255,255,255,0.04);
+                justify-content: flex-start;
+            }
+            .qr-wrap {
+                width: 100%;
+                gap: 10px;
+                align-items: stretch;
+                order: 3;
+            }
+            .qr-toolbar {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 8px;
+                align-items: center;
+                margin-bottom: 0;
+            }
+            .camera-select {
+                grid-column: 1 / -1;
+                flex: none;
+                width: 100%;
+                max-width: none;
+                min-height: 44px;
+                height: 44px;
+            }
+            .qr-toolbar .button {
+                width: 100%;
+                min-height: 44px;
+                padding: 10px 14px;
+            }
+            .qr-video-container {
+                width: 100%;
+                max-width: none;
+                margin: 0;
+                aspect-ratio: 1 / 1;
+                max-height: 240px;
+            }
+            .qr-video-container video {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+            }
+            .scan-form {
+                display: none;
+                grid-template-columns: minmax(0, 1fr) 120px;
+                gap: 8px;
+                align-items: stretch;
+                margin-top: 0;
+                order: 2;
+            }
+            #scanForm {
+                display: none !important;
+                grid-template-columns: minmax(0, 1fr) 120px;
+                gap: 8px !important;
+                margin-top: 0 !important;
+            }
+            .scan-input,
+            .scan-button {
+                width: 100%;
+            }
+            #idParticipante,
+            #btnProcesarScan {
+                width: 100%;
+            }
+            .scan-button {
+                min-height: 44px;
+                padding: 10px 16px;
+            }
+            #btnProcesarScan {
+                min-height: 44px;
+                padding: 10px 16px !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .control-mode-options {
+                grid-template-columns: 1fr;
+            }
+            .scan-form,
+            #scanForm {
+                display: none !important;
+                grid-template-columns: 1fr !important;
+            }
+        }
     </style>
 </head>
 <body class="fade-in">
@@ -117,14 +273,14 @@ require_once __DIR__ . "/Conexiones/Conexion.php";
 
     <div class="control-panel">
         <h3>Modo de Registro</h3>
-        <div style="display:flex; gap:30px; margin-bottom:20px;">
+        <div class="control-mode-options">
             <label><input type="radio" name="modo" value="asistencia" checked> Tomar asistencia</label>
             <label><input type="radio" name="modo" value="agregar"> Inscribir en clase</label>
         </div>
 
-        <div id="qrWrap" style="display:none; flex-direction:column; align-items:center;">
-            <div style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:15px; width:100%; justify-content:center;">
-                <select id="cameraSelect" style="padding:10px; border-radius:var(--theme-radius); border:1px solid var(--theme-border); background:rgba(0,0,0,0.3); color:#fff; flex:1; max-width:300px; font-size:14px;"></select>
+        <div id="qrWrap" class="qr-wrap">
+            <div class="qr-toolbar">
+                <select id="cameraSelect" class="camera-select"></select>
                 <button id="btnStartQR" type="button" class="button">Encender Cámara</button>
                 <button id="btnStopQR" type="button" class="button" style="background:#555" disabled>Apagar</button>
             </div>
