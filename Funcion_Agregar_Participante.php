@@ -1,5 +1,7 @@
 <?php
 
+ob_start();
+
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
@@ -59,6 +61,9 @@ function esSolicitudAjax(): bool
 function responderOperacion(bool $ok, string $icono, string $titulo, string $mensaje, ?string $redirigirA = null): void
 {
     if (esSolicitudAjax()) {
+        while (ob_get_level() > 0) {
+            ob_end_clean();
+        }
         header('Content-Type: application/json; charset=UTF-8');
         echo json_encode([
             'ok' => $ok,

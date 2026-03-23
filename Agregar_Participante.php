@@ -407,6 +407,26 @@ $result = $conn->query($sql);*/
     btnGuardar.style.opacity = guardando ? '.8' : (document.querySelectorAll('.chk-slot:checked').length === 0 ? '.7' : '1');
   }
 
+  function parsearRespuestaServidor(raw){
+    if (!raw) return null;
+
+    try {
+      return JSON.parse(raw);
+    } catch (error) {
+      const inicio = raw.indexOf('{');
+      const fin = raw.lastIndexOf('}');
+      if (inicio === -1 || fin === -1 || fin <= inicio) {
+        return null;
+      }
+
+      try {
+        return JSON.parse(raw.slice(inicio, fin + 1));
+      } catch (errorInterno) {
+        return null;
+      }
+    }
+  }
+
   function engancharChecksAgenda(){
     document.querySelectorAll('.chk-slot').forEach(chk=>{
       chk.addEventListener('change', actualizarBotonGuardar);
@@ -437,15 +457,10 @@ $result = $conn->query($sql);*/
       });
 
       const raw = await response.text();
-      let data = null;
-
-      try {
-        data = JSON.parse(raw);
-      } catch (error) {
-        console.error('Respuesta no JSON:', raw);
-      }
+      const data = parsearRespuestaServidor(raw);
 
       if (!response.ok || !data) {
+        console.error('Respuesta no JSON:', raw);
         throw new Error('No se pudo procesar la respuesta del servidor.');
       }
 
