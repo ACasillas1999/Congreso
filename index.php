@@ -5,14 +5,9 @@ ini_set('session.cookie_secure', true);
 session_name("CON");
 session_start();
 
-if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
+if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true || $_SESSION["Rol"] === "Vendedor") {
     header("location: /Congreso/Sesion/login.html");
     exit;
-}
-
-if (($_SESSION["Rol"] ?? '') !== 'Admin') {
-    http_response_code(403);
-    exit('Acceso denegado');
 }
 
 // 2. Manejo de la búsqueda AJAX (DEBE ESTAR ARRIBA PARA EVITAR RENDERIZADO DEL SIDEBAR)
