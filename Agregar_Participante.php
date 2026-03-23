@@ -130,11 +130,12 @@ $result = $conn->query($sql);*/
     <style>
   /* ... existing styles ... */
   
-  /* Sin sidebar en esta vista */
+  /* BALANCEAR EL CENTRADO IGNORANDO EL SIDEBAR EN PC */
   @media (min-width: 768px) {
     body {
-        padding-left: 0 !important;
-        padding-right: 0 !important;
+        /* El cuerpo ya tiene padding-left: 280px del global */
+        /* Añadimos padding-right: 280px para que el AREA DE CONTENIDO esté centrada en la pantalla */
+        padding-right: var(--sidebar-width, 280px) !important;
     }
   }
 
@@ -159,6 +160,7 @@ $result = $conn->query($sql);*/
 </head>
 
 <body class="fade-in">
+    <?php include "sidebar.php"; ?>
     <!-- Unique container to avoid global .container conflicts -->
     <div class="reg-container" style="display: flex; flex-direction: column; align-items: center; justify-content: flex-start; min-height: 100vh; padding: 40px 20px; width: 100%; margin: 0 !important;">
         <header class="header" style="width: 100%; max-width: 650px; border-radius: 12px; margin: 0 0 24px 0 !important; padding: 24px; background: linear-gradient(145deg, var(--theme-primary-dark), var(--theme-primary));">
@@ -172,7 +174,7 @@ $result = $conn->query($sql);*/
             </nav>
         </header>
 
-        <form id="formAgregarParticipante" action="Funcion_Agregar_Participante.php" method="POST" style="margin: 0 !important; width: 100%; max-width: 650px; background-color: var(--theme-surface-strong); border-radius: 12px; padding: 32px; box-shadow: var(--theme-shadow); border: 1px solid var(--theme-border);">
+        <form action="Funcion_Agregar_Participante.php" method="POST" style="margin: 0 !important; width: 100%; max-width: 650px; background-color: var(--theme-surface-strong); border-radius: 12px; padding: 32px; box-shadow: var(--theme-shadow); border: 1px solid var(--theme-border);">
             <div id="step1">
                 <!-- ... existing content ... -->
                 <label for="Evento">Evento:</label>
@@ -394,16 +396,13 @@ $result = $conn->query($sql);*/
   }
 
   // Blindaje final del submit
-  const formAgregarParticipante = document.getElementById('formAgregarParticipante');
-  if (formAgregarParticipante) {
-    formAgregarParticipante.addEventListener('submit', function(e){
-      const tiene = document.querySelectorAll('.chk-slot:checked').length > 0;
-      if (!tiene){
-        e.preventDefault();
-        alert('Debes seleccionar al menos una actividad para guardar el participante.');
-      }
-    });
-  }
+  document.querySelector('form').addEventListener('submit', function(e){
+    const tiene = document.querySelectorAll('.chk-slot:checked').length > 0;
+    if (!tiene){
+      e.preventDefault();
+      alert('Debes seleccionar al menos una actividad para guardar el participante.');
+    }
+  });
 </script>
 
 </body>
