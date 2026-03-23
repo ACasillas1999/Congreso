@@ -12,6 +12,8 @@ $id_evento_sidebar = $sidebar_event_id_override > 0
         ? (isset($id_evento) ? (int)$id_evento : 0)
         : (isset($_GET['id']) ? intval($_GET['id']) : (isset($id_evento) ? (int)$id_evento : 0)));
 $rol_sidebar = $_SESSION["Rol"] ?? '';
+$is_vendedor_sidebar = ($rol_sidebar === 'Vendedor');
+$is_gerente_sidebar = ($rol_sidebar === 'Gerente');
 
 // Función auxiliar para clase activa
 function isActive($page, $current) {
@@ -49,7 +51,7 @@ function isActive($page, $current) {
     $hide_volver = ($currentPage === 'index.php');
     ?>
 
-    <?php if (!$hide_volver && $rol_sidebar !== 'Vendedor'): ?>
+    <?php if (!$hide_volver && !$is_vendedor_sidebar && !$is_gerente_sidebar): ?>
     <div style="padding: 0 16px; margin-bottom: 16px;">
         <a href="<?= $volver_url ?>" class="sidebar-link-btn" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--theme-border);">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
@@ -59,7 +61,7 @@ function isActive($page, $current) {
     <?php endif; ?>
 
     <div class="sidebar-sections">
-        <?php if ($rol_sidebar === 'Vendedor'): ?>
+        <?php if ($is_vendedor_sidebar): ?>
             <!-- VISTA SIMPLIFICADA PARA VENDEDOR -->
             <div class="sidebar-section">
                 <ul class="section-content open" style="opacity: 1; max-height: none;">
@@ -73,6 +75,18 @@ function isActive($page, $current) {
                         <a href="/Congreso/Participantes.php?id=<?= $id_evento_sidebar ?>" class="<?= isActive('Participantes.php', $currentPage) ?>">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                             Ver Participantes
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        <?php elseif ($is_gerente_sidebar): ?>
+            <!-- VISTA SIMPLIFICADA PARA GERENTE -->
+            <div class="sidebar-section">
+                <ul class="section-content open" style="opacity: 1; max-height: none;">
+                    <li>
+                        <a href="/Congreso/Agregar_Participante.php<?= $id_evento_sidebar > 0 ? '?id=' . $id_evento_sidebar : '' ?>" class="<?= isActive('Agregar_Participante.php', $currentPage) ?>">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><line x1="19" y1="8" x2="19" y2="14"></line><line x1="16" y1="11" x2="22" y2="11"></line></svg>
+                            Agregar participante
                         </a>
                     </li>
                 </ul>
