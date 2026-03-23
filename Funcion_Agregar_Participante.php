@@ -60,9 +60,17 @@ function mostrarSweetAlert(string $icono, string $titulo, string $mensaje, ?stri
         $continuacion = 'history.back();';
     }
 
+    echo '<!DOCTYPE html>';
+    echo '<html lang="es">';
+    echo '<head>';
+    echo '<meta charset="UTF-8">';
+    echo '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
+    echo '<title>Notificación</title>';
     echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
+    echo '</head>';
+    echo '<body>';
     echo '<script>
-        (function () {
+        window.addEventListener("load", function () {
             const mensaje = ' . json_encode($mensaje, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . ';
             const continuar = function () { ' . $continuacion . ' };
 
@@ -73,14 +81,20 @@ function mostrarSweetAlert(string $icono, string $titulo, string $mensaje, ?stri
             }
 
             Swal.fire({
+                target: document.body,
                 icon: ' . json_encode($icono, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . ',
                 title: ' . json_encode($titulo, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . ',
                 text: mensaje,
                 confirmButtonText: "Aceptar",
-                confirmButtonColor: "#1ca9dc"
-            }).then(continuar);
-        })();
+                confirmButtonColor: "#1ca9dc",
+                allowOutsideClick: false
+            }).then(function () {
+                continuar();
+            });
+        });
     </script>';
+    echo '</body>';
+    echo '</html>';
 }
 
 // Verificar si se enviaron los datos del formulario
