@@ -12,6 +12,7 @@ $id_evento_sidebar = $sidebar_event_id_override > 0
         ? (isset($id_evento) ? (int)$id_evento : 0)
         : (isset($_GET['id']) ? intval($_GET['id']) : (isset($id_evento) ? (int)$id_evento : 0)));
 $rol_sidebar = $_SESSION["Rol"] ?? '';
+$is_gerente_participantes = ($rol_sidebar === 'Gerente' && $currentPage === 'Participantes.php');
 
 // Función auxiliar para clase activa
 function isActive($page, $current) {
@@ -46,7 +47,7 @@ function isActive($page, $current) {
     }
     
     // Si estamos en la página principal, ocultamos el botón de volver
-    $hide_volver = ($currentPage === 'index.php');
+    $hide_volver = ($currentPage === 'index.php' || $is_gerente_participantes);
     ?>
 
     <?php if (!$hide_volver && $rol_sidebar !== 'Vendedor'): ?>
@@ -59,8 +60,8 @@ function isActive($page, $current) {
     <?php endif; ?>
 
     <div class="sidebar-sections">
-        <?php if ($rol_sidebar === 'Vendedor'): ?>
-            <!-- VISTA SIMPLIFICADA PARA VENDEDOR -->
+        <?php if ($rol_sidebar === 'Vendedor' || $is_gerente_participantes): ?>
+            <!-- VISTA SIMPLIFICADA PARA VENDEDOR / GERENTE EN PARTICIPANTES -->
             <div class="sidebar-section">
                 <ul class="section-content open" style="opacity: 1; max-height: none;">
                     <li>
