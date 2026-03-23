@@ -51,6 +51,38 @@ function dispararGeneracionHorario(int $participanteId): void
     }
 }
 
+function mostrarSweetAlert(string $icono, string $titulo, string $mensaje, ?string $redirigirA = null, bool $volverAtras = false): void
+{
+    $continuacion = '';
+    if ($redirigirA !== null) {
+        $continuacion = 'window.location.href = ' . json_encode($redirigirA, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . ';';
+    } elseif ($volverAtras) {
+        $continuacion = 'history.back();';
+    }
+
+    echo '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
+    echo '<script>
+        (function () {
+            const mensaje = ' . json_encode($mensaje, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . ';
+            const continuar = function () { ' . $continuacion . ' };
+
+            if (typeof Swal === "undefined") {
+                alert(mensaje);
+                continuar();
+                return;
+            }
+
+            Swal.fire({
+                icon: ' . json_encode($icono, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . ',
+                title: ' . json_encode($titulo, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . ',
+                text: mensaje,
+                confirmButtonText: "Aceptar",
+                confirmButtonColor: "#1ca9dc"
+            }).then(continuar);
+        })();
+    </script>';
+}
+
 // Verificar si se enviaron los datos del formulario
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $evento = $conn->real_escape_string($_POST['Evento']);
@@ -67,6 +99,13 @@ $Puesto = $conn->real_escape_string($_POST['puesto']);
     $result_check = $conn->query($sql_check);
 
     if ($result_check->num_rows > 0) {
+        mostrarSweetAlert(
+            'error',
+            'Teléfono duplicado',
+            'Error: El número de teléfono ya está registrado para este evento.',
+            "Agregar_Participante.php?id=$evento"
+        );
+        exit;
         // Si el número de teléfono ya existe, mostrar una alerta y recargar la página
         echo "<script>
             alert('Error: El número de teléfono ya está registrado para este evento.');
@@ -115,6 +154,14 @@ if (!empty($actividades)) {
             if ($slots[$i]['fecha'] === $slots[$j]['fecha']) {
                 $solapa = ($slots[$i]['ini'] < $slots[$j]['fin']) && ($slots[$j]['ini'] < $slots[$i]['fin']);
                 if ($solapa) {
+                    mostrarSweetAlert(
+                        'warning',
+                        'Actividades solapadas',
+                        'Las actividades seleccionadas se solapan. Corrige tu selección.',
+                        null,
+                        true
+                    );
+                    exit;
                     echo "<script>alert('Las actividades seleccionadas se solapan. Corrige tu selección.');history.back();</script>";
                     exit;
                 }
@@ -142,6 +189,14 @@ if (!empty($actividades)) {
         $ex = (int)($chkEx->get_result()->fetch_column() ?? 0);
 
         if ($rol === 'Vendedor' && $ex === 1) {
+            mostrarSweetAlert(
+                'warning',
+                'Sin permisos',
+                'Esta actividad es exclusiva. No tienes permisos para agendar.',
+                null,
+                true
+            );
+            exit;
             echo "<script>alert('Esta actividad es exclusiva. No tienes permisos para agendar.');history.back();</script>";
             exit;
         }
@@ -338,6 +393,13 @@ file_put_contents("log_whatsapp.txt", $response);
 
 
             if ($conn->query($sqlUpdate) === TRUE) {
+                mostrarSweetAlert(
+                    'success',
+                    'Registro completado',
+                    '¡Registro completado!',
+                    'Participantes.php?id=' . $evento
+                );
+                exit(); // AsegÃºrate de detener el script despuÃ©s de la redirecciÃ³n
                 // Redirigir con un mensaje de éxito usando JavaScript
                 echo '<script type="text/javascript">
                     alert("¡Registro Completado!");

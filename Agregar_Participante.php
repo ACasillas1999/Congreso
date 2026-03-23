@@ -41,6 +41,7 @@ $result = $conn->query($sql);*/
 
     <title>Nuevo Participante</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <style>
   .slot{
@@ -253,6 +254,21 @@ $result = $conn->query($sql);*/
     </div>
 
     <script>
+       function mostrarAlerta(icono, titulo, mensaje) {
+  if (typeof Swal === 'undefined') {
+    alert(mensaje);
+    return Promise.resolve();
+  }
+
+  return Swal.fire({
+    icon: icono,
+    title: titulo,
+    text: mensaje,
+    confirmButtonText: 'Aceptar',
+    confirmButtonColor: '#1ca9dc'
+  });
+}
+
        function updateParticipantes() {
   var eventoID = $('#Evento').val();
   var capacidad = $('#Evento option:selected').data('capacidad') || 0;
@@ -277,7 +293,7 @@ $result = $conn->query($sql);*/
       // Asegura que Guardar esté deshabilitado en step2 hasta que haya clases
       $('#btnGuardar').prop('disabled', true).css({ cursor:'not-allowed', opacity:.7 });
 
-      if (lleno) alert('Este evento ha alcanzado su capacidad máxima.');
+      if (lleno) mostrarAlerta('warning', 'Cupo lleno', 'Este evento ha alcanzado su capacidad máxima.');
     }
   });
 }
@@ -391,7 +407,7 @@ $result = $conn->query($sql);*/
     const tiene = document.querySelectorAll('.chk-slot:checked').length > 0;
     if (!tiene){
       e.preventDefault();
-      alert('Debes seleccionar al menos una actividad para guardar el participante.');
+      mostrarAlerta('warning', 'Selecciona una actividad', 'Debes seleccionar al menos una actividad para guardar el participante.');
     }
   });
 </script>
