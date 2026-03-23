@@ -5,7 +5,6 @@ ini_set('session.cookie_secure', true); // Solo enviar cookies de sesión a trav
 session_name("CON");
 session_start();
 header('Content-Type: text/html; charset=UTF-8');
-$id_evento_preseleccionado = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
 // Verificar si el usuario no está logeado
 if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
@@ -160,7 +159,6 @@ $result = $conn->query($sql);*/
 </head>
 
 <body class="fade-in">
-    <?php include "sidebar.php"; ?>
     <!-- Unique container to avoid global .container conflicts -->
     <div class="reg-container" style="display: flex; flex-direction: column; align-items: center; justify-content: flex-start; min-height: 100vh; padding: 40px 20px; width: 100%; margin: 0 !important;">
         <header class="header" style="width: 100%; max-width: 650px; border-radius: 12px; margin: 0 0 24px 0 !important; padding: 24px; background: linear-gradient(145deg, var(--theme-primary-dark), var(--theme-primary));">
@@ -183,8 +181,7 @@ $result = $conn->query($sql);*/
                     <?php
                     if (isset($result) && $result && $result->num_rows > 0) {
                         while ($row = $result->fetch_assoc()) {
-                            $selected = ((int)$row["ID"] === $id_evento_preseleccionado) ? " selected" : "";
-                            echo "<option value='" . $row["ID"] . "' data-capacidad='" . $row["capacidad"] . "'" . $selected . ">" . $row["name_evento"] . "</option>";
+                            echo "<option value='" . $row["ID"] . "' data-capacidad='" . $row["capacidad"] . "'>" . $row["name_evento"] . "</option>";
                         }
                     } else {
                         echo "<option value=''>No hay eventos disponibles</option>";
@@ -256,12 +253,6 @@ $result = $conn->query($sql);*/
     </div>
 
     <script>
-      $(function () {
-        if ($('#Evento').val()) {
-          updateParticipantes();
-        }
-      });
-
        function updateParticipantes() {
   var eventoID = $('#Evento').val();
   var capacidad = $('#Evento option:selected').data('capacidad') || 0;
