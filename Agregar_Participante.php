@@ -173,7 +173,7 @@ $result = $conn->query($sql);*/
             </nav>
         </header>
 
-        <form action="Funcion_Agregar_Participante.php" method="POST" style="margin: 0 !important; width: 100%; max-width: 650px; background-color: var(--theme-surface-strong); border-radius: 12px; padding: 32px; box-shadow: var(--theme-shadow); border: 1px solid var(--theme-border);">
+        <form id="formAgregarParticipante" action="Funcion_Agregar_Participante.php" method="POST" style="margin: 0 !important; width: 100%; max-width: 650px; background-color: var(--theme-surface-strong); border-radius: 12px; padding: 32px; box-shadow: var(--theme-shadow); border: 1px solid var(--theme-border);">
             <div id="step1">
                 <!-- ... existing content ... -->
                 <label for="Evento">Evento:</label>
@@ -386,13 +386,25 @@ $result = $conn->query($sql);*/
   }
     </script>
 <script>
+  const formAgregarParticipante = document.getElementById('formAgregarParticipante');
+  const btnGuardar = document.getElementById('btnGuardar');
+  const textoOriginalBtnGuardar = btnGuardar ? btnGuardar.textContent : 'Guardar participante';
+
   function actualizarBotonGuardar(){
     const seleccionados = document.querySelectorAll('.chk-slot:checked').length;
-    const btn = document.getElementById('btnGuardar');
+    const btn = btnGuardar;
     if (!btn) return;
     btn.disabled = seleccionados === 0;
     btn.style.cursor = seleccionados === 0 ? 'not-allowed' : 'pointer';
     btn.style.opacity = seleccionados === 0 ? '.7' : '1';
+  }
+
+  function ponerEstadoGuardado(guardando){
+    if (!btnGuardar) return;
+    btnGuardar.disabled = guardando;
+    btnGuardar.textContent = guardando ? 'Guardando...' : textoOriginalBtnGuardar;
+    btnGuardar.style.cursor = guardando ? 'wait' : (document.querySelectorAll('.chk-slot:checked').length === 0 ? 'not-allowed' : 'pointer');
+    btnGuardar.style.opacity = guardando ? '.8' : (document.querySelectorAll('.chk-slot:checked').length === 0 ? '.7' : '1');
   }
 
   function engancharChecksAgenda(){
@@ -403,11 +415,54 @@ $result = $conn->query($sql);*/
   }
 
   // Blindaje final del submit
-  document.querySelector('form').addEventListener('submit', function(e){
+  formAgregarParticipante.addEventListener('submit', async function(e){
+    e.preventDefault();
+
     const tiene = document.querySelectorAll('.chk-slot:checked').length > 0;
     if (!tiene){
-      e.preventDefault();
       mostrarAlerta('warning', 'Selecciona una actividad', 'Debes seleccionar al menos una actividad para guardar el participante.');
+      return;
+    }
+
+    try {
+      ponerEstadoGuardado(true);
+
+      const response = await fetch(formAgregarParticipante.action, {
+        method: 'POST',
+        body: new FormData(formAgregarParticipante),
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest',
+          'Accept': 'application/json'
+        }
+      });
+
+      const raw = await response.text();
+      let data = null;
+
+      try {
+        data = JSON.parse(raw);
+      } catch (error) {
+        console.error('Respuesta no JSON:', raw);
+      }
+
+      if (!response.ok || !data) {
+        throw new Error('No se pudo procesar la respuesta del servidor.');
+      }
+
+      await mostrarAlerta(
+        data.icon || (data.ok ? 'success' : 'error'),
+        data.title || (data.ok ? 'Proceso completado' : 'Ocurrió un error'),
+        data.message || 'Operación finalizada.'
+      );
+
+      if (data.ok && data.redirect) {
+        window.location.href = data.redirect;
+      }
+    } catch (error) {
+      await mostrarAlerta('error', 'Error de conexión', error.message || 'No fue posible guardar el participante.');
+    } finally {
+      ponerEstadoGuardado(false);
+      actualizarBotonGuardar();
     }
   });
 </script>

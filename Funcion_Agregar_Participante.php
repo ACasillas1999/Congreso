@@ -51,13 +51,33 @@ function dispararGeneracionHorario(int $participanteId): void
     }
 }
 
-function mostrarSweetAlert(string $icono, string $titulo, string $mensaje, ?string $redirigirA = null, bool $volverAtras = false): void
+function esSolicitudAjax(): bool
+{
+    return strtolower($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'xmlhttprequest';
+}
+
+function responderOperacion(bool $ok, string $icono, string $titulo, string $mensaje, ?string $redirigirA = null): void
+{
+    if (esSolicitudAjax()) {
+        header('Content-Type: application/json; charset=UTF-8');
+        echo json_encode([
+            'ok' => $ok,
+            'icon' => $icono,
+            'title' => $titulo,
+            'message' => $mensaje,
+            'redirect' => $redirigirA,
+        ], JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        return;
+    }
+
+    mostrarSweetAlert($icono, $titulo, $mensaje, $redirigirA);
+}
+
+function mostrarSweetAlert(string $icono, string $titulo, string $mensaje, ?string $redirigirA = null): void
 {
     $continuacion = '';
     if ($redirigirA !== null) {
         $continuacion = 'window.location.href = ' . json_encode($redirigirA, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) . ';';
-    } elseif ($volverAtras) {
-        $continuacion = 'history.back();';
     }
 
     echo '<!DOCTYPE html>';
@@ -113,11 +133,11 @@ $Puesto = $conn->real_escape_string($_POST['puesto']);
     $result_check = $conn->query($sql_check);
 
     if ($result_check->num_rows > 0) {
-        mostrarSweetAlert(
+        responderOperacion(
+            false,
             'error',
             'Teléfono duplicado',
             'Error: El número de teléfono ya está registrado para este evento.',
-            "Agregar_Participante.php?id=$evento"
         );
         exit;
         // Si el número de teléfono ya existe, mostrar una alerta y recargar la página
@@ -168,12 +188,11 @@ if (!empty($actividades)) {
             if ($slots[$i]['fecha'] === $slots[$j]['fecha']) {
                 $solapa = ($slots[$i]['ini'] < $slots[$j]['fin']) && ($slots[$j]['ini'] < $slots[$i]['fin']);
                 if ($solapa) {
-                    mostrarSweetAlert(
+                    responderOperacion(
+                        false,
                         'warning',
                         'Actividades solapadas',
                         'Las actividades seleccionadas se solapan. Corrige tu selección.',
-                        null,
-                        true
                     );
                     exit;
                     echo "<script>alert('Las actividades seleccionadas se solapan. Corrige tu selección.');history.back();</script>";
@@ -203,12 +222,11 @@ if (!empty($actividades)) {
         $ex = (int)($chkEx->get_result()->fetch_column() ?? 0);
 
         if ($rol === 'Vendedor' && $ex === 1) {
-            mostrarSweetAlert(
+            responderOperacion(
+                false,
                 'warning',
                 'Sin permisos',
                 'Esta actividad es exclusiva. No tienes permisos para agendar.',
-                null,
-                true
             );
             exit;
             echo "<script>alert('Esta actividad es exclusiva. No tienes permisos para agendar.');history.back();</script>";
@@ -407,7 +425,8 @@ file_put_contents("log_whatsapp.txt", $response);
 
 
             if ($conn->query($sqlUpdate) === TRUE) {
-                mostrarSweetAlert(
+                responderOperacion(
+                    true,
                     'success',
                     'Registro completado',
                     '¡Registro completado!',
@@ -422,10 +441,12 @@ file_put_contents("log_whatsapp.txt", $response);
                 exit(); // Asegúrate de detener el script después de la redirección
             }
             else {
-                echo "Error al actualizar la base de datos con la ruta del gafete: " . $conn->error;
+                responderOperacion(false, 'error', 'Error al guardar', 'Error al actualizar la base de datos con la ruta del gafete: ' . $conn->error);
+                exit;
             }
         } else {
-            echo "Error: " . $sql . "<br>" . $conn->error;
+            responderOperacion(false, 'error', 'Error al guardar', 'Error al insertar el participante: ' . $conn->error);
+            exit;
         }
     }
 }
