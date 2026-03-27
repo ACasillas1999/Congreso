@@ -2,9 +2,10 @@
 require __DIR__ . "/config.php";
 
 $token  = $_GET['token'] ?? '';
+$token  = str_replace(' ', '+', $token);
 $format = (($_GET['format'] ?? 'png') === 'pdf') ? 'pdf' : 'png';
 
-$id = openssl_decrypt(urldecode($token), METODO_CIFRADO, CLAVE_SECRETA, 0, VECTOR);
+$id = openssl_decrypt($token, METODO_CIFRADO, CLAVE_SECRETA, 0, VECTOR);
 $id = (int)$id;
 if ($id <= 0) {
   http_response_code(400);
