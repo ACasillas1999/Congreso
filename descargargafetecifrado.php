@@ -36,8 +36,10 @@ if (!isset($_GET['token'])) {
     http_response_code(400);
     exit("Token no proporcionado.");
 }
+$token = $_GET['token'];
+// Por si algún cliente u otro lugar del código rompió la codificación
+$token = str_replace(' ', '+', $token);
 
-$token = urldecode($_GET['token']);
 $id = openssl_decrypt($token, METODO_CIFRADO, CLAVE_SECRETA, 0, VECTOR);
 
 if (!$id || !is_numeric($id)) {
