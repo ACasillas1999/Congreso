@@ -58,30 +58,30 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
     </div>
 
     <!-- Modal Nueva Ubicación -->
-    <div id="modalNuevaUbicacion" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.6); z-index:1000; justify-content:center; align-items:center;">
-        <div style="background-color:white; padding:25px; border-radius:10px; width:90%; max-width:500px; position:relative; box-shadow: 0 4px 8px rgba(0,0,0,0.2);">
-            <span onclick="cerrarModalUbicacion()" style="position:absolute; top:10px; right:15px; font-size:24px; cursor:pointer; color:#333;">&times;</span>
-            <h3 style="margin-top:0; color:#333; border-bottom:1px solid #ddd; padding-bottom:10px;">Agregar Ubicación</h3>
+    <div id="modalNuevaUbicacion" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.7); z-index:1000; justify-content:center; align-items:center;">
+        <div style="background-color:#1e2a38; padding:25px; border-radius:10px; width:90%; max-width:500px; position:relative; box-shadow: 0 4px 15px rgba(0,0,0,0.5); color:white;">
+            <span onclick="cerrarModalUbicacion()" style="position:absolute; top:10px; right:15px; font-size:24px; cursor:pointer; color:#fff;">&times;</span>
+            <h3 style="margin-top:0; color:#fff; border-bottom:1px solid #444; padding-bottom:10px;">Agregar Ubicación</h3>
             
-            <form action="FuncionNuevoRegistroUbicacion.php" method="POST">
+            <form action="FuncionNuevoRegistroUbicacion.php" method="POST" style="background:transparent; padding:0; box-shadow:none;">
                 <div style="margin-bottom: 12px;">
-                    <label for="Nombre" style="display:block; margin-bottom:5px; color:#555; font-weight:bold;">Nombre de la Ubicación:</label>
-                    <input type="text" id="Nombre" name="Nombre" required style="width:100%; padding:10px; box-sizing:border-box; border:1px solid #ccc; border-radius:5px;">
+                    <label for="Nombre" style="display:block; margin-bottom:5px; color:#ddd; font-weight:bold;">Nombre de la Ubicación:</label>
+                    <input type="text" id="Nombre" name="Nombre" required style="width:100%; padding:10px; box-sizing:border-box; border:1px solid #444; border-radius:5px; background-color:#2c3e50; color:white;">
                 </div>
                 
                 <div style="margin-bottom: 12px;">
-                    <label for="Direccion" style="display:block; margin-bottom:5px; color:#555; font-weight:bold;">Dirección:</label>
-                    <input type="text" id="Direccion" name="Direccion" required style="width:100%; padding:10px; box-sizing:border-box; border:1px solid #ccc; border-radius:5px;">
+                    <label for="Direccion" style="display:block; margin-bottom:5px; color:#ddd; font-weight:bold;">Dirección:</label>
+                    <input type="text" id="Direccion" name="Direccion" required style="width:100%; padding:10px; box-sizing:border-box; border:1px solid #444; border-radius:5px; background-color:#2c3e50; color:white;">
                 </div>
 
                 <div style="display:flex; gap:10px; margin-bottom: 12px;">
                     <div style="flex:1;">
-                        <label for="Salones" style="display:block; margin-bottom:5px; color:#555; font-weight:bold;">Cant. Salones:</label>
-                        <input type="number" id="Salones" name="Salones" required min="1" oninput="calcularCapacidadTotal()" style="width:100%; padding:10px; box-sizing:border-box; border:1px solid #ccc; border-radius:5px;">
+                        <label for="Salones" style="display:block; margin-bottom:5px; color:#ddd; font-weight:bold;">Cant. Salones:</label>
+                        <input type="number" id="Salones" name="Salones" required min="1" oninput="calcularCapacidadTotal()" style="width:100%; padding:10px; box-sizing:border-box; border:1px solid #444; border-radius:5px; background-color:#2c3e50; color:white;">
                     </div>
                     <div style="flex:1;">
-                        <label for="Capacidad_por_salon" style="display:block; margin-bottom:5px; color:#555; font-weight:bold;">Cap/Salón:</label>
-                        <input type="number" id="Capacidad_por_salon" name="Capacidad_por_salon" required min="1" oninput="calcularCapacidadTotal()" style="width:100%; padding:10px; box-sizing:border-box; border:1px solid #ccc; border-radius:5px;">
+                        <label for="Capacidad_por_salon" style="display:block; margin-bottom:5px; color:#ddd; font-weight:bold;">Cap/Salón:</label>
+                        <input type="number" id="Capacidad_por_salon" name="Capacidad_por_salon" required min="1" oninput="calcularCapacidadTotal()" style="width:100%; padding:10px; box-sizing:border-box; border:1px solid #444; border-radius:5px; background-color:#2c3e50; color:white;">
                     </div>
                 </div>
 
@@ -91,8 +91,8 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
                 </div>
 
                 <div style="margin-bottom: 20px;">
-                    <label for="Capacidad_total" style="display:block; margin-bottom:5px; color:#555; font-weight:bold;">Capacidad Total:</label>
-                    <input type="text" id="Capacidad_total" name="Capacidad_total" readonly style="width:100%; padding:10px; box-sizing:border-box; border:1px solid #ccc; border-radius:5px; background-color:#f5f5f5; color:#333; cursor:not-allowed;">
+                    <label for="Capacidad_total" style="display:block; margin-bottom:5px; color:#ddd; font-weight:bold;">Capacidad Total:</label>
+                    <input type="text" id="Capacidad_total" name="Capacidad_total" readonly style="width:100%; padding:10px; box-sizing:border-box; border:1px solid #444; border-radius:5px; background-color:#1a2533; color:#aaa; cursor:not-allowed;">
                 </div>
 
                 <button type="submit" style="width:100%; padding:12px; background-color:#4CAF50; color:white; border:none; border-radius:5px; font-size:16px; font-weight:bold; cursor:pointer; transition:background 0.3s;">Guardar Ubicación</button>
