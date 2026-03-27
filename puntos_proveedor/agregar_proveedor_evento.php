@@ -27,8 +27,9 @@
         0 -40px 40px -20px rgba(199, 111, 57, 0.25),
         0 40px 40px -20px rgba(30, 144, 255, 0.25);
       backdrop-filter: blur(6px);
-      width: 100%;
+      width: 90%;
       max-width: 400px;
+      box-sizing: border-box;
       animation: fadeIn 1s ease-out;
     }
 
@@ -56,17 +57,14 @@
     input[type="text"],
     input[type="number"],
     select {
-      width: 95%;
+      width: 100%;
+      box-sizing: border-box;
       padding: 10px;
       margin-bottom: 10px;
       border: none;
       border-radius: 8px;
       background-color: var(--theme-surface, #2a2a3f);
       color: var(--theme-text, #fff);
-      font-size: 16px;
-      box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.3);
-      transition: 0.3s ease;
-    }
 
     input[type="text"]:focus,
     input[type="number"]:focus,

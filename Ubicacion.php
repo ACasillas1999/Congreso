@@ -26,6 +26,9 @@ if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
 
     <div class="container">
         <h2 class="titulo">Ubicaciones</h2>
+        <div style="margin-bottom: 20px; text-align: right;">
+            <a href="NuevoRegistroUbicacion.php" style="padding: 10px 15px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px; display: inline-block; font-weight: bold;">+ Nueva Ubicación</a>
+        </div>
         <div id="resultado">
             <?php
             require_once __DIR__ . "/Conexiones/Conexion.php";
