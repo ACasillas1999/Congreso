@@ -1,5 +1,16 @@
 <?php
 /* estadisticas_vendedores.php */
+// Iniciar la sesión de forma segura
+ini_set('session.cookie_httponly', true);
+ini_set('session.cookie_secure', true);
+session_name("CON");
+session_start();
+
+if (!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true) {
+    header("location: /Congreso/Sesion/login.html");
+    exit;
+}
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
@@ -37,16 +48,13 @@ $conn->close();
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Estad�sticas por Vendedor</title>
+  <title>Estadísticas por Vendedor</title>
   <link rel="icon" href="/Congreso/educacion.png" type="image/x-icon">
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <?php include "header_css.php"; ?>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body{background:linear-gradient(180deg,var(--theme-bg-start,#95ecff),var(--theme-bg-end,#054a6b));color:var(--theme-text,#fff);font-family:'Poppins',sans-serif;margin:0}
-    .container{max-width:1100px;margin:40px auto;padding:24px;background:var(--theme-surface-strong,rgba(8,27,50,.9));border:1px solid var(--theme-border,rgba(255,255,255,.12));border-radius:16px;box-shadow:0 0 30px rgba(0,0,0,.35)}
-    .titulo{margin:0 0 14px;font-size:26px;font-weight:700;color:var(--theme-title,#7cecff);text-align:center;text-shadow:0 0 8px rgba(0,0,0,.6)}
-    .sub{color:var(--theme-text-soft,rgba(255,255,255,.78));margin:4px 0 18px;text-align:center}
+    /* Estilos específicos para esta página que no están en header_css */
     .toolbar{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;margin:12px 0 18px}
     select,button{border-radius:10px;border:1px solid var(--theme-border,rgba(255,255,255,.12));background:rgba(255,255,255,.08);color:#fff;padding:10px 12px}
     .btn-volver{display:inline-block;background:linear-gradient(90deg,var(--theme-primary,#1ca9dc),var(--theme-primary-dark,#054a6b));border:none;color:#fff;text-decoration:none}
@@ -84,7 +92,8 @@ $conn->close();
     @media(max-width:720px){.grid{grid-template-columns:1fr}}
   </style>
 </head>
-<body>
+<body class="fade-in">
+<?php include "sidebar.php"; ?>
 <div class="container">
   <h2 class="titulo">📊 Estadísticas por Vendedor</h2>
   <div class="sub">Evento: <strong><?= htmlspecialchars($nombre_evento) ?></strong></div>
@@ -291,5 +300,3 @@ function escapeAttr(s){ return escapeHtml(s); }
 </script>
 </body>
 </html>
-
-

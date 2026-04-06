@@ -146,7 +146,7 @@ if ($id > 0) {
                     $est = strtoupper((string)($row['estado'] ?? ''));
                     $badg = ($est=='CANCELADO'?'badge-cancelado':($est=='EN CURSO'?'badge-encurso':'badge-finalizado'));
                     $ubicacion_nombre = $row['ubicacion'];
-                    echo "<tr><td>{$row['name_evento']}</td><td>{$row['ubicacion']}</td><td>{$row['duracion']}</td><td><span class='badge $badg'>{$row['estado']}</span></td><td>{$row['fecha_inicio']}</td><td><a href='Actualizar_Evento.php?id={$row['ID']}'>Editar</a></td></tr>";
+                    echo "<tr><td>{$row['name_evento']}</td><td>{$row['ubicacion']}</td><td>{$row['duracion']}</td><td><span class='badge $badg'>{$row['estado']}</span></td><td>{$row['fecha_inicio']}</td><td><a href='Actualizar_Evento.php?id={$row['ID']}'>Editar</a> | <a href='estadisticas_vendedores.php?evento={$row['ID']}'>Vendedores</a></td></tr>";
                 }
                 echo "</table></div></div>";
             }
