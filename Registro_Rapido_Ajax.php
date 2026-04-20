@@ -35,7 +35,7 @@ if ($stmtCheck->get_result()->num_rows > 0) {
 }
 
 // 3. Insertar participante
-$sqlPart = "INSERT INTO participante (ID_Evento, Nombre, Telefono, Proveedor, Sucursal, Vendedor) VALUES (?, ?, ?, ?, 'Registro Rápido', 'Admin')";
+$sqlPart = "INSERT INTO participante (ID_Evento, Nombre, Telefono, Proveedor, Sucursal, Vendedor, RFC) VALUES (?, ?, ?, ?, 'Registro Rápido', 'Admin', '')";
 $stmtPart = $conn->prepare($sqlPart);
 $stmtPart->bind_param("isss", $idEvento, $nombre, $telefono, $proveedor);
 
