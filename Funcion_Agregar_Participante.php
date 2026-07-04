@@ -367,7 +367,7 @@ $nombre = $Nombre;
 $access_token = 'EAAGacaATjwEBOZBgqhohcVk1ZBGEAbiTl7i86qESvSPjdllaomwzIG7LmOOvyTFpzyIlXX6dtTYTVTLLuw6SjaLoh2rec07I8qu1nGNYSVZAmQTGNa3QCQjujTqfd7QuLLwFNQllnX2z1V7JvToDhEi5KVqUWXHSqgSETvGyU7S2SN2fpXW0NpQaRI48pwZAgGS7A1BQMjLl5ZBjy';
 $phone_number_id = '335894526282507';
 //$template_name = 'registro_vallartaday_2026 '; // Tu plantilla exacta ascencio_day_len_2026
-$template_name = 'ascencio_day_len_2026';
+$template_name = 'ascencio_day_qro_2026';
 
 // Mensaje con botón personalizado (token como parámetro del botón)
 $data = [
