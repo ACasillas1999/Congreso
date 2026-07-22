@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             } elseif ($Rol == 'Gerente') {
                 header("location: ../Participantes.php");
             } elseif ($Rol == 'Evento') {
-                header("location: https://congresos.grupoascencio.com.mx/Congreso/ver_horario_dia.php?id=29&fecha=2026-07-24");
+                header("location: https://congresos.grupoascencio.com.mx/Congreso/Clase.php?id=568");
             } elseif ($Rol == 'proveedor') {
                 header("location: ../proveedor/index.php"); 
             } else {
