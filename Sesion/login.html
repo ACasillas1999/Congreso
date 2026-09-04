@@ -1,44 +1,67 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" href="/Congreso/educacion.png" type="image/x-icon" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Iniciar Sesión</title>
-    <link rel="stylesheet" type="text/css" href="login.css?v=1.7" />
-    <link rel="stylesheet" type="text/css" href="login-theme.css.php?v=1.3" />
-    <link href="https://fonts.googleapis.com/css2?family=Monoton&display=swap" rel="stylesheet" />
-  </head>
-  <body class="fade-in">
-    <div id="liquid-ether-bg" aria-hidden="true"></div>
 
-    <div class="neon-container">
-    <!---  <h1 class="neon-title">CONEXIÓN 2025</h1>-->
-    </div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirección - Ascencio Connect</title>
+    <!-- Tailwind CSS para un diseño moderno -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
 
-    <main class="page-wrap"><!-- NUEVO: envuelve para centrar y respetar safe-area -->
-      <div class="login-container">
-        <h1 class="sr-only">Iniciar Sesión</h1>
+<body
+    class="bg-gradient-to-br from-slate-950 via-slate-900 to-[#120c08] text-slate-100 min-h-screen flex items-center justify-center p-4">
 
-        <div class="brand-block">
-         <!---<h2 class="titulo2">Congresos</h2>-->
-          <!-- FIX RUTA: usa / en vez de \ -->
-          <img
-            src="../img/Recurso_2vector0.png"
-            alt="Logo Conexión"
-            class="icono-registro"
-          />
+    <div
+        class="bg-slate-900/90 backdrop-blur-xl border border-orange-500/20 p-8 rounded-3xl shadow-2xl max-w-md w-full text-center space-y-6 relative overflow-hidden">
+
+        <!-- Línea superior decorativa con los colores del nuevo sistema (Azul / Naranja) -->
+        <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-blue-600 via-indigo-500 to-orange-500">
         </div>
 
-        <form action="login.php" method="post" class="login-form" autocomplete="on">
-          <input type="text" name="username" placeholder="Nombre de usuario" required inputmode="text" autocomplete="username" />
-          <input type="password" name="password" placeholder="Contraseña" required autocomplete="current-password" />
-          <button type="submit" class="btn-submit">Iniciar Sesión</button>
-        </form>
-      </div>
-    </main>
+        <!-- Logotipo o Icono representativo del nuevo sistema -->
+        <div
+            class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-blue-600/20 to-orange-500/20 border border-orange-500/30 text-orange-400 mb-2 shadow-inner">
+            <svg class="w-10 h-10 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round5" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z">
+                </path>
+            </svg>
+        </div>
 
-    <script type="module" src="liquid-ether-bg.js?v=1.7"></script>
-    <script src="animacion.js"></script>
-  </body>
+        <div class="space-y-2">
+            <h1
+                class="text-2xl font-bold tracking-tight bg-gradient-to-r from-white via-slate-200 to-orange-400 bg-clip-text text-transparent">
+                Ascencio Connect
+            </h1>
+            <p class="text-xs uppercase tracking-widest text-orange-500 font-semibold">Sistema de Congresos</p>
+        </div>
+
+        <p class="text-slate-400 text-sm leading-relaxed">
+            Hemos actualizado nuestro sistema al nuevo portal de congresos. Haz clic en el botón de abajo para acceder.
+        </p>
+
+        <!-- Botón de redirección con la paleta de colores naranja/azul -->
+        <button onclick="redirigir()"
+            class="w-full py-4 px-4 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-medium rounded-xl shadow-lg shadow-orange-600/30 transition-all duration-200 transform active:scale-95 focus:outline-none focus:ring-2 focus:ring-orange-400 flex items-center justify-center space-x-2">
+            <span>Ir al nuevo sistema</span>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round5" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+        </button>
+
+        <p class="text-xs text-slate-500 pt-2">
+            Grupo Ascencio © 2026 — Congresos
+        </p>
+    </div>
+
+    <script>
+        function redirigir() {
+            // Redirige al nuevo enlace del sistema de congresos
+            window.location.href = "https://ascencioconnect.grupoascencio.com.mx";
+        }
+    </script>
+
+</body>
+
 </html>
